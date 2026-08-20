@@ -1,0 +1,42 @@
+# GYM E1 — DAMAGE RACE.
+#
+# HYPOTHESIS
+#   Where the only pressure is raw throughput, the 4 AP damage build should beat
+#   the 5 AP build that pays for a secondary action it cannot cash in.
+#
+# PRIMARY PRESSURE   attack throughput
+# SECONDARY          none by design
+#
+# Flat, open, no chokepoint, no terrain cost, nothing anchored. Push has nowhere
+# useful to shove anyone, Slow buys a fraction of one approach, and with a solo
+# party Taunt has nobody to redirect away from. If a control action still wins
+# here, that is a fact about the actions and not about the map.
+#
+# ENEMIES  2x e1_shooter (HP 60 / ATK 70 / DEF 15 / MOVE 3 / range 2).
+#   Against Momotaro's DEF 50 that is 20 a hit, so four attacks a round is 80
+#   against 300 HP — real pressure without deciding the battle in one round.
+#   An earlier cut used 3x kohaku (ATK 100) and every variant lost 50/50 in
+#   under two rounds; enemy composition was changed, nothing else.
+#
+# ALTERNATIVE SOLUTION  kiting with MOVE and range is a genuine second line,
+#   which is exactly why Kagemaru B belongs in this cell.
+#
+#   #  Blocking   .  Road(1)      Coordinates are (x, y), y = 0 at the TOP.
+
+encounter id=gym-e1-damagerace name=E1-damage-race
+objective type=rout
+
+map
+############
+#..........#
+#..........#
+#..........#
+#..........#
+#..........#
+############
+endmap
+
+spawn faction=player unit=Momotaro_A x=5 y=5
+
+spawn faction=enemy unit=e1_shooter x=2 y=1 ai=rusher
+spawn faction=enemy unit=e1_shooter x=8 y=1 ai=rusher

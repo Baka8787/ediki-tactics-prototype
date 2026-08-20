@@ -1,0 +1,46 @@
+# GYM. gym-opening with ONE player unit. The other control.
+#
+# Same map, same eight enemies, same AI. Momotaro alone, exactly as the game is
+# played today. It answers the question gym-opening cannot answer on its own:
+# is a four-unit party actually better here, or did the enemy roster grow by
+# more than the party did?
+#
+# Expected to lose badly. That is fine — a floor is still a measurement, and
+# "how badly" is the number that says whether the roster was scaled sanely.
+
+encounter id=gym-opening-solo name=OPENING-solo
+objective type=rout turns=20
+
+map
+################
+#..............#
+#..............#
+#...........ff.#
+##.####..###..##
+#..............#
+#...o.####.o...#
+#.....####.....#
+#..ff......ff..#
+#..............#
+#..............#
+################
+endmap
+
+# --- 討鬼團 x4 -------------------------------------------------------------
+# Spawned side by side so the party starts with the SAME exposure it would have
+# had as one unit. Spreading them at spawn would pre-solve the first decision.
+spawn faction=player unit=momotaro x=8 y=10
+
+# --- the anchors: they do not come to you ---------------------------------
+spawn faction=enemy unit=test_turret     x=8  y=2  ai=rusher
+
+# --- the divisibility breakers: 3 hits from Momotaro, 2 from Genjin -------
+spawn faction=enemy unit=kohaku_3hit     x=5  y=1  ai=rusher
+spawn faction=enemy unit=kohaku_3hit     x=10 y=1  ai=rusher
+
+# --- range 2, and they hunt the lowest HP: the reason taunt exists --------
+spawn faction=enemy unit=kohaku_bowfair  x=3  y=2  ai=hunter
+
+# --- flankers already south of the wall: you cannot form a queue ----------
+spawn faction=enemy unit=kohaku          x=2  y=8  ai=cautious
+spawn faction=enemy unit=kohaku          x=13 y=8  ai=cautious

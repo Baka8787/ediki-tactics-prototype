@@ -1,0 +1,168 @@
+=== Ediki Stage 01 Prototype — Metrics ===
+runs per cell : 40
+base seed     : 1
+noise         : 15%  (sampling device, not a rule)
+round cap     : 60  (safety net, not a rule — R-WIN-04)
+
+[ALERT] DOMINANT_STRATEGY_HEURISTIC:
+Charge currently dominates deliberate positioning under the configured heuristic.
+  Encounter / Map        : gym-d1-routes.encounter
+  charge             N          : 40
+  corridor-hold      N          : 40
+  Win Rate               : Pass        100% >= 100%
+  Avg Rounds             : Pass        4.57 < 11.70
+  Remaining HP           : Pass        83.0% >= 63.3%
+  (screening heuristic over batch averages, not a game-theoretic result)
+
+=== gym-d1-routes.encounter — encounter profile (derived) ===
+  profile: momotaro   HP 300   attacks/turn 2   lethal exposure 8
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    kohaku_1hit       1     1        20     20        1          1300
+    kohaku_bow        2     2        40     20        0          1100
+    at least one target leaves a spare action — what to spend it on is a choice
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+  profile: kagemaru_plain   HP 195   attacks/turn 2   lethal exposure 3
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    kohaku_1hit       1     2        60     30        0          1200
+    kohaku_bow        2     3        80     26        1          1000
+    at least one target leaves a spare action — what to spend it on is a choice
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+gym-d1-routes.encounter / charge  (40 runs)
+  M5 win rate      : 100%  (40W / 0L / 0unresolved)
+  M1 top action mix: Movex2+Waitx2  14% of player turns
+  M1 variety       : 45 distinct mixes, top-3 = 33%
+                     Movex2+Waitx2 27   Movex2+Attackx2+Waitx2 20   Attackx2+Waitx2 15   
+  M1b per unit     : 27 distinct, top 23%, top-3 = 52%   <- compare THIS across party sizes
+  M1b skill use    : 0% of unit-turns issued a skill
+  M2 AP waste      : 25%
+  M3 turns         : mean 4.57  min 4  max 7
+  M4 exposure      : mean 0.28   [0]263 [1]92 [2]5 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 2.96   contact turns 1.60
+                     r2:37  r3:50  r4:31  r5:1  never:1
+  M6 route use     : 37/40 runs crossed, top route x=2 94%
+                     x=2:35  x=7:1  x=10:1  never:3
+                     per unit: x=2:43  x=5:4  x=7:1  x=10:1  
+  final player HP  : mean 411
+  Occupancy heatmap  13x12   unit-rounds standing here   total 656  peak 83  over 40 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      0123456789012
+    0  #############
+    1  #...*..*....#
+    2  ##*##2..##.##
+    3  ##*##*.4##.##
+    4  ##*##8..##9##
+    5  ##*##9.1##5##
+    6  #4****47658.#
+    7  #454#####3..#
+    8  #.3*#####1..#
+    9  #11*2..213..#
+   10  #..2..1.....#
+   11  #############
+
+  Clash heatmap  13x12   damaging effects landed here   total 382  peak 82  over 40 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      0123456789012
+    0  #############
+    1  #...........#
+    2  ##*##2..##.##
+    3  ##4##9..##.##
+    4  ##*##*..##4##
+    5  ##*##6..##8##
+    6  #5****2453*.#
+    7  #.2.#####3..#
+    8  #.23#####...#
+    9  #..2........#
+   10  #...........#
+   11  #############
+
+gym-d1-routes.encounter / corridor-hold  (40 runs)
+  M5 win rate      : 100%  (40W / 0L / 0unresolved)
+  M1 top action mix: Movex2+Guard+Wait  18% of player turns
+  M1 variety       : 79 distinct mixes, top-3 = 35%
+                     Movex2+Guard+Wait 85   Move+Guard+Wait 46   Movex2+Guardx2+Waitx2 36   
+  M1b per unit     : 33 distinct, top 32%, top-3 = 59%   <- compare THIS across party sizes
+  M1b skill use    : 0% of unit-turns issued a skill
+  M2 AP waste      : 19%
+  M3 turns         : mean 11.70  min 5  max 26
+  M4 exposure      : mean 0.27   [0]544 [1]151 [2]25 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 3.68   contact turns 12.52
+                     r2:37  r3:10  r4:39  r5:20  r6:9  r7:1  r10:1  never:3
+  M6 route use     : 24/40 runs crossed, top route x=7 62%
+                     x=2:5  x=6:1  x=7:15  x=10:3  never:16
+                     per unit: x=2:5  x=5:1  x=6:1  x=7:17  x=10:3  
+  final player HP  : mean 313
+  Occupancy heatmap  13x12   unit-rounds standing here   total 1519  peak 110  over 40 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      0123456789012
+    0  #############
+    1  #47**6****94#
+    2  ##9##*.*##1##
+    3  ##5##*1*##9##
+    4  ##*##71*##*##
+    5  ##*##*4*##3##
+    6  #*****2***66#
+    7  #***#####*45#
+    8  #4**#####*25#
+    9  #*********24#
+   10  #******79854#
+   11  #############
+
+  Clash heatmap  13x12   damaging effects landed here   total 587  peak 61  over 40 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      0123456789012
+    0  #############
+    1  #6185224**42#
+    2  ##1##..4##.##
+    3  ##1##6.2##.##
+    4  ##9##3..##2##
+    5  ##6##22.##2##
+    6  #***3*.34*.1#
+    7  #8**#####*36#
+    8  #5*8#####*..#
+    9  #********8.4#
+   10  #.*7**6421.2#
+   11  #############
+
+=== threshold check (docs/06-validation/playtest-metrics.md) ===
+gym-d1-routes.encounter / charge:
+  M1 < 70%   : PASS  (14%)
+  M2 < 15%   : FAIL  (25%)
+  M3 6-10    : FAIL  (4.57)
+  M4 <= 2    : PASS  (0.28)
+  M6 < 70%   : FAIL  (x=2 94%)
+gym-d1-routes.encounter / corridor-hold:
+  M1 < 70%   : PASS  (18%)
+  M2 < 15%   : FAIL  (19%)
+  M3 6-10    : FAIL  (11.70)
+  M4 <= 2    : PASS  (0.27)
+  M6 < 70%   : PASS  (x=7 62%)
+
+M5 comparison (corridor-hold should beat charge, and the chokepoint map
+should beat the open control — otherwise the map taught nothing):
+  gym-d1-routes.encounter / charge : 100%
+  gym-d1-routes.encounter / corridor-hold : 100%
+
+=== anomalies (see SimResults/anomalies.json for the seeds) ===
+  0 of 80 battles flagged
+  TIMEOUT_UNRESOLVED            0
+  ABORTED_BY_REJECTED_COMMAND   0
+  DEFEAT_WITH_HIGH_REMAINING_HP 0
+  UNEXPECTED_SKILL_USAGE        0
+
+=== Strategy Persona Matrix ===
+  gym-d1-routes.encounter
+    Strategy            N    Win%   AvgRounds   AvgHP%   Timeout%   SkillActs(strategy/noise)
+    charge              40    100%        4.57    83.0%         0%            0/0
+    corridor-hold       40    100%       11.70    63.3%         0%            0/0
+
+=== Pairwise comparison (screening heuristic) ===
+  gym-d1-routes.encounter   charge (N=40) vs corridor-hold (N=40)
+    Win Rate        Pass         100% >= 100%
+    Avg Rounds      Pass         4.57 < 11.70
+    Remaining HP    Pass         83.0% >= 63.3%
+    DOMINANT_STRATEGY_HEURISTIC: TRUE
+

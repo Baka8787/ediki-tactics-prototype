@@ -1,0 +1,20 @@
+{
+    "name": "Ediki.Editor",
+    "rootNamespace": "Ediki.Editor",
+    "references": [
+        "Ediki.Core",
+        "Ediki.Sim",
+        "Ediki.Unity"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

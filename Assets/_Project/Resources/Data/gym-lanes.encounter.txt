@@ -1,0 +1,60 @@
+# GYM. 24x16. Successor to gym-big-split, built from what M6 measured.
+#
+# gym-big-split claimed three routes. Measuring them showed:
+#   - x=7,8 is not a route. It opens 4 cells and reaches no enemy: an ALCOVE.
+#   - 175 of 200 battles never touched the wall row at all.
+# So this map fixes two separate things.
+#
+# 1. THREE ROUTES THAT ARE REALLY THREE ROUTES.
+#    The wall row y=8 has exactly three gaps, and each one leads into its own
+#    lane. The lanes are separated all the way up and only rejoin on y=1, so
+#    picking a gap commits you to a lane.
+#
+#      west  x=3     1-wide corridor, exposure 2 inside. Safest, and only one
+#                    unit fits at a time.
+#      mid   x=11,12 opens into a 9x6 field, exposure 4. Shortest, most exposed.
+#      east  x=20    2-wide corridor of FOREST (cost 2 per cell). Narrow-ish,
+#                    but every step north of the wall costs double.
+#
+# 2. THE THREE GAPS COST ROUGHLY THE SAME TO REACH.
+#    On gym-big-split the mid gap sat directly above the player spawn, so
+#    "which route" was decided by arithmetic. The block at x=9-14 / y=10-12
+#    makes the player walk around it, which brings the three approaches to
+#    ~11 / ~14 / ~14 cost. What separates them is now exposure and terrain,
+#    not length — which is the only way the choice can be a decision.
+#
+# Enemy composition is COPIED FROM gym-big-split ON PURPOSE (2 rushers north,
+# 1 cautious + 1 hunter south, OD-22 both sides). Geometry is the only variable
+# that changed, so any difference in M6 belongs to the geometry.
+#
+# Coordinates are (x, y), y = 0 at the TOP.
+#   #  Blocking   .  Road (1)   o  Open (1)   f  Forest (2)   ^  Highland (2)
+
+encounter id=gym-lanes name=LANES-rout
+objective type=rout
+
+map
+########################
+#......................#
+#.....#.........#......#
+###.###.........###ff###
+###.###.........###ff###
+###.###.........###ff###
+###.###.........###ff###
+###.###.........###ff###
+###.#######..#######.###
+#......................#
+#..ff....######...ff...#
+#........######........#
+#........######........#
+#......................#
+#..ff.........ff.......#
+########################
+endmap
+
+spawn faction=player unit=momotaro x=11 y=13
+
+spawn faction=enemy unit=kohaku x=3  y=1  ai=rusher
+spawn faction=enemy unit=kohaku x=20 y=1  ai=rusher
+spawn faction=enemy unit=kohaku x=2  y=13 ai=cautious
+spawn faction=enemy unit=kohaku x=21 y=10 ai=hunter

@@ -1,0 +1,75 @@
+# GYM CRUCIBLE 1/4 — SPACE. Displacement is the answer, not damage.
+#
+# One of four maps that share a frame (11x8, four player slots on y=5, a shrine
+# behind them, six turns, staggered arrivals) and differ ONLY in which verb the
+# threat is built against. Same size, same shape, same clock — so a squad matrix
+# run across all four compares like with like, and any spread between the maps
+# is the mechanism, not the geometry.
+#
+# THIS MAP'S QUESTION
+#   The enemies have 180 HP. Killing one costs several actions from anybody.
+#   Shoving one into a chasm costs three AP and skips all 180 of it.
+#   Is that worth a slot in the party?
+#
+# GEOMETRY — why the chasms are where they are
+#   Push is AXIAL: the destination is one cell further along the actor-to-target
+#   line. So a chasm BESIDE a corridor is unreachable — the only cell you could
+#   push from is the chasm on the far side. It has to be IN the approach line
+#   with the player on the opposite end of it.
+#
+#   Each gate is one cell wide at y=2. The chasm sits directly below it at y=4.
+#   To use it the player must stand IN the gate at (3,2) or (7,2) and shove the
+#   enemy at y=3 southward into the pit. That is a real commitment: holding the
+#   gate is the most exposed cell on the map, and it is the only cell the push
+#   works from.
+#
+#   The chasm never seals the map. From (3,3) an enemy blocked by the pit routes
+#   through (2,3) and down the west side — checked, not assumed.
+#
+#   #  Blocking   .  Road(1)   x  CHASM (lethal)
+#   Coordinates are (x, y), y = 0 at the TOP.
+#
+#   x 0123456789A
+#   y0 ###########
+#   y1 #.........#   enemy arrivals
+#   y2 ###.###.###   two W=1 gates, x=3 and x=7
+#   y3 #.........#   the push line
+#   y4 #..x...x..#   chasms directly below each gate
+#   y5 #.........#   four player slots
+#   y6 #.........#   shrine
+#   y7 ###########
+
+encounter id=gym-crucible-chasm name=CRUCIBLE-chasm
+objective type=defend turns=6
+
+map
+###########
+#.........#
+###.###.###
+#.........#
+#..x...x..#
+#.........#
+#.........#
+###########
+endmap
+
+# --- what is defended -------------------------------------------------------
+spawn faction=player unit=sc_shrine x=5 y=6 protect=true
+
+# --- the four squad slots ---------------------------------------------------
+# ORDER IS LOAD-BEARING: 桃太郎 / 玄真 / 影丸 / 正守. SquadMatrix rewrites these
+# four lines in place, so slot N must always be the same character.
+# Symmetric about x=5, so no slot starts closer to either gate.
+spawn faction=player unit=Momotaro_B x=3 y=5
+spawn faction=player unit=Genjin_B   x=4 y=5
+spawn faction=player unit=Kagemaru_A x=6 y=5
+spawn faction=player unit=Masamori_A x=7 y=5
+
+# --- staggered arrivals: one gate, then the other, then both ----------------
+# 180 HP each. Four of them is 720 HP against a party that deals roughly 150-220
+# a turn, so killing everything inside six turns is not on the table. Something
+# has to be skipped, delayed, or dropped in a hole.
+spawn faction=enemy unit=sc_bruiser x=3 y=1 ai=rusher
+spawn faction=enemy unit=sc_bruiser x=7 y=1 ai=rusher   turn=2
+spawn faction=enemy unit=sc_bruiser x=3 y=1 ai=cautious turn=4
+spawn faction=enemy unit=sc_bruiser x=7 y=1 ai=cautious turn=5

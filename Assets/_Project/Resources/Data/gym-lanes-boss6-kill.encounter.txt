@@ -1,0 +1,45 @@
+# GYM. The hard-target rung on the map with three live routes.
+#
+# Identical to gym-lanes-boss6 except the objective and the mark.
+#
+# This is the file the whole set is aimed at. It is the only configuration in
+# the project where BOTH open questions are live at once:
+#
+#   which lane do I take     (M6 — only gym-lanes can ask it)
+#   which enemies must die   (M5/M4 — only a kill objective can ask it)
+#
+# and the research note's claim is that a kill objective is the only high-decision
+# objective that does not tax the first question, because it never says where the
+# player has to stand. Reach does say (target cell) and this project has already
+# measured it flattening route diversity. If M6 here stays close to gym-lanes'
+# 26/43/29 while M5 separation holds or grows, the claim survives; if the lanes
+# collapse the way they do under reach, it does not.
+
+encounter id=gym-lanes-boss6-kill name=LANES-kill-boss6
+objective type=kill
+
+map
+########################
+#......................#
+#.....#.........#......#
+###.###.........###ff###
+###.###.........###ff###
+###.###.........###ff###
+###.###.........###ff###
+###.###.........###ff###
+###.#######..#######.###
+#......................#
+#..ff....######...ff...#
+#........######........#
+#........######........#
+#......................#
+#..ff.........ff.......#
+########################
+endmap
+
+spawn faction=player unit=momotaro x=11 y=13
+
+spawn faction=enemy unit=kohaku x=3  y=1  ai=rusher
+spawn faction=enemy unit=test_boss6 x=20 y=1  ai=rusher target=true
+spawn faction=enemy unit=kohaku x=2  y=13 ai=cautious
+spawn faction=enemy unit=kohaku x=21 y=10 ai=hunter

@@ -1,0 +1,67 @@
+# GYM CRUCIBLE 2/4 — ARMOUR. The hit-count ladder is the answer.
+#
+# Same 11x8 frame, same four slots, same six turns as the other three crucibles.
+# The only thing that changes is what the threat is made of.
+#
+# THIS MAP'S QUESTION
+#   DEF 35 is not "tougher", it is a different NUMBER OF HITS for each attacker,
+#   and this project measured that ladder as a cliff rather than a slope. Strip
+#   20 DEF and every attacker moves a step — but they do not move the same step:
+#
+#     attacker    a hit vs DEF 35   vs DEF 15   hits through 140 HP
+#     Kagemaru     7                27           20  ->  6     x3.9 damage
+#     Momotaro    25                45            6  ->  4     x1.8
+#     Genjin      55                75            3  ->  2     x1.4
+#
+#   The WEAKEST attacker gains the most, which is the whole reason 破甲 is a
+#   party action rather than a personal damage buff. A squad with no break and a
+#   squad with one should not merely differ in speed; they should differ in who
+#   is worth bringing at all.
+#
+# GEOMETRY — deliberately plain
+#   A short central wall splits the approach into two wide lanes, and nothing
+#   else. No chasm, no chokepoint worth holding, no terrain cost. This map is
+#   the control for geometry across the crucible set: if a squad does well here
+#   it is because of what it does to armour, not where it stood.
+#
+#   #  Blocking   .  Road(1)
+#
+#   x 0123456789A
+#   y0 ###########
+#   y1 #.........#   arrivals
+#   y2 #.........#
+#   y3 #..#####..#   a splitter, not a chokepoint — both lanes are 2 wide
+#   y4 #.........#
+#   y5 #.........#   four player slots
+#   y6 #.........#   shrine
+#   y7 ###########
+
+encounter id=gym-crucible-armor name=CRUCIBLE-armor
+objective type=defend turns=6
+
+map
+###########
+#f.......f#
+#f......mf#
+#f.#####mf#
+#x.......f#
+#x.......f#
+#f.......f#
+###########
+endmap
+
+# --- what is defended -------------------------------------------------------
+spawn faction=player unit=sc_shrine x=5 y=6 protect=true
+# --- the four squad slots (桃太郎 / 玄真 / 影丸 / 正守) ---------------------
+spawn faction=player unit=Momotaro_B x=3 y=5
+spawn faction=player unit=Genjin_B x=4 y=5
+spawn faction=player unit=Kagemaru_A x=6 y=5
+spawn faction=player unit=Masamori_A x=7 y=5
+# --- two shields down the middle, then pressure that punishes being slow ----
+# The two 140 HP / DEF 35 bodies are the test paper. The two bruisers behind
+# them are the clock: a squad that needs six actions per shield never gets to
+# them, which is how a hit-count problem becomes a time problem.
+spawn faction=enemy unit=sc_shield x=4 y=1 ai=rusher
+spawn faction=enemy unit=sc_shield x=6 y=1 ai=rusher turn=2
+spawn faction=enemy unit=sc_bruiser x=2 y=1 ai=cautious turn=3
+spawn faction=enemy unit=sc_bruiser x=8 y=1 ai=cautious turn=5

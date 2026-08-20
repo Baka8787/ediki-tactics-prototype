@@ -1,0 +1,71 @@
+# GYM CRUCIBLE 3/4 — TIME. Arrival order is the answer.
+#
+# Same 11x8 frame, same four slots, same six turns as the other three crucibles.
+#
+# THIS MAP'S QUESTION
+#   Every lever this project has measured that moved the win rate a long way
+#   changed WHEN the enemy could reach you — range, terrain cost, growth — and
+#   every lever that only changed how hard someone hits was small or a cliff.
+#   遲滯 is the only player-side handle on that variable. Does it earn a slot?
+#
+#   The threat is built so it cannot be answered any other way:
+#     * The assassin has MOVE 5. Every player unit is 3 or 4, and there is no
+#       zone of control in this rule layer, so it cannot be outrun or blocked.
+#     * It arrives on the EAST while the west lane is already engaged, so the
+#       party is committed when it shows up.
+#     * Kagemaru A reaches 3 cells. She is the only unit that can touch it on
+#       the turn it appears — everyone else has to spend a turn closing first,
+#       and by then it is already in the back line.
+#
+#   The failure this map is looking for: 遲滯 has twice measured as buying
+#   nothing (release 3.43 -> 3.38, and 2.50 -> 2.51). Both of those were on maps
+#   where arrival order did not matter. This one is built so it does.
+#
+# GEOMETRY — two lanes of DIFFERENT length, which is the point
+#   The west lane is open road: three cells from the wall to the line.
+#   The east lane is forest and mire (2 and 3 AP a cell), so it costs roughly
+#   twice as much to walk — for everyone EXCEPT something with MOVE 5 and a full
+#   AP bar. The expensive lane is the fast one, but only for the fast thing.
+#
+#   #  Blocking   .  Road(1)   f  Forest(2)   m  Mire(3)
+#
+#   x 0123456789A
+#   y0 ###########
+#   y1 #.........#   arrivals
+#   y2 #.###.###.#   west gate x=1, centre gate x=5, east gate x=9
+#   y3 #...#.#fff#   east lane is expensive from here down
+#   y4 #...#.#mmm#
+#   y5 #.........#   four player slots
+#   y6 #.........#   shrine
+#   y7 ###########
+
+encounter id=gym-crucible-delay name=CRUCIBLE-delay
+objective type=defend turns=6
+
+map
+###########
+#.........#
+#.###.###.#
+#...#.#fff#
+#...#.#mmm#
+#.........#
+#.........#
+###########
+endmap
+
+# --- what is defended -------------------------------------------------------
+spawn faction=player unit=sc_shrine x=5 y=6 protect=true
+
+# --- the four squad slots (桃太郎 / 玄真 / 影丸 / 正守) ---------------------
+spawn faction=player unit=Momotaro_B x=3 y=5
+spawn faction=player unit=Genjin_B   x=4 y=5
+spawn faction=player unit=Kagemaru_A x=6 y=5
+spawn faction=player unit=Masamori_A x=7 y=5
+
+# --- west first, so the party is committed when the east opens --------------
+spawn faction=enemy unit=sc_bruiser  x=1 y=1 ai=rusher
+spawn faction=enemy unit=sc_shield   x=5 y=1 ai=rusher   turn=2
+
+# --- the assassin. MOVE 5 down the expensive lane, which only it can afford --
+spawn faction=enemy unit=sc_assassin x=9 y=1 ai=rusher   turn=3
+spawn faction=enemy unit=sc_assassin x=9 y=1 ai=hunter   turn=5

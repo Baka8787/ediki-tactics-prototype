@@ -1,0 +1,227 @@
+=== Ediki Stage 01 Prototype — Metrics ===
+runs per cell : 200
+base seed     : 1
+noise         : 15%  (sampling device, not a rule)
+round cap     : 60  (safety net, not a rule — R-WIN-04)
+
+=== gym-ctr-base.encounter — encounter profile (derived) ===
+  profile: zhengshou_ctr4   HP 435   attacks/turn 2   lethal exposure 15
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    kohaku_1hit       2     4        30      7        0           300
+    no target leaves a spare action — focus fire is the only play
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+gym-ctr-base.encounter / corridor-hold  (200 runs)
+  M5 win rate      : 100%  (200W / 0L / 0unresolved)
+  M1 top action mix: Attackx2+Wait  27% of player turns
+  M1 variety       : 32 distinct mixes, top-3 = 59%
+                     Attackx2+Wait 370   Move+Guard+Wait 279   Movex2+Guard+Wait 158   
+  M1b per unit     : 32 distinct, top 27%, top-3 = 59%   <- compare THIS across party sizes
+  M1b skill use    : 0% of unit-turns issued a skill
+  M2 AP waste      : 8%
+  M3 turns         : mean 6.81  min 4  max 19
+  M4 exposure      : mean 0.92   [0]493 [1]485 [2]385 
+  M7 contact       : round-1 reach 1.00 enemies   mean release round 1.52   contact turns 8.94
+                     r1:200  r2:191  r3:8  r4:1  
+  final player HP  : mean 292
+  role metrics     : 200 battle(s), 1363 player round(s)
+    player         : 1350 attacks, 400 kills, 20800 damage dealt   skills: push 0 / slow 0 / taunt 0
+    taken          : 2255 enemy attacks, 29489 damage received
+    counter        : 250 fired of 1984 opportunities  (12%)   damage 3250
+    AP spent       : attack 5400  move 1802  skill 0  guard 1614  rest 152  counter 750
+    AP reserved    : 3058 carried into enemy phases  (mean 2.24 per round)   regen wasted 969   rejected commands 0
+  Occupancy heatmap  10x6   unit-rounds standing here   total 3361  peak 350  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      0123456789
+    0  ##########
+    1  #********#
+    2  #********#
+    3  #********#
+    4  #********#
+    5  ##########
+
+  Clash heatmap  10x6   damaging effects landed here   total 3855  peak 822  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      0123456789
+    0  ##########
+    1  #********#
+    2  #********#
+    3  #********#
+    4  #********#
+    5  ##########
+
+gym-ctr-base.encounter / counter-reserve  (200 runs)
+  M5 win rate      : 100%  (200W / 0L / 0unresolved)
+  M1 top action mix: Attack+Wait  47% of player turns
+  M1 variety       : 19 distinct mixes, top-3 = 78%
+                     Attack+Wait 484   Wait 182   Attack 132   
+  M1b per unit     : 19 distinct, top 47%, top-3 = 78%   <- compare THIS across party sizes
+  M1b skill use    : 0% of unit-turns issued a skill
+  M2 AP waste      : 18%
+  M3 turns         : mean 5.11  min 4  max 7
+  M4 exposure      : mean 1.09   [0]141 [1]641 [2]240 
+  M7 contact       : round-1 reach 1.00 enemies   mean release round 1.50   contact turns 5.18
+                     r1:200  r2:197  r3:3  
+  final player HP  : mean 307
+  role metrics     : 200 battle(s), 1022 player round(s)
+    player         : 738 attacks, 400 kills, 20800 damage dealt   skills: push 0 / slow 0 / taunt 0
+    taken          : 1760 enemy attacks, 26192 damage received
+    counter        : 862 fired of 902 opportunities  (95%)   damage 11206
+    AP spent       : attack 2952  move 451  skill 0  guard 33  rest 44  counter 2586
+    AP reserved    : 5820 carried into enemy phases  (mean 5.69 per round)   regen wasted 1527   rejected commands 0
+  Occupancy heatmap  10x6   unit-rounds standing here   total 2262  peak 565  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      0123456789
+    0  ##########
+    1  #*****955#
+    2  #*******5#
+    3  #*******1#
+    4  #*******.#
+    5  ##########
+
+  Clash heatmap  10x6   damaging effects landed here   total 3360  peak 953  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      0123456789
+    0  ##########
+    1  #******39#
+    2  #*******8#
+    3  #*******1#
+    4  #*******.#
+    5  ##########
+
+=== gym-ctr-v5.encounter — encounter profile (derived) ===
+  profile: zhengshou_ctr5   HP 435   attacks/turn 1   lethal exposure 15
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    kohaku_1hit       2     4        30      7        0           300
+    no target leaves a spare action — focus fire is the only play
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+gym-ctr-v5.encounter / corridor-hold  (200 runs)
+  M5 win rate      : 100%  (200W / 0L / 0unresolved)
+  M1 top action mix: Attack+Guard+Wait  17% of player turns
+  M1 variety       : 28 distinct mixes, top-3 = 48%
+                     Attack+Guard+Wait 320   Move+Guard+Wait 296   Move+Attack+Wait 273   
+  M1b per unit     : 28 distinct, top 17%, top-3 = 48%   <- compare THIS across party sizes
+  M1b skill use    : 0% of unit-turns issued a skill
+  M2 AP waste      : 7%
+  M3 turns         : mean 9.25  min 6  max 19
+  M4 exposure      : mean 0.93   [0]565 [1]832 [2]453 
+  M7 contact       : round-1 reach 1.00 enemies   mean release round 1.52   contact turns 12.87
+                     r1:200  r2:191  r3:8  r4:1  
+  final player HP  : mean 285
+  role metrics     : 200 battle(s), 1850 player round(s)
+    player         : 1314 attacks, 400 kills, 20800 damage dealt   skills: push 0 / slow 0 / taunt 0
+    taken          : 2978 enemy attacks, 32446 damage received
+    counter        : 286 fired of 2657 opportunities  (10%)   damage 3718
+    AP spent       : attack 6570  move 2908  skill 0  guard 2907  rest 234  counter 858
+    AP reserved    : 3698 carried into enemy phases  (mean 1.99 per round)   regen wasted 1094   rejected commands 0
+  Occupancy heatmap  10x6   unit-rounds standing here   total 4634  peak 269  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      0123456789
+    0  ##########
+    1  #********#
+    2  #********#
+    3  #********#
+    4  #********#
+    5  ##########
+
+  Clash heatmap  10x6   damaging effects landed here   total 4578  peak 500  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      0123456789
+    0  ##########
+    1  #********#
+    2  #********#
+    3  #********#
+    4  #********#
+    5  ##########
+
+gym-ctr-v5.encounter / counter-reserve  (200 runs)
+  M5 win rate      : 100%  (200W / 0L / 0unresolved)
+  M1 top action mix: Attack+Wait  48% of player turns
+  M1 variety       : 18 distinct mixes, top-3 = 77%
+                     Attack+Wait 506   Wait 182   Attack 114   
+  M1b per unit     : 18 distinct, top 48%, top-3 = 77%   <- compare THIS across party sizes
+  M1b skill use    : 0% of unit-turns issued a skill
+  M2 AP waste      : 14%
+  M3 turns         : mean 5.19  min 5  max 7
+  M4 exposure      : mean 1.12   [0]125 [1]658 [2]255 
+  M7 contact       : round-1 reach 1.00 enemies   mean release round 1.50   contact turns 5.30
+                     r1:200  r2:197  r3:3  
+  final player HP  : mean 302
+  role metrics     : 200 battle(s), 1038 player round(s)
+    player         : 740 attacks, 400 kills, 20800 damage dealt   skills: push 0 / slow 0 / taunt 0
+    taken          : 1824 enemy attacks, 27128 damage received
+    counter        : 860 fired of 962 opportunities  (89%)   damage 11180
+    AP spent       : attack 3700  move 468  skill 0  guard 33  rest 42  counter 2580
+    AP reserved    : 5419 carried into enemy phases  (mean 5.22 per round)   regen wasted 1191   rejected commands 0
+  Occupancy heatmap  10x6   unit-rounds standing here   total 2301  peak 570  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      0123456789
+    0  ##########
+    1  #******65#
+    2  #*******6#
+    3  #*******1#
+    4  #*******.#
+    5  ##########
+
+  Clash heatmap  10x6   damaging effects landed here   total 3424  peak 963  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      0123456789
+    0  ##########
+    1  #******4*#
+    2  #*******9#
+    3  #*******1#
+    4  #*******.#
+    5  ##########
+
+=== threshold check (docs/06-validation/playtest-metrics.md) ===
+gym-ctr-base.encounter / corridor-hold:
+  M1 < 70%   : PASS  (27%)
+  M2 < 15%   : PASS  (8%)
+  M3 6-10    : PASS  (6.81)
+  M4 <= 2    : PASS  (0.92)
+gym-ctr-base.encounter / counter-reserve:
+  M1 < 70%   : PASS  (47%)
+  M2 < 15%   : FAIL  (18%)
+  M3 6-10    : FAIL  (5.11)
+  M4 <= 2    : PASS  (1.09)
+gym-ctr-v5.encounter / corridor-hold:
+  M1 < 70%   : PASS  (17%)
+  M2 < 15%   : PASS  (7%)
+  M3 6-10    : PASS  (9.25)
+  M4 <= 2    : PASS  (0.93)
+gym-ctr-v5.encounter / counter-reserve:
+  M1 < 70%   : PASS  (48%)
+  M2 < 15%   : PASS  (14%)
+  M3 6-10    : FAIL  (5.19)
+  M4 <= 2    : PASS  (1.12)
+
+M5 comparison (corridor-hold should beat charge, and the chokepoint map
+should beat the open control — otherwise the map taught nothing):
+  gym-ctr-base.encounter / corridor-hold : 100%
+  gym-ctr-base.encounter / counter-reserve : 100%
+  gym-ctr-v5.encounter / corridor-hold : 100%
+  gym-ctr-v5.encounter / counter-reserve : 100%
+
+=== anomalies (see SimResults/anomalies.json for the seeds) ===
+  0 of 800 battles flagged
+  TIMEOUT_UNRESOLVED            0
+  ABORTED_BY_REJECTED_COMMAND   0
+  DEFEAT_WITH_HIGH_REMAINING_HP 0
+  UNEXPECTED_SKILL_USAGE        0
+
+=== Strategy Persona Matrix ===
+  gym-ctr-base.encounter
+    Strategy            N    Win%   AvgRounds   AvgHP%   Timeout%   SkillActs(strategy/noise)
+    corridor-hold      200    100%        6.81    67.1%         0%            0/0
+    counter-reserve    200    100%        5.11    70.7%         0%            0/0
+
+  gym-ctr-v5.encounter
+    Strategy            N    Win%   AvgRounds   AvgHP%   Timeout%   SkillActs(strategy/noise)
+    corridor-hold      200    100%        9.25    65.5%         0%            0/0
+    counter-reserve    200    100%        5.19    69.6%         0%            0/0
+
+=== Pairwise comparison (screening heuristic) ===
+  comparison unavailable — the configured pair is not present on any encounter

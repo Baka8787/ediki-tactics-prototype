@@ -1,0 +1,36 @@
+# Ediki - Terrain definitions
+# Stage 01 Prototype baseline (OD-02 / OD-04, decided 2026-08-13)
+#
+# Format:  terrain name=<Name> symbol=<char> cost=<AP> blocks=<true|false> lethal=<true|false>
+#
+#   symbol  = the character used in encounter map blocks
+#   cost    = AP spent to ENTER this cell (ignored when blocks=true)
+#   blocks  = impassable; excluded from pathfinding and reachability
+#   lethal  = anything that ENDS UP here dies immediately. Passable, not
+#             blocking — a hazard nothing can enter is just a wall. Units never
+#             path into one on their own (the pathfinder refuses it as a
+#             destination), so displacement is what puts anyone there.
+#             Cannot be combined with blocks=true; the loader rejects that.
+#
+# Keep this list small. Do not add terrain types without a decided requirement.
+
+terrain name=Open      symbol=o  cost=1  blocks=false
+terrain name=Road      symbol=.  cost=1  blocks=false
+terrain name=Forest    symbol=f  cost=2  blocks=false
+terrain name=Highland  symbol=^  cost=2  blocks=false
+terrain name=Blocking  symbol=#  cost=0  blocks=true
+
+# Mire: gym-only, for the "what does a cell cost" sweep. Cost 3 is one step
+# past Forest, which is the point — Forest at 2 is affordable inside a single
+# turn's budget and 3 is not, so the two are different KINDS of terrain rather
+# than the same terrain priced differently.
+terrain name=Mire      symbol=m  cost=3  blocks=false
+
+# Chasm: the first hazard. Cost 1 so that nothing about the AP economy changes
+# when one is on the map — the only thing it does is kill whatever ends up in
+# it, and every existing measurement of terrain cost stays comparable.
+#
+# Appended at the END of this list on purpose: TerrainDef.Index is assigned by
+# declaration order, so inserting anywhere else would renumber the existing
+# terrain and silently change every map that has already been measured.
+terrain name=Chasm     symbol=x  cost=1  blocks=false  lethal=true

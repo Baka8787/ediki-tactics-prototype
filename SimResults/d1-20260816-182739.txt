@@ -1,0 +1,87 @@
+=== Ediki Stage 01 Prototype — Metrics ===
+runs per cell : 50
+base seed     : 1
+noise         : 15%  (sampling device, not a rule)
+round cap     : 60  (safety net, not a rule — R-WIN-04)
+
+=== gym-e4-rv_masa_b.encounter — encounter profile (derived) ===
+  profile: rv_masa_b   HP 435   attacks/turn 2   lethal exposure 4
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    kohaku            3     7       110     15        1           200
+    at least one target leaves a spare action — what to spend it on is a choice
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+  profile: rv_backline   HP 120   attacks/turn 2   lethal exposure 1  <- two attackers is death; one mistake ends the battle
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    kohaku            3     4       160     40        0           200
+    no target leaves a spare action — focus fire is the only play
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+gym-e4-rv_masa_b.encounter / counter-reserve  (50 runs)
+  M5 win rate      : 0%  (0W / 50L / 0unresolved)
+  M1 top action mix: Attack+Wait  38% of player turns
+  M1 variety       : 20 distinct mixes, top-3 = 65%
+                     Attack+Wait 74   Waitx2 39   Attackx3+Waitx2 15   
+  M1b per unit     : 10 distinct, top 35%, top-3 = 81%   <- compare THIS across party sizes
+  M1b skill use    : 0% of unit-turns issued a skill
+  M2 AP waste      : 40%
+  M3 turns         : mean 3.88  min 3  max 5
+  M4 exposure      : mean 1.83   [0]46 [1]63 [2]84 [3]106 
+  M7 contact       : round-1 reach 1.00 enemies   mean release round 1.70   contact turns 6.44
+                     r1:50  r2:96  r3:2  r4:2  
+  final player HP  : mean 0
+  role metrics     : 50 battle(s), 194 player round(s)
+    player         : 208 attacks, 3 kills, 4743 damage dealt   skills: push 0 / slow 0 / taunt 0
+    taken          : 503 enemy attacks, 30025 damage received
+    counter        : 110 fired of 142 opportunities  (77%)   damage 1430
+    AP spent       : attack 832  move 120  skill 0  guard 9  rest 4  counter 330
+    AP reserved    : 2012 carried into enemy phases  (mean 10.37 per round)   regen wasted 971   rejected commands 0
+  Occupancy heatmap  12x7   unit-rounds standing here   total 774  peak 129  over 50 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901
+    0  ############
+    1  #.14.4*13..#
+    2  #...*98*4..#
+    3  #.627***12.#
+    4  #27*****...#
+    5  #.43****8..#
+    6  ############
+
+  Clash heatmap  12x7   damaging effects landed here   total 821  peak 250  over 50 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901
+    0  ############
+    1  #....31.2..#
+    2  #...***48..#
+    3  #12.****1..#
+    4  #.*7****.3.#
+    5  #.6*****6..#
+    6  ############
+
+=== threshold check (docs/06-validation/playtest-metrics.md) ===
+gym-e4-rv_masa_b.encounter / counter-reserve:
+  M1 < 70%   : PASS  (38%)
+  M2 < 15%   : FAIL  (40%)
+  M3 6-10    : FAIL  (3.88)
+  M4 <= 2    : PASS  (1.83)
+
+M5 comparison (corridor-hold should beat charge, and the chokepoint map
+should beat the open control — otherwise the map taught nothing):
+  gym-e4-rv_masa_b.encounter / counter-reserve : 0%
+
+=== anomalies (see SimResults/anomalies.json for the seeds) ===
+  0 of 50 battles flagged
+  TIMEOUT_UNRESOLVED            0
+  ABORTED_BY_REJECTED_COMMAND   0
+  DEFEAT_WITH_HIGH_REMAINING_HP 0
+  UNEXPECTED_SKILL_USAGE        0
+
+=== Strategy Persona Matrix ===
+  gym-e4-rv_masa_b.encounter
+    Strategy            N    Win%   AvgRounds   AvgHP%   Timeout%   SkillActs(strategy/noise)
+    counter-reserve     50      0%        3.88     0.0%         0%            0/0
+
+=== Pairwise comparison (screening heuristic) ===
+  comparison unavailable — the configured pair is not present on any encounter

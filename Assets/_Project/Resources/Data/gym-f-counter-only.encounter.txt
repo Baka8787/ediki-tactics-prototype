@@ -1,0 +1,22 @@
+# GYM LEVEL. Counterattack with rout + homogeneous enemies - exactly the
+# combination the report warns produces a NEW turtle. Included as a control so
+# the warning is tested, not assumed.
+encounter id=gym-f-counter-only name=F-counter-only
+objective type=rout
+map
+############
+#..........#
+#.ff....ff.#
+#.f......f.#
+#####.######
+#..f#.#f...#
+#.ff...ff..#
+#....^.....#
+#..........#
+############
+endmap
+spawn faction=player unit=momotaro_ripo x=3 y=8
+spawn faction=enemy unit=kohaku x=4  y=1 ai=rusher
+spawn faction=enemy unit=kohaku x=7  y=1 ai=rusher
+spawn faction=enemy unit=kohaku x=10 y=2 ai=cautious
+spawn faction=enemy unit=kohaku x=10 y=3 ai=hunter

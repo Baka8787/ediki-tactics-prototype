@@ -1,0 +1,43 @@
+# GYM. gym-big-split with ONE line changed: the objective.
+#
+# Map, roster, spawn positions and AI profiles are copied from
+# gym-big-split.encounter byte for byte. The only differences are
+#   objective type=rout  ->  objective type=kill
+#   target=true          on the north-east rusher
+# so any difference in M1-M7 against gym-big-split belongs to the victory
+# condition and to nothing else.
+#
+# WHAT THIS ONE IS FOR: it is the WEAK-target rung.
+# The marked unit is an ordinary kohaku — 80 HP, two hits from Momotaro. The
+# model in docs/NOTE-2026-08-15-目標類型如何改變決策.md §3 predicts that a soft
+# target collapses the encounter into a single line of play ("walk over, hit it
+# twice") and is structurally worse than rout, not better. That is a cheap
+# prediction to falsify, which is why it is measured before the hard rung in
+# gym-big-split-boss-kill.
+#
+# The north-east spawn is the marked one because it is the FARTHEST enemy from
+# the player pocket at (8,9). Marking the near one would make travel irrelevant
+# by construction; this way, if travel still turns out to be irrelevant, that is
+# a measurement rather than a setup.
+
+encounter id=gym-big-split-kill name=BIG-split-kill-weak
+objective type=kill
+map
+##################
+#................#
+#.ff..####..ff...#
+#.ff..#..#..ff...#
+#.....#..#.......#
+###.###..###.#####
+#................#
+#..oo..####..oo..#
+#..oo..#..#..oo..#
+#......#..#......#
+#................#
+##################
+endmap
+spawn faction=player unit=momotaro x=8 y=9
+spawn faction=enemy unit=kohaku x=3  y=1 ai=rusher
+spawn faction=enemy unit=kohaku x=14 y=1 ai=rusher target=true
+spawn faction=enemy unit=kohaku x=2  y=10 ai=cautious
+spawn faction=enemy unit=kohaku x=15 y=7 ai=hunter

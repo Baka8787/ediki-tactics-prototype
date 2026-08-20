@@ -1,0 +1,55 @@
+# GYM. gym-opening with ONE number changed: guardCost 3 -> 5 on the party.
+#
+# Map, enemies, spawn positions, AI and every other player stat are byte-
+# identical to gym-opening.encounter. Only the guard price differs.
+#
+# THE HYPOTHESIS (專案負責人, after playing): base stats plus rotating who
+# tanks is enough to win, skills are optional, and Guard may be too strong.
+#
+# The arithmetic says the last part is the root:
+#   move 1 (1) + attack (4) + guard (3) = 8 AP = exactly one turn's regen,
+#   so guard is free. And guard is worth 100-140 HP a turn against two
+#   attackers, against 40 damage for the attack it would have displaced.
+#
+# At guardCost 5 the two stop fitting together (4 + 5 = 9 > 8), but the AP cap
+# is 10 — so banking 2 AP buys attack + guard next turn. It converts a free
+# action into one you pay a turn of tempo for.
+encounter id=gym-opening-guard5 name=OPENING-guard5
+objective type=rout turns=20
+
+map
+################
+#..............#
+#..............#
+#...........ff.#
+##.####..###..##
+#..............#
+#...o.####.o...#
+#.....####.....#
+#..ff......ff..#
+#..............#
+#..............#
+################
+endmap
+
+# --- 討鬼團 x4 -------------------------------------------------------------
+# Spawned side by side so the party starts with the SAME exposure it would have
+# had as one unit. Spreading them at spawn would pre-solve the first decision.
+spawn faction=player unit=genjin_g5          x=6  y=10
+spawn faction=player unit=zhengshou_taunt_g5 x=7  y=10
+spawn faction=player unit=momotaro_push_g5   x=8  y=10
+spawn faction=player unit=kagemaru_g5        x=9  y=10
+
+# --- the anchors: they do not come to you ---------------------------------
+spawn faction=enemy unit=test_turret     x=8  y=2  ai=rusher
+
+# --- the divisibility breakers: 3 hits from Momotaro, 2 from Genjin -------
+spawn faction=enemy unit=kohaku_3hit     x=5  y=1  ai=rusher
+spawn faction=enemy unit=kohaku_3hit     x=10 y=1  ai=rusher
+
+# --- range 2, and they hunt the lowest HP: the reason taunt exists --------
+spawn faction=enemy unit=kohaku_bowfair  x=3  y=2  ai=hunter
+
+# --- flankers already south of the wall: you cannot form a queue ----------
+spawn faction=enemy unit=kohaku          x=2  y=8  ai=cautious
+spawn faction=enemy unit=kohaku          x=13 y=8  ai=cautious

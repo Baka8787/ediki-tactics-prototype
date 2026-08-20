@@ -1,0 +1,32 @@
+# GYM — the only enemy in the project that does not come to you.
+#
+# test_turret has MOVE 0 and range 3. It cannot close, so its release time is
+# entirely the player's choice: stay out of its 3 cells and it contributes
+# nothing, step inside and it hits for 50 a turn.
+#
+# Every other enemy closes in unasked (OD-16), which is why 87% of battles on
+# the lane maps never travelled — the fight arrives on its own. A turret is the
+# structural opposite, and it costs nothing to build: MOVE 0 is already legal.
+#
+# Two ordinary kohaku are included so standing still is not free either.
+
+encounter id=gym-turret name=TURRET
+objective type=rout
+
+map
+################
+#..............#
+#..............#
+#..............#
+#..............#
+#..............#
+#..............#
+#..............#
+################
+endmap
+
+spawn faction=player unit=momotaro x=2 y=4
+
+spawn faction=enemy unit=kohaku      x=7  y=2 ai=rusher
+spawn faction=enemy unit=kohaku      x=7  y=6 ai=rusher
+spawn faction=enemy unit=test_turret x=12 y=4 ai=cautious

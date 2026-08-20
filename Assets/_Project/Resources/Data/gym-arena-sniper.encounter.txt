@@ -1,0 +1,35 @@
+# GYM — high attack, long reach, no HP.
+#
+# kohaku_sniper: ATK 140 (90 a hit through Momotaro's DEF), range 3, MOVE 2,
+# and 40 HP so a single hit kills it. Two of them, behind two ordinary kohaku.
+#
+# Range 3 against the player's range 1 is the interesting part. It can attack
+# from cells the player cannot answer from, so the only counterplay is to close
+# — and closing means walking past the melee line. Threat per action says the
+# snipers are the best targets by a wide margin; getting to them is the whole
+# problem, and that cost is a release time, not a price (OD-16).
+#
+# Compare against gym-arena-contact: same arena, same enemy count, and the only
+# difference is that two of the four reach further than the player does.
+
+encounter id=gym-arena-sniper name=ARENA-sniper
+objective type=rout
+
+map
+################
+#..............#
+#..............#
+#..............#
+#..............#
+#..............#
+#..............#
+#..............#
+################
+endmap
+
+spawn faction=player unit=momotaro x=2 y=4
+
+spawn faction=enemy unit=kohaku        x=6  y=3 ai=rusher
+spawn faction=enemy unit=kohaku        x=6  y=5 ai=rusher
+spawn faction=enemy unit=kohaku_sniper x=11 y=3 ai=hunter
+spawn faction=enemy unit=kohaku_sniper x=11 y=5 ai=hunter

@@ -1,0 +1,23 @@
+# GYM LEVEL. Report's full "minimal tier": non-rout objective + heterogeneous
+# enemies + reinforcement waves. No counterattack yet.
+encounter id=gym-d-minimal name=D-minimal-tier
+objective type=reach x=5 y=1 turns=10
+map
+############
+#..........#
+#.ff....ff.#
+#.f......f.#
+#####.######
+#..f#.#f...#
+#.ff...ff..#
+#....^.....#
+#..........#
+############
+endmap
+spawn faction=player unit=momotaro x=3 y=8
+spawn faction=enemy unit=kohaku      x=4  y=1 ai=rusher
+spawn faction=enemy unit=kohaku      x=7  y=1 ai=rusher
+spawn faction=enemy unit=kohaku_bow  x=10 y=2 ai=cautious
+spawn faction=enemy unit=kohaku_fast x=10 y=3 ai=hunter
+spawn faction=enemy unit=kohaku      x=1 y=1 ai=rusher      turn=4
+spawn faction=enemy unit=kohaku_fast x=10 y=1 ai=hunter     turn=6

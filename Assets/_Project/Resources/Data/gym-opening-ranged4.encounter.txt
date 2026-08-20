@@ -1,0 +1,58 @@
+# GYM. gym-opening with ONE variable changed: the RANGED PROPORTION.
+#
+# The two melee flankers become kohaku_bowfair (range 2). Nothing else moves —
+# same map, same spawn cells, same AI profiles, same party, same objective.
+# Ranged enemies go from 2 of 6 to 4 of 6.
+#
+# WHAT IT IS TESTING (playtest-metrics §18.4 / §19.1):
+# five of the six enemies target whoever is NEAREST, so putting Zhengshou in
+# front routes every hit into DEF 70 / HP 435 — party effective HP goes up
+# four to five times using nothing but movement. Melee enemies are fully
+# absorbed by that. Range 2 shoots the row BEHIND the blocker, so it is the
+# direct counter.
+#
+# It also decides whether the taunt skill is worth anything: taunt sells
+# "the enemy attacks who I choose", and right now positioning gives that away
+# free. Tighten the routing rule and the exemption has something to exempt.
+#
+# READ IT WITH shield-wall. corridor-hold does not tank-route, so it cannot
+# see this change; the strategy pair is the measurement.
+encounter id=gym-opening-ranged4 name=OPENING-ranged4
+objective type=rout turns=20
+
+map
+################
+#..............#
+#..............#
+#...........ff.#
+##.####..###..##
+#..............#
+#...o.####.o...#
+#.....####.....#
+#..ff......ff..#
+#..............#
+#..............#
+################
+endmap
+
+# --- 討鬼團 x4 -------------------------------------------------------------
+# Spawned side by side so the party starts with the SAME exposure it would have
+# had as one unit. Spreading them at spawn would pre-solve the first decision.
+spawn faction=player unit=genjin          x=6  y=10
+spawn faction=player unit=zhengshou_taunt x=7  y=10
+spawn faction=player unit=momotaro_push   x=8  y=10
+spawn faction=player unit=kagemaru        x=9  y=10
+
+# --- the anchors: they do not come to you ---------------------------------
+spawn faction=enemy unit=test_turret     x=8  y=2  ai=rusher
+
+# --- the divisibility breakers: 3 hits from Momotaro, 2 from Genjin -------
+spawn faction=enemy unit=kohaku_3hit     x=5  y=1  ai=rusher
+spawn faction=enemy unit=kohaku_3hit     x=10 y=1  ai=rusher
+
+# --- range 2, and they hunt the lowest HP: the reason taunt exists --------
+spawn faction=enemy unit=kohaku_bowfair  x=3  y=2  ai=hunter
+
+# --- flankers already south of the wall: you cannot form a queue ----------
+spawn faction=enemy unit=kohaku_bowfair  x=2  y=8  ai=cautious
+spawn faction=enemy unit=kohaku_bowfair  x=13 y=8  ai=cautious

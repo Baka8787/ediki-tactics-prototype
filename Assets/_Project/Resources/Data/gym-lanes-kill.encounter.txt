@@ -1,0 +1,44 @@
+# GYM. gym-lanes with ONE line changed: the objective.
+#
+# Geometry, roster, spawns and AI are copied from gym-lanes.encounter. Only the
+# objective and the mark differ, so this is the same weak-target experiment as
+# gym-big-split-kill run on the map that actually has three live routes.
+#
+# WHY BOTH MAPS. gym-big-split has the biggest M5 separation in the project and
+# sits in the "real decision" quadrant of §13; gym-lanes is the only map whose
+# M6 route distribution means anything (26/43/29). A victory condition that
+# helped on one and not the other would be a fact about geometry, and running
+# only one map could not tell the difference.
+#
+# The marked unit is the north-east rusher — an ordinary kohaku, two hits — and
+# it is the farthest enemy from the player spawn at (11,13). Reaching it means
+# committing to a lane, which is exactly the choice M6 counts.
+
+encounter id=gym-lanes-kill name=LANES-kill-weak
+objective type=kill
+
+map
+########################
+#......................#
+#.....#.........#......#
+###.###.........###ff###
+###.###.........###ff###
+###.###.........###ff###
+###.###.........###ff###
+###.###.........###ff###
+###.#######..#######.###
+#......................#
+#..ff....######...ff...#
+#........######........#
+#........######........#
+#......................#
+#..ff.........ff.......#
+########################
+endmap
+
+spawn faction=player unit=momotaro x=11 y=13
+
+spawn faction=enemy unit=kohaku x=3  y=1  ai=rusher
+spawn faction=enemy unit=kohaku x=20 y=1  ai=rusher target=true
+spawn faction=enemy unit=kohaku x=2  y=13 ai=cautious
+spawn faction=enemy unit=kohaku x=21 y=10 ai=hunter

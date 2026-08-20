@@ -1,0 +1,55 @@
+# GYM. gym-opening with ONE variable changed: ENEMY TARGET SELECTION.
+#
+# Every enemy is ai=hunter (targets the LOWEST HP) instead of rusher/cautious
+# (target the NEAREST). Roster, map, spawn cells and objective are untouched.
+#
+# The other half of the §18.4 experiment. gym-opening-ranged4 attacks damage
+# routing with REACH (shoot past the blocker); this attacks it with INTENT
+# (walk around the blocker and go for the fragile one).
+#
+# The two are deliberately separate files. Ranged-ness and target preference
+# are different rules and changing both at once would tell us nothing about
+# either — the mistake the boss ladder nearly made in §16.
+#
+# ⚠️ Expected to be the WEAKER of the two: units block movement (OD-03), so a
+# hunter that wants the back row still has to find a way round. On an open
+# field it can; in a corridor it cannot. That limit is the point of measuring.
+encounter id=gym-opening-hunter name=OPENING-hunter
+objective type=rout turns=20
+
+map
+################
+#..............#
+#..............#
+#...........ff.#
+##.####..###..##
+#..............#
+#...o.####.o...#
+#.....####.....#
+#..ff......ff..#
+#..............#
+#..............#
+################
+endmap
+
+# --- 討鬼團 x4 -------------------------------------------------------------
+# Spawned side by side so the party starts with the SAME exposure it would have
+# had as one unit. Spreading them at spawn would pre-solve the first decision.
+spawn faction=player unit=genjin          x=6  y=10
+spawn faction=player unit=zhengshou_taunt x=7  y=10
+spawn faction=player unit=momotaro_push   x=8  y=10
+spawn faction=player unit=kagemaru        x=9  y=10
+
+# --- the anchors: they do not come to you ---------------------------------
+spawn faction=enemy unit=test_turret     x=8  y=2  ai=hunter
+
+# --- the divisibility breakers: 3 hits from Momotaro, 2 from Genjin -------
+spawn faction=enemy unit=kohaku_3hit     x=5  y=1  ai=hunter
+spawn faction=enemy unit=kohaku_3hit     x=10 y=1  ai=hunter
+
+# --- range 2, and they hunt the lowest HP: the reason taunt exists --------
+spawn faction=enemy unit=kohaku_bowfair  x=3  y=2  ai=hunter
+
+# --- flankers already south of the wall: you cannot form a queue ----------
+spawn faction=enemy unit=kohaku          x=2  y=8  ai=hunter
+spawn faction=enemy unit=kohaku          x=13 y=8  ai=hunter

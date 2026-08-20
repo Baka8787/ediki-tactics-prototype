@@ -1,0 +1,44 @@
+# GYM ARENA — one variable against gym-arena-contact: WHEN the enemies arrive.
+#
+# Identical map, identical enemies, identical AI. The four kohaku are simply
+# strung out at 3 / 6 / 9 / 12 cells from the player, so they come into reach
+# on different rounds instead of all at once.
+#
+# Why this is the experiment worth running first. The Metrics Framework §8.3
+# gives the cleanest theoretical result in either note:
+#
+#   every enemy released at once  ->  1||sum w_j C_j  ->  Smith's Rule is
+#                                     optimal, and the "who to kill" question
+#                                     has one right answer forever
+#   enemies with release times    ->  1|r_j|...       ->  NP-hard in general,
+#                                     no greedy ordering is optimal
+#
+# So staggered arrival is not a flavour difference. It is the difference
+# between a level with a lookup-table answer and a level without one.
+#
+# PREDICTION:
+#   M7 round-1 reach ~1.0, release spread over rounds 1-4
+#   M5 hold vs charge gap WIDER than gym-arena-contact
+#   M4 exposure lower — the player can fight them a piece at a time
+
+encounter id=gym-arena-stagger name=ARENA-stagger
+objective type=rout
+
+map
+################
+#..............#
+#..............#
+#..............#
+#..............#
+#..............#
+#..............#
+#..............#
+################
+endmap
+
+spawn faction=player unit=momotaro x=2 y=4
+
+spawn faction=enemy unit=kohaku x=5  y=4 ai=rusher
+spawn faction=enemy unit=kohaku x=8  y=4 ai=rusher
+spawn faction=enemy unit=kohaku x=11 y=4 ai=cautious
+spawn faction=enemy unit=kohaku x=14 y=4 ai=hunter

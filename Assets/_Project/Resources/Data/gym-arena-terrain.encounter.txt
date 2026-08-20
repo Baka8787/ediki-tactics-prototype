@@ -1,0 +1,42 @@
+# GYM — what does a cell COST?
+#
+# 16x9. A four-column band of forest (x=6..9) is the only thing between the
+# player and every enemy. Nothing else on the map costs more than 1.
+#
+# The band is the experiment: re-run this same file against terrain data where
+# forest costs 1, 2, 3 or 4 AP and nothing else changes. Momotaro regenerates
+# 8 AP a turn and an attack costs 4, so the band alone costs
+#
+#   cost 1 -> 4 AP, half a turn      the band is scenery
+#   cost 2 -> 8 AP, one whole turn   crossing costs a turn of attacks
+#   cost 3 -> 12 AP                  crossing takes more than one turn's budget
+#   cost 4 -> 16 AP, two turns       the band is a wall with a price tag
+#
+# The interesting question is not "is slow terrain slow". It is whether the
+# threshold where terrain stops being a cost and starts being a barrier lands
+# somewhere a designer would have guessed.
+#
+# Enemies are placed BEYOND the band so it has to be crossed, and one is left
+# on the near side so the player is not free to take as long as it likes.
+
+encounter id=gym-arena-terrain name=ARENA-terrain
+objective type=rout
+
+map
+################
+#.....ffff.....#
+#.....ffff.....#
+#.....ffff.....#
+#.....ffff.....#
+#.....ffff.....#
+#.....ffff.....#
+#.....ffff.....#
+################
+endmap
+
+spawn faction=player unit=momotaro x=2 y=4
+
+spawn faction=enemy unit=kohaku x=12 y=2 ai=rusher
+spawn faction=enemy unit=kohaku x=13 y=4 ai=rusher
+spawn faction=enemy unit=kohaku x=12 y=6 ai=cautious
+spawn faction=enemy unit=kohaku x=3  y=7 ai=hunter

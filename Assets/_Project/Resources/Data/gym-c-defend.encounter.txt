@@ -1,0 +1,22 @@
+# GYM LEVEL. Lever: protect a static target that the enemy actively attacks.
+# The shrine sits south of the chokepoint; Momotaro cannot hide behind it.
+encounter id=gym-c-defend name=C-defend-8
+objective type=defend turns=8
+map
+############
+#..........#
+#.ff....ff.#
+#.f......f.#
+#####.######
+#..f#.#f...#
+#.ff...ff..#
+#....^.....#
+#..........#
+############
+endmap
+spawn faction=player unit=shrine   x=3 y=8 protect=true
+spawn faction=player unit=momotaro x=4 y=8
+spawn faction=enemy unit=kohaku x=4  y=1 ai=rusher
+spawn faction=enemy unit=kohaku x=7  y=1 ai=rusher
+spawn faction=enemy unit=kohaku x=10 y=2 ai=rusher
+spawn faction=enemy unit=kohaku x=10 y=3 ai=rusher

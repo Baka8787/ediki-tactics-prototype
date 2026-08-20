@@ -1,0 +1,59 @@
+# GYM. DUO DIVISION — CONTROL. Uniform 4 AP party.
+#
+# ⚠️ THIS FILE IS gym-duo-division WITH ONE TOKEN CHANGED: the second player is
+# genjin (attackCost 4) instead of Genjin_A (attackCost 5). Map, turret, melee,
+# spawns, AI profiles and objective are byte-identical, and the two Genjin stat
+# blocks are identical in every other field:
+#
+#   genjin    hp=220 atk=90 def=35 move=3 ap=10 apRegen=8 range=1 attackCost=4 ...
+#   Genjin_A  hp=220 atk=90 def=35 move=3 ap=10 apRegen=8 range=1 attackCost=5 ...
+#
+# So the ONLY variable between the pair is whether the party's AP economy is
+# MIXED (4+5) or UNIFORM (4+4). Read them together or not at all.
+#
+# WHAT THIS CONTROL IS FOR. It is the direct test of F2: if the mixed party
+# divides the work but this one divides it the same way, then the division came
+# from having two units, not from the AP split — and the AP hypothesis is dead
+# regardless of how good the mixed party felt.
+#
+#   Momotaro  ATK 60, attack 4 AP -> 8 AP buys TWO hits of 40  = 80 a turn
+#   genjin    ATK 90, attack 4 AP -> 8 AP buys TWO hits of 70  = 140 a turn
+#
+#   Note the control is STRICTLY STRONGER: 220 damage a turn against the
+#   experiment group's 150, and no banking is ever required. That asymmetry is
+#   inherent to the variable — 4 AP simply buys more actions — so a win-rate
+#   comparison between the arms is meaningless. What is being compared is HOW
+#   THE TWO UNITS SPLIT THE WORK, not who wins.
+#
+#   The cell that defines the experiment group does not exist here: against
+#   kohaku_3hit's 120 HP, this Genjin's two hits (140) kill it alone, so nobody
+#   has to be ten points short of anything.
+#
+# ⚠️ EXPERIMENT FILE, NOT STAGE 01. stage01.encounter is untouched. attackCost 4
+# remains the baseline (OD-01); neither file proposes changing it.
+#
+#   #  Blocking   .  Road(1)
+#   Coordinates are (x, y), y = 0 at the TOP.
+
+encounter id=gym-duo-division-flat name=DUO-division-4+4
+
+objective type=rout
+
+map
+##########
+#........#
+#........#
+#........#
+#........#
+#........#
+##########
+endmap
+
+# --- 討鬼團 x2: the uniform economy ----------------------------------------
+spawn faction=player unit=momotaro x=2 y=2
+spawn faction=player unit=genjin   x=2 y=4
+
+# --- identical to the experiment group from here down ----------------------
+spawn faction=enemy unit=test_turret  x=4 y=3 ai=hunter
+spawn faction=enemy unit=kohaku       x=7 y=2 ai=rusher
+spawn faction=enemy unit=kohaku_3hit  x=7 y=4 ai=cautious

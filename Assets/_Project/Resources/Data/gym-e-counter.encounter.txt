@@ -1,0 +1,24 @@
+# GYM LEVEL. Minimal tier PLUS the JA2-style reserve-AP counter.
+# The report is explicit that counterattack must NOT ship alone - with rout +
+# homogeneous enemies it just creates a new stand-and-riposte turtle.
+encounter id=gym-e-counter name=E-minimal+counter
+objective type=reach x=5 y=1 turns=10
+map
+############
+#..........#
+#.ff....ff.#
+#.f......f.#
+#####.######
+#..f#.#f...#
+#.ff...ff..#
+#....^.....#
+#..........#
+############
+endmap
+spawn faction=player unit=momotaro_ripo x=3 y=8
+spawn faction=enemy unit=kohaku      x=4  y=1 ai=rusher
+spawn faction=enemy unit=kohaku      x=7  y=1 ai=rusher
+spawn faction=enemy unit=kohaku_bow  x=10 y=2 ai=cautious
+spawn faction=enemy unit=kohaku_fast x=10 y=3 ai=hunter
+spawn faction=enemy unit=kohaku      x=1 y=1 ai=rusher      turn=4
+spawn faction=enemy unit=kohaku_fast x=10 y=1 ai=hunter     turn=6

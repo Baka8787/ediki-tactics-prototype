@@ -1,0 +1,79 @@
+# GYM CRUCIBLE 4/4 — AGGRO. Target selection is the answer.
+#
+# Same 11x8 frame, same four slots, same six turns as the other three crucibles.
+#
+# THIS MAP'S QUESTION
+#   The sniper does not care where anybody is standing: it picks the LOWEST HP
+#   unit, which is always the shrine, and shoots it from three cells away
+#   through anything. Nothing on this board blocks that. 嘲諷 is the only
+#   mechanism in the project that overrides an enemy target choice outright.
+#
+#   ⚠️ The preference is EMERGENT, not a rule: hunter = lowest HP, and any
+#   player unit that drops under the shrine steals the shot. Expect the flip; it is a
+#   feature of the fixture, not a bug in it.
+#
+# GEOMETRY — the shrine is reachable without passing the party
+#   The shrine sits centre-back at (5,6). The side lanes at x=1 and x=9 let a
+#   threat reach it without ever passing the party, so "who peels off" is the
+#   question — and with no ZOC, peeling off is the ONLY way to screen anything.
+#
+#   #  Blocking   .  Road(1)
+#
+#   x 0123456789A
+#   y0 ###########
+#   y1 #.........#   arrivals
+#   y2 #.........#
+#   y3 #.##...##.#   two side gaps and a centre lane
+#   y4 #.........#
+#   y5 #.........#   four player slots, clustered centre
+#   y6 #.#.....#.#   shrine at (5,6), centre-back
+#   y7 ###########
+
+encounter id=gym-crucible-defend name=CRUCIBLE-defend
+objective type=defend turns=6
+
+map
+###########
+#.........#
+#.........#
+#.##...##.#
+#.........#
+#.........#
+#.#.....#.#
+###########
+endmap
+
+# --- ONE shrine, and the reason is an instrument limit, not a design choice --
+#
+# 🔴 THIS MAP WAS BUILT WITH TWO PROTECT TARGETS AND MEASURED 0% ACROSS ALL
+# SIXTEEN SQUADS. Two separate causes, found in that order:
+#
+#   1. Two 100 HP shrines against two hunter snipers. Hunter picks the LOWEST HP
+#      unit, so both snipers lock the SAME shrine by definition; 2x50 a turn
+#      killed it on turn 3. Fixed by dropping to one sniper and 120 HP.
+#   2. Still 0%. The real cause: ObjectiveAnchor.For returns the position of the
+#      FIRST protect=true unit, so every scripted strategy anchors on shrine one
+#      and abandons shrine two. No squad could differ, because no squad ever
+#      defended the second target at all.
+#
+# Cause 2 is an INSTRUMENT limit, not a statement about two-target maps. A human
+# can obviously split. Until ObjectiveAnchor can hold more than one anchor, a
+# two-target map is human-playtest-only and produces a dead column in any batch.
+# Registered as a gap; the map is one shrine until it is closed.
+spawn faction=player unit=shrine x=5 y=6 protect=true
+
+# --- the four squad slots (桃太郎 / 玄真 / 影丸 / 正守) ---------------------
+spawn faction=player unit=Momotaro_B x=4 y=5
+spawn faction=player unit=Genjin_B   x=5 y=5
+spawn faction=player unit=Kagemaru_A x=6 y=5
+spawn faction=player unit=Masamori_A x=7 y=5
+
+# --- melee to hold the party in place, ONE sniper to punish holding it ------
+# One sniper, not two. Two hunters stack on the same shrine by definition — they
+# both pick the lowest HP unit — so a second one does not widen the problem, it
+# just halves the clock. The east side is threatened by something that has to
+# walk instead, which is a different question and can be answered differently.
+spawn faction=enemy unit=sc_bruiser  x=5 y=1 ai=rusher
+spawn faction=enemy unit=sc_sniper   x=1 y=1 ai=hunter   turn=3
+spawn faction=enemy unit=sc_assassin x=9 y=1 ai=rusher   turn=4
+spawn faction=enemy unit=sc_shield   x=5 y=1 ai=cautious turn=5

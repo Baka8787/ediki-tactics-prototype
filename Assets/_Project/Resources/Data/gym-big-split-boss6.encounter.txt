@@ -1,0 +1,41 @@
+# GYM. Rung 6 of the kill-target ladder — the ROUT control.
+#
+# gym-big-split with one unit swapped: the north-east rusher is test_boss6
+# (240 HP) instead of kohaku (80 HP). Every other field is identical — ATK 100,
+# DEF 20, MOVE 3, same costs — so the swap changes required hits from 2 to 6
+# and nothing else. Map, spawns and AI profiles are byte-identical to
+# gym-big-split.encounter.
+#
+# THIS FILE EXISTS TO BE A CONTROL, not to be interesting.
+# gym-big-split-boss6-kill differs from the plain gym-big-split in TWO ways at
+# once — roster and objective — and there would be no way to say which one moved
+# the numbers. This is the roster half on its own:
+#
+#   gym-big-split             rout, 4x kohaku            baseline, 8 hits of work
+#   gym-big-split-boss6        rout, 3x kohaku + rung 6   <- roster alone, 12 hits
+#   gym-big-split-boss6-kill   kill, same roster          <- objective alone
+#
+# Under rout the harder unit is pure extra work with no choice attached, because
+# rout means everything has to die anyway.
+
+encounter id=gym-big-split-boss6 name=BIG-split-boss6-rout
+objective type=rout
+map
+##################
+#................#
+#.ff..####..ff...#
+#.ff..#..#..ff...#
+#.....#..#.......#
+###.###..###.#####
+#................#
+#..oo..####..oo..#
+#..oo..#..#..oo..#
+#......#..#......#
+#................#
+##################
+endmap
+spawn faction=player unit=momotaro x=8 y=9
+spawn faction=enemy unit=kohaku x=3  y=1 ai=rusher
+spawn faction=enemy unit=test_boss6 x=14 y=1 ai=rusher
+spawn faction=enemy unit=kohaku x=2  y=10 ai=cautious
+spawn faction=enemy unit=kohaku x=15 y=7 ai=hunter

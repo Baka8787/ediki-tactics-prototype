@@ -1,0 +1,51 @@
+# Ediki - Stage 01 Prototype encounter
+#
+# Geometry transcribed from the candidate map in docs/02-design/stage-01.md,
+# adapted to the terrain set decided in OD-02 (rubble had no terrain type, so
+# those cells use Forest, which shares its cost of 2).
+#
+# Stage 01 is still marked CONFLICT-02 in docs/CONFLICTS.md: the GDD describes a
+# flat "forest and road only" tutorial, the prototype needs a chokepoint to test
+# Exposure at all. OD-02 resolved this in favour of the chokepoint layout.
+#
+# Symbols come from terrain.txt:
+#   #  Blocking    .  Road (1)     o  Open (1)
+#   f  Forest (2)  ^  Highland (2)
+#
+# Coordinates are (x, y) with y = 0 at the TOP row.
+#
+#         x: 0    4    8
+#   y=0      ############
+#   y=4      #####.######    <- the only way through: (5,4)
+#   y=5      #..f#.#f...#    <- (5,5) golden cell: walls east and west
+#
+# Key cells:
+#   (5,4) chokepoint - every enemy must pass through it
+#   (5,5) golden cell - only one neighbour on the enemy side
+#   (5,7) highland   - bait: open on all four sides, exposure 4
+
+encounter id=stage01 name=Stage01-Prototype
+
+map
+############
+#..........#
+#.ff....ff.#
+#.f......f.#
+#####.######
+#..f#.#f...#
+#.ff...ff..#
+#....^.....#
+#..........#
+############
+endmap
+
+# Player
+spawn faction=player unit=momotaro x=3 y=8
+
+# Enemies - scattered so the player has to move to make contact (GDD Stage 01).
+# All four start outside their own threat range of the player spawn, so nothing
+# activates until the player advances.
+spawn faction=enemy unit=kohaku x=4  y=1 ai=rusher   group=north
+spawn faction=enemy unit=kohaku x=7  y=1 ai=rusher   group=north
+spawn faction=enemy unit=kohaku x=10 y=2 ai=cautious group=east
+spawn faction=enemy unit=kohaku x=10 y=3 ai=hunter   group=east

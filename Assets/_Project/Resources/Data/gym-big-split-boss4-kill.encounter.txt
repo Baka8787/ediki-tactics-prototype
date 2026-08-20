@@ -1,0 +1,47 @@
+# GYM. Rung 4 of the kill-target ladder — kill one 4-hit enemy, leave the
+# other three standing.
+#
+# Identical to gym-big-split-boss4 except for the objective line and the mark,
+# so the pair prices the victory condition on its own.
+#
+# WHY A LADDER AND NOT ONE BOSS. §11.2 already measured required hits as a
+# CLIFF: 2 -> 3 took the win rate from 68% to 1%. A single hardness therefore
+# cannot answer anything — at the top every objective loses, at the bottom every
+# objective wins. Rungs 4, and the others beside it, exist to find whether the
+# kill objective MOVES that cliff, which is the only version of the question the
+# engine can actually answer.
+#
+# WHAT THE MODEL PREDICTS (docs/NOTE-2026-08-15-目標類型如何改變決策.md §3):
+#
+#     clear minion j  <=>  DPT_j x (rounds the target has left) > hits_j x target DPT
+#
+# The target needs 4 hits, i.e. ceil(4/2) player turns of standing next to
+# things that deal 50 a hit. The harder the target, the longer the payback
+# period, so clearing minions first should become correct somewhere up this
+# ladder and be wrong at the bottom of it.
+#
+# The three unmarked kohaku never have to die. Under every rout encounter this
+# project has ever run, "which enemies do I have to fight" had exactly one
+# answer; the kill files are the first where it has more than one.
+
+encounter id=gym-big-split-boss4-kill name=BIG-split-kill-boss4
+objective type=kill
+map
+##################
+#................#
+#.ff..####..ff...#
+#.ff..#..#..ff...#
+#.....#..#.......#
+###.###..###.#####
+#................#
+#..oo..####..oo..#
+#..oo..#..#..oo..#
+#......#..#......#
+#................#
+##################
+endmap
+spawn faction=player unit=momotaro x=8 y=9
+spawn faction=enemy unit=kohaku x=3  y=1 ai=rusher
+spawn faction=enemy unit=test_boss4 x=14 y=1 ai=rusher target=true
+spawn faction=enemy unit=kohaku x=2  y=10 ai=cautious
+spawn faction=enemy unit=kohaku x=15 y=7 ai=hunter

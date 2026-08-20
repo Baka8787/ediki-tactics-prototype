@@ -1,0 +1,47 @@
+# GYM E2 — PUSH / CONTACT DELAY  (Route A, data-only).
+#
+# HYPOTHESIS
+#   push -> enemy displaced one cell -> it must re-cross that cell
+#        -> contact delayed -> fewer enemy attacks land before resolution
+#
+# PRIMARY PRESSURE   re-approach cost through a one-cell corridor
+# SECONDARY          enemy HP high enough that a turn's budget cannot clear it
+#
+# ⚠️ NOT AN ENVIRONMENTAL-KILL TEST. This rule layer has no lethal terrain
+# (RULE-GAP), a push into a blocked cell is rejected outright, and a push cannot
+# push anyone off the map. Push buys TIME here or it buys nothing. No
+# contamination, no hazard, no substitute mechanic is used.
+#
+# GEOMETRY  the corridor at x=6 on y=3 is the only way through. An enemy shoved
+#   back into it has to walk the length again, which is what makes a delay
+#   measurable rather than notional. The player starts at y=7 so an approach
+#   phase exists at all — an earlier cut put it 2 cells away and an enemy was in
+#   reach on round 1, leaving no window a delay could occupy.
+#
+# ENEMIES  e2_pushable + e2_anchor. Identical stat blocks; the anchor is
+#   immuneToPush. Without it Push would apply to everything and this would be a
+#   showcase rather than a test.
+#
+# ALTERNATIVE SOLUTION  hold the corridor mouth and kill them as they funnel.
+#
+#   #  Blocking   .  Road(1)      Coordinates are (x, y), y = 0 at the TOP.
+
+encounter id=gym-e2-pushdelay-Momotaro_B name=E2-push-delay
+objective type=rout
+
+map
+#############
+#...........#
+#...........#
+######.######
+#...........#
+#...........#
+#...........#
+#...........#
+#############
+endmap
+
+spawn faction=player unit=Momotaro_B x=6 y=7
+
+spawn faction=enemy unit=e2_pushable x=5 y=1 ai=rusher
+spawn faction=enemy unit=e2_anchor   x=7 y=1 ai=rusher

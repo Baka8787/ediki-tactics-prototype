@@ -1,0 +1,41 @@
+# GYM E3 — SLOW / RELEASE TIME.
+#
+# HYPOTHESIS
+#   slow -> +1 AP for every cell entered -> the sprinter arrives later
+#        -> fewer enemy attacks -> more rounds of free ranged damage
+#
+# PRIMARY PRESSURE   contact timing against high mobility
+# SECONDARY          none; damage is deliberately low so timing is the variable
+#
+# ENEMIES  2x e3_sprinter (MOVE 6 / ATK 50 / HP 40). MOVE stays high because
+#   mobility IS the hypothesis — Slow prices movement, so it can only be worth
+#   anything where there is distance to cross. An earlier cut used ATK 100 / HP
+#   80 and Kagemaru died on contact in ~2 rounds; ENEMY LETHALITY was lowered
+#   and the map lengthened. MOVE was not touched.
+#
+#   Two of them, from opposite corners, so one Slow cannot hold the encounter.
+#   The simulator also refuses a second stack on an already-slowed target, so no
+#   permanent lock is available.
+#
+# ALTERNATIVE SOLUTION  out-range them. Kagemaru A has range 3 and can open fire
+#   before they land whether or not it ever slows anything, which is exactly the
+#   comparison this cell exists to make.
+#
+#   #  Blocking   .  Road(1)      Coordinates are (x, y), y = 0 at the TOP.
+
+encounter id=gym-e3-slowcontrol-Kagemaru_B name=E3-slow-control
+objective type=rout
+
+map
+########################
+#......................#
+#......................#
+#......................#
+#......................#
+########################
+endmap
+
+spawn faction=player unit=Kagemaru_B x=11 y=2
+
+spawn faction=enemy unit=e3_sprinter x=1  y=1 ai=rusher
+spawn faction=enemy unit=e3_sprinter x=22 y=4 ai=rusher

@@ -1,0 +1,46 @@
+# GYM ARENA — one variable against gym-arena-residue: WHERE the elite stands.
+#
+# Same map, same four enemies, same everything, except the 3-hit elite starts
+# at the far end of the arena instead of next to the player.
+#
+# The target-priority note calls approach cost "the strongest and most stable
+# knob" (§10): one extra action of approach dropped a backline target's threat
+# per action from 15.0 to 11.25 and flipped the best opening.
+#
+# But the Metrics Framework corrects that (§8.3, and the EAtK failure case):
+# approach only sits in the denominator when the PLAYER walks over. Under
+# OD-16 every enemy walks to the player unasked, so distance here is a release
+# time, not a price. Those two are different mathematics and the note is
+# explicit that they must not both be counted.
+#
+# So this file is the test of that correction. If distance behaved like a
+# price, the elite would simply be deprioritised. If it behaves like a release
+# time, the elite arrives late, the minions are dealt with first for free, and
+# the elite is fought alone — a different and better outcome for the player.
+#
+# PREDICTION:
+#   M7 release for the elite ~ round 4-5, minions round 1
+#   M5 win rate HIGHER than gym-arena-residue, because the fight is serialised
+#   If instead it comes out lower, the release reading is wrong.
+
+encounter id=gym-arena-backline name=ARENA-backline
+objective type=rout
+
+map
+################
+#..............#
+#..............#
+#..............#
+#..............#
+#..............#
+#..............#
+#..............#
+################
+endmap
+
+spawn faction=player unit=momotaro x=2 y=4
+
+spawn faction=enemy unit=kohaku_1hit x=4  y=2 ai=rusher
+spawn faction=enemy unit=kohaku_1hit x=4  y=6 ai=rusher
+spawn faction=enemy unit=kohaku_1hit x=2  y=2 ai=cautious
+spawn faction=enemy unit=kohaku_3hit x=14 y=4 ai=hunter

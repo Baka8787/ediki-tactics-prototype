@@ -1,0 +1,112 @@
+# Ediki — Editor roster
+#
+# WHAT THIS IS
+#   The Prototype Editor's answer to "which units belong to which side, and
+#   which ids are the same character". Nothing else in the project needs that:
+#   UnitDef carries no faction, and a battle decides sides per spawn line
+#   (`spawn faction=player unit=...`). This file exists so the EDITOR can offer
+#   a curated list instead of all 47 rows.
+#
+# WHAT IT IS NOT
+#   It holds no stats and no rules. It only NAMES ids that must already exist in
+#   units.txt, so it cannot drift from the numbers — the worst it can do is
+#   reference an id that is gone, and the editor reports that as an error.
+#   The game, Ediki.Sim and the test suite never read this file.
+#
+# FORMAT
+#   character id=<key> name=<顯示名> faction=player|enemy|objective
+#   variant   char=<key> unit=<units.txt id> label=<短標籤> note=<一句話>
+#
+#   faction=objective  props placed as protected targets. They are spawned on
+#                      the player side with protect=true and do NOT count
+#                      against the four-unit party limit, which is the same rule
+#                      SquadMatrix uses when it swaps a roster.
+#
+#   No spaces inside any value — the parser splits on whitespace.
+#
+# UNITS NOT LISTED HERE still load and still play. They simply do not appear in
+# the planner's palette. Old encounters that use them open normally.
+#
+# ---------------------------------------------------------------------------
+# 我方 — 討鬼團
+#
+# The four are GDD-sourced: the character report names 桃太郎, 正守 (護行僧),
+# 玄真 (大聖毫毛化身) and 影丸 (雉型忍者) and no fifth member. The same four are
+# declared in code as SquadMatrix.Characters.
+#
+# A/B are two TACTICAL ROLES of one character, not two characters — units.txt
+# calls them "one unit per TESTABLE role variant" and each pair differs in as
+# few fields as its hypothesis allows.
+#
+# 正守 lists only Masamori_A/B (專案負責人 2026-08-18). The older `zhengshou`
+# id is the same character — GDD romanises 正守 as "Zheng Shou" — but it is not
+# offered here. Encounters that already use it still open and play.
+# ---------------------------------------------------------------------------
+
+character id=momotaro name=桃太郎 faction=player
+variant char=momotaro unit=Momotaro_A label=A note=輸出型・攻擊4AP
+variant char=momotaro unit=Momotaro_B label=B note=擊退型・攻擊5AP＋擊退
+
+character id=genjin name=玄真 faction=player
+variant char=genjin unit=Genjin_A label=A note=重擊型・單發最高傷害
+variant char=genjin unit=Genjin_B label=B note=破甲型・降低目標防禦
+
+character id=kagemaru name=影丸 faction=player
+variant char=kagemaru unit=Kagemaru_A label=A note=遠程型・射程3＋遲滯
+variant char=kagemaru unit=Kagemaru_B label=B note=機動型・移動5近戰
+
+character id=masamori name=正守 faction=player
+variant char=masamori unit=Masamori_A label=A note=盾牆型・防禦70＋引誘
+variant char=masamori unit=Masamori_B label=B note=反擊型・防禦45＋反擊
+
+# ---------------------------------------------------------------------------
+# 守護目標 — placed with protect=true, excluded from the party limit
+# ---------------------------------------------------------------------------
+
+character id=shrine name=祠堂 faction=objective
+variant char=shrine unit=sc_shrine label=標準 note=生命100・不會移動
+variant char=shrine unit=shrine label=舊版 note=生命120・不會移動
+
+# ---------------------------------------------------------------------------
+# 敵方
+#
+# 小耗 and 晦氣 are the only enemies the GDD names; their Chinese names come
+# from it. Everything below them is scenario furniture built for measurement,
+# so it keeps the display name units.txt already gives it rather than being
+# handed invented lore.
+# ---------------------------------------------------------------------------
+
+character id=kohaku name=小耗 faction=enemy
+variant char=kohaku unit=kohaku label=基本 note=近戰・生命80攻擊100
+variant char=kohaku unit=kohaku_bow label=弓 note=射程2・較脆
+variant char=kohaku unit=kohaku_fast label=疾走 note=移動5
+variant char=kohaku unit=kohaku_tank label=硬皮 note=防禦45・打得慢
+variant char=kohaku unit=kohaku_sniper label=狙擊 note=射程3・攻擊140
+variant char=kohaku unit=kohaku_growth label=成長 note=攻擊每回合上升20
+
+character id=huiqi name=晦氣 faction=enemy
+variant char=huiqi unit=huiqi label=基本 note=每回合向周圍散播穢氣
+
+character id=sc_line name=Bruiser／Shield faction=enemy
+variant char=sc_line unit=sc_bruiser label=Bruiser note=生命180・正面壓迫
+variant char=sc_line unit=sc_shield label=Shield note=生命140防禦35
+
+character id=sc_flank name=Assassin／Sniper faction=enemy
+variant char=sc_flank unit=sc_assassin label=Assassin note=移動5攻擊95・繞後
+variant char=sc_flank unit=sc_sniper label=Sniper note=射程3・遠距壓制
+
+# e4_backline is deliberately NOT listed. units.txt calls it "always the
+# lowest-HP party member" and gym-e4-protection spawns it on the PLAYER side as
+# a measurement fixture, not as a character anyone would pick. Leaving it out
+# keeps it working in those encounters while keeping it out of the palette.
+character id=probe name=行為測試單位 faction=enemy
+variant char=probe unit=e1_shooter label=E1-射手 note=射程2
+variant char=probe unit=e2_pushable label=E2-可推 note=可被擊退
+variant char=probe unit=e2_anchor label=E2-錨定 note=免疫擊退
+variant char=probe unit=e3_sprinter label=E3-衝刺 note=移動6
+
+character id=boss name=強化個體 faction=enemy
+variant char=boss unit=test_boss4 label=4刀 note=生命160・需4刀
+variant char=boss unit=test_boss6 label=6刀 note=生命240・需6刀
+variant char=boss unit=test_turret label=砲台 note=不會移動・射程3
+variant char=boss unit=test_blocker label=阻擋 note=擋路用

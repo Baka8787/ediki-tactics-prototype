@@ -1,0 +1,21 @@
+encounter id=gym-r-fairp2 name=R-fairp2
+objective type=rout
+map
+##################
+#................#
+#.ff..####..ff...#
+#.ff..#..#..ff...#
+#.....#..#.......#
+###.###..###.#####
+#................#
+#..oo..####..oo..#
+#..oo..#..#..oo..#
+#......#..#......#
+#................#
+##################
+endmap
+spawn faction=player unit=momotaro_r2 x=8 y=9
+spawn faction=enemy unit=kohaku x=3  y=1 ai=rusher
+spawn faction=enemy unit=kohaku_bowfair x=14 y=1 ai=rusher
+spawn faction=enemy unit=kohaku_fastfair x=2  y=10 ai=cautious
+spawn faction=enemy unit=kohaku x=15 y=7 ai=hunter

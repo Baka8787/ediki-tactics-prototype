@@ -1,0 +1,155 @@
+# GYM. SQUAD CRUCIBLE — the full 4x2 kit against a defend objective.
+#
+# The first encounter in this project whose win condition is NOT "kill them
+# all", and that is the whole point. Two rounds of AP experiments produced the
+# same negative twice: the answer was obvious in under a second, because under a
+# rout objective the only currency is enemy HP, so maximising damage per turn is
+# always right and focus fire is always the answer. Nothing about AP costs
+# changes that — the objective does.
+# Write-up: docs/06-validation/stage-log-2026-08-16-ap-economy.md.
+#
+# Design brief: 專案負責人 2026-08-17 (release schedule / divisibility ladder /
+# quadrant 2). Rule extensions it depends on: OD-34.
+#
+# ---------------------------------------------------------------------------
+# WHAT IT ASKS
+#
+#   You cannot cover four lanes with four units and also kill anything.
+#   Which threat do you answer, with whom, and what do you let through?
+#
+# The shrine has 100 HP and cannot act, move, or defend itself. Every player
+# unit outlives it several times over. So the party's own HP stops being the
+# resource that matters, which is the structural change this encounter exists
+# to make.
+#
+# ---------------------------------------------------------------------------
+# ONE ANSWER PER LANE, AND NO ANSWER COVERS TWO
+#
+#   west   sc_bruiser  180 HP   Momotaro B pushes it into the chasm at (1,3).
+#                               Killing it outright costs ~5 of his 5-AP swings;
+#                               the push costs 3 AP. That gap IS the lane.
+#   mid    sc_shield   DEF 35   Genjin B breaks it. Kagemaru goes 7 -> 27 a hit,
+#                               Momotaro 25 -> 45. The weakest attacker gains
+#                               the most, so the break is a PARTY action.
+#   east   sc_assassin MOVE 5   Outruns everyone (players are 4/3/4/3) and there
+#                               is no ZOC, so it cannot be walked away from or
+#                               blocked. Kagemaru A's slow is the only handle.
+#   north  sc_sniper   range 3  Outranges everyone except Kagemaru A, and shoots
+#                               the shrine (lowest HP). Masamori A's taunt is
+#                               the only thing that reaches it on arrival.
+#
+# Four skills, four lanes, and four units that cannot be in two places. The
+# question is not "which skill is good" — it is which lane you concede.
+#
+# ---------------------------------------------------------------------------
+# RELEASE SCHEDULE — the fix for the fault the last two encounters had
+#
+#   turn 1   west bruiser + mid shield      (spawned on the map)
+#   turn 2   east assassin                  (reinforcement)
+#   turn 3   north sniper                   (reinforcement)
+#
+# The previous maps had a window with no threat and spare AP, so the party
+# healed back to full with Rest and nothing that happened earlier was ever paid
+# for. A staggered arrival closes it: there is no turn on which nothing is
+# inbound, so HP spent stays spent.
+#
+# ---------------------------------------------------------------------------
+# THE ARITHMETIC (computed before building, not after)
+#
+#   Against the shrine (DEF 10):
+#     sc_sniper  ATK 60 -> 50 a hit, ONE hit a turn (attackCost 5) = 50 a turn
+#     100 HP therefore survives exactly two volleys. It fires from roughly turn
+#     4 (spawns turn 3 at (9,1), MOVE 4, needs Manhattan <= 3 of the shrine), so
+#     turns 4-5-6 is 150 against 100. The sniper MUST be answered; the question
+#     is with what, and what that costs elsewhere.
+#
+#   Lethal exposure, party side (all four enemies at ATK 85/70/95/60):
+#     Masamori  DEF 70 / 435 HP  -> 15/1/25/1 a hit. Effectively unkillable here.
+#     Momotaro  DEF 50 / 300 HP  -> 35/20/45/10
+#     Genjin    DEF 35 / 220 HP  -> 50/35/60/25
+#     Kagemaru  DEF 30 / 195 HP  -> 55/40/65/30   <- 2 turns under focus
+#   Nobody dies in one round, and the fragile one dies in two if ignored. The
+#   party is NOT the loss condition, the shrine is — but losing Kagemaru costs
+#   the only answer to the assassin, which is a real second-order price.
+#
+# ---------------------------------------------------------------------------
+# WHAT THIS ENCOUNTER CANNOT ANSWER — read before drawing conclusions
+#
+#   * "Which of the four skills is best" is NOT askable here: each is aimed at a
+#     different lane, so they are not competing for the same job.
+#   * Win rate says almost nothing. Surviving 6 turns with a shrine on 5 HP and
+#     surviving with it untouched are the same result and very different games.
+#     Record what was conceded, per prototype-loop.md 4.2.
+#   * The sniper preferring the shrine is EMERGENT (hunter = lowest HP), not a
+#     rule. Any player unit under 100 HP steals it. Watch for the flip.
+#   * There is no ZOC in this rule layer, so "blocking a lane" is not a thing
+#     anyone can do. Standing in front only works because most profiles target
+#     the nearest unit — that is an AI property, not a rule.
+#
+# ⚠️ EXPERIMENT FILE, NOT STAGE 01. stage01.encounter is untouched.
+#
+#   #  Blocking   .  Road(1)   f  Forest(2)   m  Mire(3)   x  CHASM (lethal)
+#   Coordinates are (x, y), y = 0 at the TOP.
+#
+#          1111 11
+#   x 0123456789 0123
+#   y0 ################
+#   y1 #...#......#...#
+#   y2 #...#......#fff#
+#   y3 #x..#......#mmm#
+#   y4 #...#......#fff#
+#   y5 #...#......#...#
+#   y6 #...####..####.#
+#   y7 #..............#
+#   y8 #..............#
+#   y9 #..............#
+#  y10 ################
+#
+#   west lane   x=1..3, exits south at (1..3, 6). Chasm at (1,3).
+#               A pusher standing at (3,3) shoves a unit at (2,3) west into it.
+#   mid lane    x=5..10, funnels through the 2-wide gap at (8,6)/(9,6).
+#   east lane   x=12..14, three rows of forest/mire (2 and 3 AP a cell), exits
+#               at (14,6). Slow going, which is why the assassin uses it: MOVE 5
+#               is the only thing that makes that lane fast.
+
+encounter id=gym-squad-crucible name=SQUAD-crucible
+objective type=defend turns=6
+
+map
+################
+#...#......#...#
+#...#......#fff#
+#x..#......#mmm#
+#...#......#fff#
+#...#......#...#
+#...####..####.#
+#..............#
+#..............#
+#..............#
+################
+endmap
+
+# --- what is being defended -------------------------------------------------
+# Behind the line, not in it: at y=9 the melee profiles find a player unit
+# nearer than the shrine, so screening it is possible. Standing still, however,
+# is not — the sniper does not care where anybody is standing.
+spawn faction=player unit=sc_shrine x=8 y=9 protect=true
+
+# --- 討鬼團 x4, the full 4x2 kit -------------------------------------------
+# Side by side on y=7 and symmetric about x=8, so no unit starts closer to any
+# lane than another. Which one goes where is the first decision, not a fact the
+# spawn already decided.
+spawn faction=player unit=Momotaro_B x=6  y=7
+spawn faction=player unit=Genjin_B   x=7  y=7
+spawn faction=player unit=Kagemaru_A x=9  y=7
+spawn faction=player unit=Masamori_A x=10 y=7
+
+# --- turn 1: two lanes open at once ----------------------------------------
+spawn faction=enemy unit=sc_bruiser x=2 y=1 ai=rusher
+spawn faction=enemy unit=sc_shield  x=8 y=1 ai=cautious
+
+# --- turn 2: the east lane, fast enough to make the slow terrain irrelevant --
+spawn faction=enemy unit=sc_assassin x=13 y=1 ai=rusher turn=2
+
+# --- turn 3: the clock. hunter = lowest HP = the shrine ---------------------
+spawn faction=enemy unit=sc_sniper x=9 y=1 ai=hunter turn=3

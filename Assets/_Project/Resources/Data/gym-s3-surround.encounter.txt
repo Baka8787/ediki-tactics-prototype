@@ -1,0 +1,21 @@
+# GYM. Threat-surface variant 3: enemies spread around the player's half.
+# No corner is safe; exposure must be managed by moving, not by parking.
+encounter id=gym-s3-surround name=S3-surrounded
+objective type=rout
+map
+############
+#..........#
+#.ff....ff.#
+#.f......f.#
+#####.######
+#..f#.#f...#
+#.ff...ff..#
+#....^.....#
+#..........#
+############
+endmap
+spawn faction=player unit=momotaro x=6 y=7
+spawn faction=enemy unit=kohaku x=1  y=5 ai=rusher
+spawn faction=enemy unit=kohaku x=10 y=5 ai=rusher
+spawn faction=enemy unit=kohaku x=1  y=8 ai=cautious
+spawn faction=enemy unit=kohaku x=10 y=8 ai=hunter

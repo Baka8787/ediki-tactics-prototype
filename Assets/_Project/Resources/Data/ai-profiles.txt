@@ -1,0 +1,18 @@
+# Ediki - AI profiles
+# Stage 01 Prototype baseline (OD-10, decided 2026-08-13)
+#
+# Format:  aiprofile id=<id> target= distance= aggression= retreatHp= guardHp=
+#
+#   target      nearest | lowestHp | lowestDef        who to go after
+#   distance    the distance the unit tries to hold   (1 = melee)
+#   aggression  0-100. Higher = cares less about standing somewhere exposed.
+#               Survival weight is (100 - aggression).
+#   retreatHp   below this HP%, back away instead of closing in. 0 = never retreat.
+#   guardHp     below this HP%, Guard when it cannot attack. 0 = never guard.
+#
+# Enemies pick a profile via the encounter's spawn lines (ai=<id>).
+# Behaviour differences belong here, NOT in C# subclasses.
+
+aiprofile id=rusher   target=nearest  distance=1 aggression=90 retreatHp=0  guardHp=0
+aiprofile id=cautious target=nearest  distance=1 aggression=40 retreatHp=0  guardHp=30
+aiprofile id=hunter   target=lowestHp distance=1 aggression=75 retreatHp=0  guardHp=0

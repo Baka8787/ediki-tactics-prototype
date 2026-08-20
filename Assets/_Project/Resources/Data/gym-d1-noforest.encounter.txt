@@ -1,0 +1,48 @@
+# GYM. D1 middle rung — the routes map with the FOREST removed and nothing else.
+#
+# Why it exists. gym-d1-flat differs from gym-d1-routes in three things at once
+# (mid narrows 3->1, east forest becomes road, exposure follows), because the
+# plan defines the control as "routes made identical" and that is one bundle.
+# A bundle cannot say WHICH differentiator moved the histogram, and
+# experiment-playbook §2 is explicit that each extra difference costs one more
+# map. This is that map:
+#
+#   gym-d1-routes    mid 3 wide,  east FOREST gate     the experiment
+#   gym-d1-noforest  mid 3 wide,  east ROAD gate       <- terrain alone
+#   gym-d1-flat      mid 1 wide,  east ROAD gate       width alone, then
+#
+# so (routes - noforest) prices the terrain and (noforest - flat) prices the
+# width, and the two add up to the bundle F3 measures.
+#
+# Byte-identical to gym-d1-routes apart from the two 'f' cells at (10,4) and
+# (10,5). Same spawns, same enemies, same block, same everything else.
+#
+# ⚠️ EXPERIMENT FILE, NOT STAGE 01.
+#
+#   #  Blocking   .  Road(1)   o  Open(1)   f  Forest(2)
+#   Coordinates are (x, y), y = 0 at the TOP.
+
+encounter id=gym-d1-noforest name=D1-noforest
+objective type=rout
+
+map
+#############
+#...........#
+##.##...##.##
+##.##...##.##
+##.##...##.##
+##.##...##.##
+#...........#
+#...#####...#
+#...#####...#
+#...........#
+#...........#
+#############
+endmap
+
+spawn faction=player unit=momotaro       x=6 y=9
+spawn faction=player unit=kagemaru_plain x=6 y=10
+
+spawn faction=enemy unit=kohaku_1hit x=6  y=1 ai=rusher
+spawn faction=enemy unit=kohaku_bow  x=2  y=1 ai=rusher
+spawn faction=enemy unit=kohaku_bow  x=10 y=1 ai=cautious

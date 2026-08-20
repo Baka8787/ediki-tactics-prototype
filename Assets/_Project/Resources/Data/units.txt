@@ -1,0 +1,449 @@
+# Ediki - Unit definitions
+#
+# Format:
+#   unit id= name= hp= atk= def= move= ap= [apRegen=] range= attackCost= guardCost=
+#        [counterCost=] [restCost=] [restHealPercent=]
+#
+#   ap               AP ceiling. Unspent AP CARRIES OVER up to this value.
+#   apRegen          AP regained at the start of the unit's phase (added to what it
+#                    kept). Omit to refill to the cap every turn.
+#   move             max cells for ONE move action (OD-04). AP is the turn budget.
+#   attackCost       OD-01 baseline: 4 AP
+#   guardCost        OD-06 baseline: 3 AP -> halves incoming damage until next turn
+#   counterCost      AP that must be UNSPENT to strike back once (OD-19). 0 = never.
+#   restCost         Rest: heal restHealPercent of max HP, then stand down (OD-21).
+#
+# AP economy (OD-21, decided 2026-08-14): cap 10, regen 8.
+# Regen below the cap is the point — banking 2 AP this turn buys a Rest next turn.
+#
+# Damage is Damage = max(1, ATK - DEF), deterministic, no hit/evade rolls (OD-05).
+
+# --- baseline roster -------------------------------------------------------
+
+unit id=momotaro name=Momotaro hp=300 atk=60  def=50 move=4 ap=10 apRegen=8 range=1 attackCost=4 guardCost=3 restCost=2 restHealPercent=10 purifyCost=4 purifyRadius=2
+
+# zhengshou (正守, 護行僧) - the guardian core, added 2026-08-14.
+# HP 435 / ATK 33 / DEF 70 / MOVE 3 are all straight from the GDD character
+# report ("基礎數值 Ver. RuleLock"). HIT 0.68 / EVA 0.10 are in the GDD too and
+# are deliberately NOT used: deterministic hit is the baseline (OD-05).
+# AP 10/8 and the action costs match Momotaro (OD-21) — the GDD's "AP 8" is the
+# older economy, superseded by the carry-over cap.
+#
+# DEF 70 against kohaku's ATK 100 is 30 damage a hit, where Momotaro takes 50.
+# Standing in front is what he is FOR, and the first real "who blocks, who
+# kills" question the prototype can ask.
+unit id=zhengshou name=Zhengshou hp=435 atk=33 def=70 move=3 ap=10 apRegen=8 range=1 attackCost=4 guardCost=3 restCost=2 restHealPercent=10
+
+# kohaku (小耗) - GDD gives HP 80 / ATK 100 / MOVE 3 but NO defence value.
+# def=20 is inherited from SPEC v0.1 and is still unsourced - see CONFLICT-03.
+unit id=kohaku   name=Kohaku   hp=80  atk=100 def=20 move=3 ap=10 apRegen=8 range=1 attackCost=4 guardCost=3 restCost=2 restHealPercent=10
+
+# --- 討鬼團, with the control kit (2026-08-15) ------------------------------
+#
+# WHY THESE FOUR EXIST NOW. The measured player loop was:
+#   "walk to ~4 cells, wait for one minion, kill it in two hits."
+# It is optimal for four separate reasons, and NONE of them is "not enough
+# skills", so no damage skill would have touched it:
+#
+#   1. kohaku dies in exactly 2 hits = exactly one turn's attack budget
+#      (regen 8 / cost 4), so EP residue is 0 and there is never a spare action
+#   2. enemies close in unasked (OD-16), so waiting is free AND safer than
+#      advancing, which would trigger several at once
+#   3. pulling one at a time holds Exposure at 1, the minimum
+#   4. banking AP buys nothing: no counter, and regen 8 covers two hits anyway
+#
+# So the kit below is three skills that all change WHEN an enemy can reach you,
+# plus a striker who changes how many hits things take. Nothing here raises a
+# damage number for its own sake — §11.2 measured required hits as a cliff, and
+# a damage skill that beats the basic attack is just the new only answer.
+#
+# AP COSTS ARE CHOSEN, NOT GDD-SOURCED. 專案負責人 2026-08-15 指示先用合理值。
+#
+# ⚠️ REPRICED 2026-08-16 FROM MEASUREMENT, 2-3 AP -> 1 AP. See §21.
+# The original reasoning below was "make the trade real". It was measured and
+# the trade turned out to be a straight loss at every price:
+#
+#     skill cost   0(none)   1     2     3(was)  4     5
+#     control-hold   51%    52%   44%    39%    38%   33%
+#
+# 1 AP is the break-even point and nothing above it is anything but a tax.
+#
+# THIS IS NOT A BUFF. Break-even means the skills now do NOTHING rather than
+# costing 12 points, and that is the honest reading: they exempt limits that
+# are not binding (H16 / §19.2). The price was never the problem — pricing
+# them to 1 makes them harmless, not good. Making them good is upstream work,
+# in the order NOTE-2026-08-16-H16 §6 lays out.
+
+# 桃太郎 with 擊退. The push lives on the one unit that is always present, so
+# the verb exists even in a one-character stage.
+# GDD has no push for him; it does establish that displacement exists in the
+# world (Zhengshou 免疫擊退, Genjin 免疫位移) without saying who does it.
+unit id=momotaro_push name=Momotaro-Push hp=300 atk=60 def=50 move=4 ap=10 apRegen=8 range=1 attackCost=4 guardCost=3 restCost=2 restHealPercent=10 pushCost=1 pushRange=1
+
+# 正守 with 【不動明王】嘲諷. GDD gives him 仇恨值 mechanics throughout
+# (行者護衣 仇恨 x1.5, 軍荼利明王 仇恨最大化, 無歸護僧衣 強制替全隊承擔攻擊),
+# so a taunt is the GDD-shaped version of what he already does.
+# immuneToPush is GDD-literal: 金剛王菩薩 (被動) 免疫擊退.
+unit id=zhengshou_taunt name=Zhengshou-Taunt hp=435 atk=33 def=70 move=3 ap=10 apRegen=8 range=1 attackCost=4 guardCost=3 restCost=2 restHealPercent=10 tauntCost=1 tauntRadius=3 immuneToPush=true
+
+# 玄真 (Genjin, 猴) — 處決型突擊手.
+# GDD gives AP 8 and MOVE 3 and says ATK 極高 / HP 中高 / 不依賴閃避, but no
+# numbers. ATK 90 is CHOSEN for one structural reason: against DEF 20 he deals
+# 70, so a 120 HP enemy takes 2 hits from him and 3 from Momotaro. He is the
+# unit that changes the DIVISIBILITY, which §11.2 says is the cliff everything
+# else sits on. DEF 35 and HP 220 keep him fragile enough that standing him in
+# front is a real cost.
+unit id=genjin name=Genjin hp=220 atk=90 def=35 move=3 ap=10 apRegen=8 range=1 attackCost=4 guardCost=3 restCost=2 restHealPercent=10
+
+# 影丸 (Kagemaru, 雉) — 戰術控制者, GDD: 「戰場規則干涉者, 負責壓縮敵人選項」.
+# HP 195 / ATK 42 / DEF 30 / MOVE 4 are GDD-literal. Range 3 is her 初期 風切苦無.
+# EVA 0.35 / HIT 0.88 are in the GDD and deliberately NOT used — deterministic
+# hit is the baseline (OD-05).
+# 【遲滯】(移動 AP+1) is GDD-literal, and it is the whole reason she is here:
+# ATK 42 against DEF 20 is 22 a hit, so a kohaku takes 4 hits. She is not a
+# killer and is not meant to be. She is the release-time handle.
+unit id=kagemaru name=Kagemaru hp=195 atk=42 def=30 move=4 ap=10 apRegen=8 range=3 attackCost=4 guardCost=3 restCost=2 restHealPercent=10 slowCost=1 slowRange=3
+
+# Kagemaru with 【遲滯】 removed, for the no-skill control encounter. Momotaro,
+# Zhengshou and Genjin already exist without their skills, so this is the only
+# extra file needed to run the same four characters with the kit switched off.
+unit id=kagemaru_plain name=Kagemaru-Plain hp=195 atk=42 def=30 move=4 ap=10 apRegen=8 range=3 attackCost=4 guardCost=3 restCost=2 restHealPercent=10
+
+# --- variant roster (OD-19 / OD-20 experiments) ----------------------------
+
+# Momotaro with a reserve-AP counter armed. Keeping 3 AP back buys one riposte.
+unit id=momotaro_ripo name=Momotaro+ hp=300 atk=60 def=50 move=4 ap=10 apRegen=8 range=1 attackCost=4 guardCost=3 counterCost=3 restCost=2 restHealPercent=10
+
+# Ranged kohaku: range 2, so a melee-only defender cannot reach it.
+unit id=kohaku_bow name=Kohaku-Bow hp=60 atk=70 def=15 move=3 ap=10 apRegen=8 range=2 attackCost=4 guardCost=3 restCost=2 restHealPercent=10
+
+# Fast kohaku: reaches the player sooner, punishes slow advances.
+unit id=kohaku_fast name=Kohaku-Fast hp=60 atk=70 def=15 move=5 ap=10 apRegen=8 range=1 attackCost=4 guardCost=3 restCost=2 restHealPercent=10
+
+# --- GDD roster beyond Stage 01 --------------------------------------------
+
+# 晦氣 (羊首法師) — GDD 凶星鬼「戰術干擾系」.
+# HP/ATK/DEF straight from the GDD. MOVE is 2 by 專案負責人 (GDD says 3).
+# 關鍵被動【穢氣滲流】: every round it thickens the ground within 1 cell of
+# itself. That is the whole point of the unit — it shrinks the safe area even
+# when it never attacks.
+# NOT implemented: 「蝕命術」's 中毒 (needs a status system the prototype does
+# not have). Recorded rather than approximated.
+unit id=huiqi name=Huiqi hp=95 atk=85 def=20 move=2 ap=10 apRegen=8 range=1 attackCost=4 guardCost=3 restCost=2 restHealPercent=10 contaminates=1 contaminateRadius=1
+
+# Legacy experiment alias. The canonical momotaro now carries this innate
+# purification too; keep this id so existing contamination gyms still load.
+unit id=momotaro_pure name=Momotaro-Pure hp=300 atk=60 def=50 move=4 ap=10 apRegen=8 range=1 attackCost=4 guardCost=3 restCost=2 restHealPercent=10 purifyCost=4 purifyRadius=2
+
+# --- unnamed archetypes, added to close measurement gaps -------------------
+# These have no GDD source and deliberately no names: they exist to test one
+# structural property each, and naming them would imply a design intent that
+# nobody has decided.
+
+# Stationary. The ONLY enemy that does not close in, so it is the only one that
+# hands the decision "do I approach" back to the player. Everything else in the
+# roster arrives on its own (OD-16), which is why release has never been the
+# player's choice to make.
+unit id=test_turret name=Test-Turret hp=80 atk=100 def=20 move=0 ap=10 apRegen=8 range=3 attackCost=4 guardCost=3
+
+# Bodyguard: high DEF, low damage, ordinary mobility. Stands between the player
+# and the things worth killing, so it tests whether "who to kill first" gains
+# any value when one enemy makes the others harder to reach.
+unit id=test_blocker name=Test-Blocker hp=160 atk=40 def=45 move=3 ap=10 apRegen=8 range=1 attackCost=4 guardCost=3
+
+# Action tax: cheap to kill, hits hard enough that ignoring it is expensive.
+# The closest the current rules get to attacking the player's action budget
+# rather than its HP — a real Debuffer would need a status system.
+unit id=test_tax name=Test-Tax hp=40 atk=120 def=20 move=4 ap=10 apRegen=8 range=1 attackCost=4 guardCost=3
+
+# --- kill-target ladder (2026-08-15) ---------------------------------------
+# A kohaku that takes more hits. HP is the ONLY field that differs — same
+# ATK 100, DEF 20, MOVE 3, same costs — so an encounter that swaps one in
+# differs from the baseline in required hits and nothing else.
+#
+# Momotaro deals 60-20 = 40, so HP fixes EAtK exactly:
+#
+#   kohaku        80 HP -> 2 hits    the baseline minion
+#   kohaku_3hit  120 HP -> 3 hits    reused as rung 3; already existed for the
+#                                    divisibility experiments and matches kohaku
+#                                    on every other field, so it fits the ladder
+#   test_boss4   160 HP -> 4 hits
+#   test_boss6   240 HP -> 6 hits
+#
+# The ladder exists because §11.2 already measured required hits as a CLIFF
+# (2 -> 3 took the win rate 68% -> 1%), so a single hardness cannot tell you
+# whether a kill objective changes anything: at the top of the ladder every
+# objective loses, at the bottom every objective wins. The question is whether
+# the kill objective moves the cliff, and only a sweep can answer it.
+#
+# A high-DEF wall would have been the obvious "boss" and is the wrong unit:
+# every candidate in the roster (test_blocker ATK 40, kohaku_tank ATK 40) deals
+# max(1, 40-50) = 1 damage to Momotaro, so skipping it would be free and the
+# investment question would never arise. Hardness has to come from HP.
+unit id=test_boss4 name=Test-Boss4 hp=160 atk=100 def=20 move=3 ap=10 apRegen=8 range=1 attackCost=4 guardCost=3 restCost=2 restHealPercent=10
+unit id=test_boss6 name=Test-Boss6 hp=240 atk=100 def=20 move=3 ap=10 apRegen=8 range=1 attackCost=4 guardCost=3 restCost=2 restHealPercent=10
+
+# --- objective props -------------------------------------------------------
+# A shrine has no AP: it can never act, it just has to survive.
+unit id=shrine name=Shrine hp=120 atk=1 def=10 move=0 ap=0 range=1 attackCost=1 guardCost=1
+
+# --- reach experiments (playtest feedback 2026-08-14) ---------------------
+# "range 1 feels short - often you must move 1 cell just to attack"
+# range=2 is a big structural change, not just a number: with 4-neighbour
+# adjacency, range 1 means Exposure == adjacent passable cells. Range 2 breaks
+# that identity, so these are variants to MEASURE, not a decision.
+
+unit id=momotaro_r2 name=Momotaro-R2 hp=300 atk=60 def=50 move=4 ap=10 apRegen=8 range=2 attackCost=4 guardCost=3 restCost=2 restHealPercent=10
+unit id=kohaku_r2   name=Kohaku-R2   hp=80  atk=100 def=20 move=3 ap=10 apRegen=8 range=2 attackCost=4 guardCost=3 restCost=2 restHealPercent=10
+
+# Variety units matched to kohaku's HP/ATK so the ONLY difference is reach or
+# mobility. The earlier kohaku_bow / kohaku_fast were also weaker, which made
+# "enemy variety" look like it rewarded charging - a stats artefact, not a
+# property of variety.
+unit id=kohaku_bowfair  name=Kohaku-Bow2  hp=80 atk=100 def=20 move=3 ap=10 apRegen=8 range=2 attackCost=4 guardCost=3 restCost=2 restHealPercent=10
+unit id=kohaku_fastfair name=Kohaku-Fast2 hp=80 atk=100 def=20 move=5 ap=10 apRegen=8 range=1 attackCost=4 guardCost=3 restCost=2 restHealPercent=10
+
+# --- divisibility experiments (2026-08-14, gym arenas only) -----------------
+# Momotaro deals 60-20 = 40 a hit and can afford two attacks a turn
+# (regen 8 / cost 4). So required hits = ceil(HP / 40), and whether that
+# divides 2 is the whole point of these two units:
+#
+#   kohaku      HP  80 -> 2 hits -> divides. No spare action ever exists.
+#   kohaku_3hit HP 120 -> 3 hits -> leaves one action over every other turn.
+#   kohaku_1hit HP  40 -> 1 hit  -> the thing a spare action can be spent on.
+#
+# kohaku_3hit keeps ATK 100 so RH is the ONLY difference from kohaku.
+# kohaku_1hit drops to ATK 60 (10 damage a hit) so it is the low-threat
+# minion the priority formula wants you to ignore — which is exactly the
+# configuration where the formula is wrong.
+# Source: docs/NOTE-2026-08-14-敵人刀數與目標優先級數值模型.md §5.1, §7.1.
+unit id=kohaku_3hit name=Kohaku-3hit hp=120 atk=100 def=20 move=3 ap=10 apRegen=8 range=1 attackCost=4 guardCost=3 restCost=2 restHealPercent=10
+unit id=kohaku_1hit name=Kohaku-1hit hp=40  atk=60  def=20 move=3 ap=10 apRegen=8 range=1 attackCost=4 guardCost=3 restCost=2 restHealPercent=10
+
+# --- enemy archetypes other tactics games use (2026-08-14, gym arenas only) --
+# Three shapes of threat that the current roster cannot express. Each one is
+# built to isolate ONE property, so the arena that uses it measures that
+# property and not a bundle of changes.
+
+# Artillery / glass cannon: reaches three cells, hits harder than anything
+# else, and dies to a single hit. Range is its whole defence, so killing it
+# is purely a question of whether you can close.
+unit id=kohaku_sniper name=Kohaku-Sniper hp=40 atk=140 def=20 move=2 ap=10 apRegen=8 range=3 attackCost=4 guardCost=3 restCost=2 restHealPercent=10
+
+# Growth type: starts harmless, gains ATK every completed round. The clock is
+# the threat, not the unit. atkGrowth is derived from the round counter, so it
+# adds no state and no randomness.
+unit id=kohaku_growth name=Kohaku-Growth hp=120 atk=20 def=20 move=3 ap=10 apRegen=8 range=1 attackCost=4 guardCost=3 restCost=2 restHealPercent=10 atkGrowth=20
+
+# Wall: high DEF, low ATK. It exists to make the damage-model comparison bite —
+# subtractive and percentage defence differ most exactly where DEF is large.
+unit id=kohaku_tank name=Kohaku-Tank hp=120 atk=40 def=45 move=2 ap=10 apRegen=8 range=1 attackCost=4 guardCost=3 restCost=2 restHealPercent=10
+
+# --- guard-cost sweep (2026-08-15) -----------------------------------------
+# Identical to the 討鬼團 above except guardCost 3 -> 5. ONE number.
+#
+# WHY. With guardCost 3 the whole party can do move 1 + attack + guard in a
+# single 8 AP turn, so guard costs nothing it was going to spend anyway — and
+# guard is worth 100-140 HP against two attackers while the attack it would
+# have replaced is worth 40 damage. Nothing competes with anything.
+#
+# At 5, attack + guard = 9 > the 8 AP a turn supplies, so the two become
+# mutually exclusive. But the AP CAP is 10, so banking 2 AP one turn buys
+# attack + guard the next. That is the first time carry-over has bought
+# anything at all — charter 6.1 condition (b), unsatisfied since day one.
+unit id=momotaro_push_g5   name=Momotaro-Push-G5   hp=300 atk=60 def=50 move=4 ap=10 apRegen=8 range=1 attackCost=4 guardCost=5 restCost=2 restHealPercent=10 pushCost=3 pushRange=1
+unit id=zhengshou_taunt_g5 name=Zhengshou-Taunt-G5 hp=435 atk=33 def=70 move=3 ap=10 apRegen=8 range=1 attackCost=4 guardCost=5 restCost=2 restHealPercent=10 tauntCost=2 tauntRadius=3 immuneToPush=true
+unit id=genjin_g5          name=Genjin-G5          hp=220 atk=90 def=35 move=3 ap=10 apRegen=8 range=1 attackCost=4 guardCost=5 restCost=2 restHealPercent=10
+unit id=kagemaru_g5        name=Kagemaru-G5        hp=195 atk=42 def=30 move=4 ap=10 apRegen=8 range=3 attackCost=4 guardCost=5 restCost=2 restHealPercent=10 slowCost=3 slowRange=3
+
+# --- skill-cost sweep (2026-08-16) -----------------------------------------
+# The three skill carriers at a UNIFORM skill cost of 1..5 AP. Only the skill
+# cost fields differ; every other stat is identical to the *_taunt / kagemaru /
+# *_push versions above.
+#
+# WHY UNIFORM. Current prices are mixed (taunt 2, slow 3, push 3), which makes
+# "is the kit priced wrong" unanswerable — a change could be right for one and
+# wrong for another. A uniform sweep answers the decisive question first: is
+# there ANY price at which the control kit stops costing win rate? If the
+# deficit bottoms out and is still negative, price is the wrong knob and the
+# fix is upstream (playtest-metrics §19.2: the limits they exempt are loose).
+#
+# Reference points: an attack is 4 AP and a turn supplies 8, so 4 AP = one
+# action = the healthy band in NOTE-2026-08-15 §5. 1 AP is near-free, which
+# that note measured as distorting rather than strengthening.
+unit id=zhengshou_taunt_c1 name=Zhengshou-T1 hp=435 atk=33 def=70 move=3 ap=10 apRegen=8 range=1 attackCost=4 guardCost=3 restCost=2 restHealPercent=10 tauntCost=1 tauntRadius=3 immuneToPush=true
+unit id=kagemaru_c1        name=Kagemaru-S1  hp=195 atk=42 def=30 move=4 ap=10 apRegen=8 range=3 attackCost=4 guardCost=3 restCost=2 restHealPercent=10 slowCost=1 slowRange=3
+unit id=momotaro_push_c1   name=Momotaro-P1  hp=300 atk=60 def=50 move=4 ap=10 apRegen=8 range=1 attackCost=4 guardCost=3 restCost=2 restHealPercent=10 pushCost=1 pushRange=1
+unit id=zhengshou_taunt_c2 name=Zhengshou-T2 hp=435 atk=33 def=70 move=3 ap=10 apRegen=8 range=1 attackCost=4 guardCost=3 restCost=2 restHealPercent=10 tauntCost=2 tauntRadius=3 immuneToPush=true
+unit id=kagemaru_c2        name=Kagemaru-S2  hp=195 atk=42 def=30 move=4 ap=10 apRegen=8 range=3 attackCost=4 guardCost=3 restCost=2 restHealPercent=10 slowCost=2 slowRange=3
+unit id=momotaro_push_c2   name=Momotaro-P2  hp=300 atk=60 def=50 move=4 ap=10 apRegen=8 range=1 attackCost=4 guardCost=3 restCost=2 restHealPercent=10 pushCost=2 pushRange=1
+unit id=zhengshou_taunt_c3 name=Zhengshou-T3 hp=435 atk=33 def=70 move=3 ap=10 apRegen=8 range=1 attackCost=4 guardCost=3 restCost=2 restHealPercent=10 tauntCost=3 tauntRadius=3 immuneToPush=true
+unit id=kagemaru_c3        name=Kagemaru-S3  hp=195 atk=42 def=30 move=4 ap=10 apRegen=8 range=3 attackCost=4 guardCost=3 restCost=2 restHealPercent=10 slowCost=3 slowRange=3
+unit id=momotaro_push_c3   name=Momotaro-P3  hp=300 atk=60 def=50 move=4 ap=10 apRegen=8 range=1 attackCost=4 guardCost=3 restCost=2 restHealPercent=10 pushCost=3 pushRange=1
+unit id=zhengshou_taunt_c4 name=Zhengshou-T4 hp=435 atk=33 def=70 move=3 ap=10 apRegen=8 range=1 attackCost=4 guardCost=3 restCost=2 restHealPercent=10 tauntCost=4 tauntRadius=3 immuneToPush=true
+unit id=kagemaru_c4        name=Kagemaru-S4  hp=195 atk=42 def=30 move=4 ap=10 apRegen=8 range=3 attackCost=4 guardCost=3 restCost=2 restHealPercent=10 slowCost=4 slowRange=3
+unit id=momotaro_push_c4   name=Momotaro-P4  hp=300 atk=60 def=50 move=4 ap=10 apRegen=8 range=1 attackCost=4 guardCost=3 restCost=2 restHealPercent=10 pushCost=4 pushRange=1
+unit id=zhengshou_taunt_c5 name=Zhengshou-T5 hp=435 atk=33 def=70 move=3 ap=10 apRegen=8 range=1 attackCost=4 guardCost=3 restCost=2 restHealPercent=10 tauntCost=5 tauntRadius=3 immuneToPush=true
+unit id=kagemaru_c5        name=Kagemaru-S5  hp=195 atk=42 def=30 move=4 ap=10 apRegen=8 range=3 attackCost=4 guardCost=3 restCost=2 restHealPercent=10 slowCost=5 slowRange=3
+unit id=momotaro_push_c5   name=Momotaro-P5  hp=300 atk=60 def=50 move=4 ap=10 apRegen=8 range=1 attackCost=4 guardCost=3 restCost=2 restHealPercent=10 pushCost=5 pushRange=1
+
+# --- 正守 B counter experiment (2026-08-16) --------------------------------
+# Testing ONE claim: does "5 AP main action + 3 AP reserve" put the counter-
+# attack into a real decision space?
+#
+# The mechanic already exists and has never fired. ResolveCounterAttack needs
+# the defender to still hold counterCost AP at the moment it is attacked, and
+# AP resets only for the INCOMING faction — so whatever the player does not
+# spend really is still there during the enemy phase. The problem is that
+# nothing ever leaves any: at attackCost 4 a unit spends 4 + 4 of its 8 AP and
+# ends on zero.
+#
+# ⚠️ These two differ in exactly ONE field: attackCost. Same HP, ATK, DEF,
+# MOVE, range, guardCost, counterCost, AP and regen. Anything else would make
+# the comparison unattributable.
+#
+# DEF 45 is from the 正守 B hypothesis (reactive defence rather than a pure
+# wall); it is NOT the shipped 正守, which stays at DEF 70 and untouched.
+#
+# NOT a balance proposal. Neither of these is meant to be good.
+unit id=zhengshou_ctr4 name=Zhengshou-Ctr4 hp=435 atk=33 def=45 move=3 ap=10 apRegen=8 range=1 attackCost=4 guardCost=3 counterCost=3 restCost=2 restHealPercent=10
+unit id=zhengshou_ctr5 name=Zhengshou-Ctr5 hp=435 atk=33 def=45 move=3 ap=10 apRegen=8 range=1 attackCost=5 guardCost=3 counterCost=3 restCost=2 restHealPercent=10
+
+
+# --- Prompt 5: role variants x encounter affordance (2026-08-16) ------------
+# One unit per TESTABLE role variant. Each A/B pair differs in as few fields as
+# its hypothesis allows, so any A/B difference is attributable.
+#
+# 玄真 B (Armor Break) WAS absent as a RULE-GAP — the rule layer had no DEF
+# reduction. That gap was closed on 2026-08-17: ArmorBreakCommand plus a turn
+# stamp on UnitState. The set is now complete at 4 characters x 2 roles.
+#
+# ⚠️ EXPERIMENT UNITS. The shipped momotaro / genjin / kagemaru / zhengshou
+# stat blocks are untouched.
+
+# 桃太郎 A/B — damage throughput vs displacement.
+# Differ ONLY in attackCost (4 vs 5) and the push kit. Test-enforced.
+unit id=Momotaro_A name=Momotaro-A hp=300 atk=60 def=50 move=4 ap=10 apRegen=8 range=1 attackCost=4 guardCost=3 restCost=2 restHealPercent=10
+unit id=Momotaro_B name=Momotaro-B hp=300 atk=60 def=50 move=4 ap=10 apRegen=8 range=1 attackCost=5 guardCost=3 restCost=2 restHealPercent=10 pushCost=3 pushRange=1 attacksPerRound=1 skillUsesPerRound=1
+
+# 玄真 A/B — one big hit vs setting up somebody else's.
+# Differ ONLY in attackCost (5 vs 4) and the armour-break kit. ATK 90 is the
+# shipped genjin value in both.
+#
+# The -20 DEF is sized against the roster's hit-count ladder rather than picked
+# for feel, because that ladder is a cliff and a break that does not cross a
+# step buys nothing:
+#
+#   kohaku      DEF 20 -> 0   Momotaro 40 -> 60 a hit, 80 HP:  2 hits -> 2 hits
+#                             Genjin   70 -> 90 a hit, 80 HP:  2 hits -> 1 HIT
+#   kohaku_3hit DEF 20 -> 0   Momotaro 40 -> 60 a hit, 120 HP: 3 hits -> 2 HITS
+#
+# So it is worth an action on the 120 HP body and worth nothing on the 80 HP one
+# unless Genjin himself follows up. That asymmetry IS the experiment: whether a
+# skill whose value depends on who acts next produces the division of labour
+# that the 4 AP / 5 AP split failed to produce twice.
+unit id=Genjin_A name=Genjin-A hp=220 atk=90 def=35 move=3 ap=10 apRegen=8 range=1 attackCost=5 guardCost=3 restCost=2 restHealPercent=10 attacksPerRound=1
+unit id=Genjin_B name=Genjin-B hp=220 atk=90 def=35 move=3 ap=10 apRegen=8 range=1 attackCost=4 guardCost=3 restCost=2 restHealPercent=10 armorBreakCost=3 armorBreakRange=1 armorBreakAmount=20 skillUsesPerRound=1
+
+# 影丸 A/B — reach + slow vs mobility.
+unit id=Kagemaru_A name=Kagemaru-A hp=195 atk=42 def=30 move=4 ap=10 apRegen=8 range=3 attackCost=5 guardCost=3 restCost=2 restHealPercent=10 slowCost=3 slowRange=3 attacksPerRound=1 skillUsesPerRound=1
+unit id=Kagemaru_B name=Kagemaru-B hp=195 atk=42 def=30 move=5 ap=10 apRegen=8 range=1 attackCost=4 guardCost=3 restCost=2 restHealPercent=10
+
+# 正守 A/B — target redirection vs reactive defence.
+# A keeps the shipped DEF 70 wall plus Taunt; B is the DEF 45 counter build.
+unit id=Masamori_A name=Masamori-A hp=435 atk=33 def=70 move=3 ap=10 apRegen=8 range=1 attackCost=4 guardCost=3 restCost=2 restHealPercent=10 tauntCost=3 tauntRadius=3 immuneToPush=true skillUsesPerRound=1
+unit id=Masamori_B name=Masamori-B hp=435 atk=33 def=45 move=3 ap=10 apRegen=8 range=1 attackCost=4 guardCost=3 restCost=2 restHealPercent=10 counterCost=3
+
+# E4's backline: always the lowest-HP party member, so a hunter prefers it
+# unless something overrides target selection. Its damage taken IS the
+# protection measurement.
+unit id=e4_backline name=Backline hp=120 atk=40 def=20 move=3 ap=10 apRegen=8 range=2 attackCost=4 guardCost=3
+
+# E1: ranged pressure that does not one-round a solo unit.
+unit id=e1_shooter name=E1-Shooter hp=60 atk=70 def=15 move=3 ap=10 apRegen=8 range=2 attackCost=4 guardCost=3
+
+# E2: survives one turn's attack budget, and its twin cannot be shoved.
+# The anchor is what stops Push being universally applicable.
+unit id=e2_pushable name=E2-Pushable hp=160 atk=70 def=20 move=3 ap=10 apRegen=8 range=1 attackCost=4 guardCost=3
+unit id=e2_anchor   name=E2-Anchor   hp=160 atk=70 def=20 move=3 ap=10 apRegen=8 range=1 attackCost=4 guardCost=3 immuneToPush=true
+
+# E3: high MOVE is the hypothesis, so mobility stays high and lethality is what
+# was lowered to keep the encounter measurable.
+unit id=e3_sprinter name=E3-Sprinter hp=40 atk=50 def=20 move=6 ap=10 apRegen=8 range=1 attackCost=4 guardCost=3
+
+# --- SQUAD CRUCIBLE (2026-08-17) -------------------------------------------
+#
+# The four threats for gym-squad-crucible, one per lane, plus the shrine they
+# are all ultimately aimed at. Every one is tuned against a SPECIFIC member of
+# the 4x2 kit, so that no single answer covers the board:
+#
+#   sc_bruiser   180 HP  ->  Momotaro B's push (the chasm skips all 180 of it)
+#   sc_shield    DEF 35  ->  Genjin B's break  (Kagemaru does 7 -> 27 a hit)
+#   sc_assassin  MOVE 5  ->  Kagemaru A's slow (nothing else catches it)
+#   sc_sniper    range 3 ->  Masamori A's taunt (nothing else reaches it in time)
+#
+# ⚠️ EXPERIMENT UNITS, and the enemy stat blocks have NO GDD source — they are
+# built to a test-paper spec, which is why they carry the deliberately
+# non-committal sc_ prefix rather than names that would imply a design.
+
+# West lane. High HP so that killing it costs several actions — the point is
+# that shoving it into the chasm costs one, which is the price comparison the
+# lane exists to ask. ATK 85 hurts Genjin (50 a hit) and barely scratches
+# Masamori (15), so WHO holds this lane is a real answer.
+unit id=sc_bruiser  name=SC-Bruiser  hp=180 atk=85 def=20 move=3 ap=10 apRegen=8 range=1 attackCost=4 guardCost=3
+
+# Mid lane. DEF 35 is the armour-break test paper and nothing else:
+#   Kagemaru  42 ATK ->  7 a hit, broken 27  (x3.9)
+#   Momotaro  60 ATK -> 25 a hit, broken 45  (x1.8)
+#   Genjin    90 ATK -> 55 a hit, broken 75  (x1.4)
+# The weakest attacker gains the most, which is what makes the break a party
+# decision instead of a personal damage buff.
+unit id=sc_shield   name=SC-Shield   hp=140 atk=70 def=35 move=3 ap=10 apRegen=8 range=1 attackCost=4 guardCost=3
+
+# East lane, turn 2. MOVE 5 outruns every player unit (4/3/4/3), so it cannot be
+# kept away by walking — there is no ZOC in this rule layer. Slow is the only
+# handle on it. 90 HP keeps it killable in one focused turn if it is caught.
+unit id=sc_assassin name=SC-Assassin hp=90  atk=95 def=20 move=5 ap=10 apRegen=8 range=1 attackCost=4 guardCost=3
+
+# North, turn 3. THE clock: range 3 outranges everyone except Kagemaru A.
+#
+# attackCost 5 is load-bearing — at 4 it would fire twice for 100 against the
+# shrine's 100 HP and delete it the turn it arrives, which is an instant loss
+# rather than a decision. At 5 it fires once for 50, so the shrine survives two
+# volleys and the player gets a turn to answer.
+unit id=sc_sniper   name=SC-Sniper   hp=70  atk=60 def=15 move=4 ap=10 apRegen=8 range=3 attackCost=5 guardCost=3
+
+# The thing being defended. HP 100 makes it the lowest-HP unit on the field, so
+# the hunter AI profile prefers it without needing a "target the objective"
+# profile that does not exist.
+#
+# ⚠️ That preference is EMERGENT, not guaranteed: any player unit that drops
+# below 100 HP steals the hunter's attention. Watch for that flip rather than
+# assuming the sniper is always on the shrine.
+unit id=sc_shrine   name=SC-Shrine   hp=100 atk=1  def=10 move=0 ap=0  range=1 attackCost=1 guardCost=1
+
+# --- AP ECONOMY A/B (2026-08-16) -------------------------------------------
+#
+# The B arm of the first Stage experiment: "does a 3 AP remainder every turn
+# produce a decision the 4 AP economy does not have?" (prototype-loop.md,
+# OD-33). It is the ONLY thing in this pair that differs.
+#
+# THIS IS A COPY OF momotaro WITH attackCost 4 -> 5 AND NOTHING ELSE.
+# No skills, no stat edit. Compare the two lines directly:
+#
+#   momotaro      ... range=1 attackCost=4 guardCost=3 restCost=2 ...
+#   momotaro_ap5  ... range=1 attackCost=5 guardCost=3 restCost=2 ...
+#
+# Momotaro_B was NOT reused for this: it carries pushCost=3, which would put a
+# second variable (displacement) into a one-variable experiment.
+#
+# WHY THE NUMBER MATTERS. Both arms get the same 8 AP a turn (cap 10, OD-21):
+#   4 AP -> 8 divides evenly    -> two attacks, remainder 0
+#   5 AP -> 8 does not divide   -> one attack, remainder 3
+# So the remainder's competitor is NEXT turn's second attack: holding >= 2 AP
+# reaches the cap of 10 and buys a double attack, while spending it on movement
+# or Guard does not. The trade-off moves from inside the turn to across turns.
+#
+# ⚠️ EXPERIMENT UNIT. attackCost 4 remains the baseline (OD-01). This line does
+# not propose changing it, and nothing else in the project references this id.
+unit id=momotaro_ap5 name=Momotaro-AP5 hp=300 atk=60 def=50 move=4 ap=10 apRegen=8 range=1 attackCost=5 guardCost=3 restCost=2 restHealPercent=10

@@ -1,0 +1,52 @@
+# GYM — Experiment 10: everything at once, but only after the parts were measured.
+#
+# The design notes are explicit that this comes LAST, because a combined level
+# cannot tell you which factor caused what. It is built here as a CHECK: each
+# ingredient was measured alone first, so the question is only whether they
+# still behave the way they did in isolation when put together.
+#
+# What went in, and what each one was measured to do on its own:
+#
+#   geometry (three lanes, wall row y=8)   M6 26/43/29 — routes stay live      §9.3
+#   enemies on both sides                  M7 round-1 reach 0 — travel needed  §10.5
+#   one 3-hit elite                        residue exists, spare action real   §10.4
+#   one 1-hit minion                       the thing a spare action buys       §10.4
+#   two range-2 shooters                   the only lever that kept M5 AND M6  §9.6
+#   one growth unit at the far end         beats every ordering heuristic      §12.3
+#
+# Deliberately NOT included: Zhengshou (measured to flatten the M5 gap from 23
+# to 3, §9.5) and the percentage damage model (undecided, OD-27).
+#
+# The prediction worth writing down before running it: the growth unit should
+# dominate the outcome the way it did alone, because nothing else here competes
+# for the same axis. If it does not, the factors interact and §2.3 of the
+# four-factor note is right that they stop being separable.
+
+encounter id=gym-integrated name=INTEGRATED
+objective type=rout
+
+map
+########################
+#......................#
+#.....#.........#......#
+###.###.........###ff###
+###.###.........###ff###
+###.###.........###ff###
+###.###.........###ff###
+###.###.........###ff###
+###.#######..#######.###
+#......................#
+#..ff....######...ff...#
+#........######........#
+#........######........#
+#......................#
+#..ff.........ff.......#
+########################
+endmap
+
+spawn faction=player unit=momotaro x=11 y=13
+
+spawn faction=enemy unit=kohaku_3hit     x=12 y=1  ai=cautious
+spawn faction=enemy unit=kohaku_bowfair  x=20 y=1  ai=hunter
+spawn faction=enemy unit=kohaku_1hit     x=2  y=13 ai=rusher
+spawn faction=enemy unit=kohaku_growth   x=20 y=4  ai=cautious

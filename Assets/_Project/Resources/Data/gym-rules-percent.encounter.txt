@@ -1,0 +1,41 @@
+# GYM — damage model B: ATK x (100 - DEF)%, DEF capped at 90.
+#
+# Paired with gym-rules-percent.encounter.txt, which is byte-for-byte identical
+# except for the rules line. The pair exists to answer one question:
+#
+#   does "DEF subtracts a flat amount" or "DEF prevents a percentage" produce
+#   a more interesting defensive unit?
+#
+# Both player units are present on purpose. Under subtraction Zhengshou's DEF
+# 70 against ATK 100 leaves 30 through; under percentage the same 70 leaves 30
+# through as well — they happen to agree at exactly this pair of numbers, and
+# they disagree everywhere else. kohaku_tank (DEF 45) is in the roster for the
+# same reason from the other side.
+
+encounter id=gym-rules-percent name=RULES-percent
+objective type=rout
+rules damage=percent
+
+map
+################
+#..............#
+#..............#
+#..............#
+#..............#
+#..............#
+#..............#
+#..............#
+################
+endmap
+
+spawn faction=player unit=momotaro  x=2 y=3
+# 2026-08-18: 正守 由 zhengshou 換成 Masamori_A（專案負責人裁決）。
+# HP 435 / ATK 33 / DEF 70 / MOVE 3 逐欄不變，所以本檔關於 DEF 70 的推論仍然成立。
+# 新增的是【嘲諷】3 AP、免疫擊退、每回合技能 1 次 —— 這會移動本圖的量測基線，
+# 換手之前跑出來的數字不能與之後的直接比較。
+spawn faction=player unit=Masamori_A x=2 y=5
+
+spawn faction=enemy unit=kohaku      x=6 y=2 ai=rusher
+spawn faction=enemy unit=kohaku      x=6 y=6 ai=rusher
+spawn faction=enemy unit=kohaku_tank x=7 y=4 ai=cautious
+spawn faction=enemy unit=kohaku_1hit x=5 y=4 ai=hunter

@@ -1,0 +1,88 @@
+# GYM. A candidate OPENING stage, built against a measured player loop.
+#
+# THE LOOP IT IS BUILT AGAINST (專案負責人, 2026-08-15, real play):
+#   「移動到小怪 4 格附近等他靠近，接著下回合兩刀劈死。保留跟不保留都差不多。」
+#
+# That loop is optimal for four separate reasons, and none of them is "not
+# enough skills". Each row below is one feature aimed at exactly one reason:
+#
+#   why the loop wins                          what this map does about it
+#   ----------------------------------------   ---------------------------------
+#   1  kohaku dies in exactly 2 hits = exactly  kohaku_3hit needs 3 from Momotaro
+#      one turn's attack budget, so EP          and 2 from Genjin. The party's
+#      residue is 0 and no action is ever       damage now decides how many
+#      spare                                    actions a kill costs.
+#   2  enemies close in unasked (OD-16), so     two test_turret (MOVE 0, range 3)
+#      waiting is free and safer than           never come. Waiting stops being
+#      advancing                                free the moment they are the
+#                                               only thing left.
+#   3  pulling one at a time holds Exposure     two kohaku_bowfair (range 2) and
+#      at 1, the minimum                        two flankers already south of the
+#                                               wall. You cannot fight a queue.
+#   4  banking AP buys nothing                  every skill costs 2-3 AP against
+#                                               a 4 AP attack, so holding AP back
+#                                               is now a real trade.
+#
+# GEOMETRY. One wall (y=4), three gaps, and the turrets decide what each costs:
+#
+#   west  x=2      1 wide, NO turret covers it. Safest, but four units take
+#                  four turns to funnel through — the route-width x party-size
+#                  interaction the party round guessed at and never tested.
+#   mid   x=7,8    2 wide, shortest, and turret (8,2) covers both cells.
+#   east  x=12,13  2 wide, turret (13,2) covers both, and the ground north of
+#                  it is forest at 2 AP a cell.
+#
+# The block at x=6-9 / y=6-7 sits directly under the mid gap on purpose. Without
+# it the mid gap is straight above the party and "which route" is arithmetic —
+# the mistake gym-big-split made. With it the three routes cost roughly
+# 10 / 11 / 12, so what separates them is turret fire and width, not length.
+#
+# ⚠️ THIS IS AN EXPERIMENT FILE, NOT STAGE 01. stage01.encounter is untouched.
+# Whether any of this belongs in the real opening is OD-31, undecided.
+#
+# Controls that must be run beside it, or the numbers mean nothing:
+#   gym-opening-noskill  same party, control kit switched off -> price of skills
+#   gym-opening-solo     Momotaro alone -> is a 4-unit party even better
+#
+#   #  Blocking   .  Road(1)   o  Open(1)   f  Forest(2)
+#   Coordinates are (x, y), y = 0 at the TOP.
+
+encounter id=gym-opening name=OPENING-control-kit
+objective type=rout turns=20
+
+map
+################
+#..............#
+#..............#
+#...........ff.#
+##.####..###..##
+#..............#
+#...o.####.o...#
+#.....####.....#
+#..ff......ff..#
+#..............#
+#..............#
+################
+endmap
+
+# --- 討鬼團 x4 -------------------------------------------------------------
+# Spawned side by side so the party starts with the SAME exposure it would have
+# had as one unit. Spreading them at spawn would pre-solve the first decision.
+spawn faction=player unit=genjin          x=6  y=10
+spawn faction=player unit=zhengshou_taunt x=7  y=10
+spawn faction=player unit=momotaro_push   x=8  y=10
+spawn faction=player unit=kagemaru        x=9  y=10
+
+# --- the anchors: they do not come to you ---------------------------------
+spawn faction=enemy unit=test_turret     x=8  y=2  ai=rusher
+
+# --- the divisibility breakers: 3 hits from Momotaro, 2 from Genjin -------
+spawn faction=enemy unit=kohaku_3hit     x=5  y=1  ai=rusher
+spawn faction=enemy unit=kohaku_3hit     x=10 y=1  ai=rusher
+
+# --- range 2, and they hunt the lowest HP: the reason taunt exists --------
+spawn faction=enemy unit=kohaku_bowfair  x=3  y=2  ai=hunter
+
+# --- flankers already south of the wall: you cannot form a queue ----------
+spawn faction=enemy unit=kohaku          x=2  y=8  ai=cautious
+spawn faction=enemy unit=kohaku          x=13 y=8  ai=cautious

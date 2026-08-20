@@ -1,0 +1,41 @@
+# GYM. gym-lanes with the north-east rusher swapped for test_boss6. Still rout.
+#
+# The roster-only control for gym-lanes-boss6-kill, exactly as
+# gym-big-split-boss6 is for gym-big-split-boss6-kill. Under rout the boss adds
+# four required hits and no choice.
+#
+#   gym-lanes             rout, 4x kohaku          baseline
+#   gym-lanes-boss6        rout, 3x kohaku + boss   <- roster alone
+#   gym-lanes-boss6-kill   kill, same roster        <- objective alone
+#
+# test_boss6 differs from kohaku in HP only (240 vs 80). Geometry is untouched,
+# so M6 stays comparable to gym-lanes across all three.
+
+encounter id=gym-lanes-boss6 name=LANES-boss6-rout
+objective type=rout
+
+map
+########################
+#......................#
+#.....#.........#......#
+###.###.........###ff###
+###.###.........###ff###
+###.###.........###ff###
+###.###.........###ff###
+###.###.........###ff###
+###.#######..#######.###
+#......................#
+#..ff....######...ff...#
+#........######........#
+#........######........#
+#......................#
+#..ff.........ff.......#
+########################
+endmap
+
+spawn faction=player unit=momotaro x=11 y=13
+
+spawn faction=enemy unit=kohaku x=3  y=1  ai=rusher
+spawn faction=enemy unit=test_boss6 x=20 y=1  ai=rusher
+spawn faction=enemy unit=kohaku x=2  y=13 ai=cautious
+spawn faction=enemy unit=kohaku x=21 y=10 ai=hunter

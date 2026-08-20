@@ -1,0 +1,52 @@
+# GYM. Skill-cost sweep, rung 2: all three skills cost 2 AP.
+#
+# Built on gym-opening-clock30, NOT on gym-opening. The 20-round clock was
+# measured (playtest-metrics §20.0) to dominate every strategy that spends
+# tempo — the defensive lines were losing races, not fights — so pricing a
+# skill against it would price it against the clock instead.
+#
+# Map, enemies, spawn cells, AI and objective are byte-identical to
+# gym-opening-clock30. Only tauntCost / slowCost / pushCost differ.
+#
+# Reference: an attack is 4 AP, a turn supplies 8. So rung 4 is "one whole
+# action", the healthy band in NOTE-2026-08-15 §5; rung 1 is near-free, which
+# that note measured as distorting rather than strengthening.
+encounter id=gym-opening-skill2 name=OPENING-skill2
+objective type=rout turns=30
+
+map
+################
+#..............#
+#..............#
+#...........ff.#
+##.####..###..##
+#..............#
+#...o.####.o...#
+#.....####.....#
+#..ff......ff..#
+#..............#
+#..............#
+################
+endmap
+
+# --- 討鬼團 x4 -------------------------------------------------------------
+# Spawned side by side so the party starts with the SAME exposure it would have
+# had as one unit. Spreading them at spawn would pre-solve the first decision.
+spawn faction=player unit=genjin          x=6  y=10
+spawn faction=player unit=zhengshou_taunt_c2 x=7  y=10
+spawn faction=player unit=momotaro_push_c2 x=8  y=10
+spawn faction=player unit=kagemaru_c2        x=9  y=10
+
+# --- the anchors: they do not come to you ---------------------------------
+spawn faction=enemy unit=test_turret     x=8  y=2  ai=rusher
+
+# --- the divisibility breakers: 3 hits from Momotaro, 2 from Genjin -------
+spawn faction=enemy unit=kohaku_3hit     x=5  y=1  ai=rusher
+spawn faction=enemy unit=kohaku_3hit     x=10 y=1  ai=rusher
+
+# --- range 2, and they hunt the lowest HP: the reason taunt exists --------
+spawn faction=enemy unit=kohaku_bowfair  x=3  y=2  ai=hunter
+
+# --- flankers already south of the wall: you cannot form a queue ----------
+spawn faction=enemy unit=kohaku          x=2  y=8  ai=cautious
+spawn faction=enemy unit=kohaku          x=13 y=8  ai=cautious

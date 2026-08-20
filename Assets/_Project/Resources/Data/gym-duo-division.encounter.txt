@@ -1,0 +1,105 @@
+# GYM. DUO DIVISION — does a mixed 4 AP / 5 AP party divide the work?
+#
+# Experiment group. Its control is gym-duo-division-flat, which is THIS MAP with
+# Genjin_A (attackCost 5) swapped for genjin (attackCost 4) and NOTHING else.
+# Those two unit lines are identical except for that one field. Read them
+# together or not at all. Plan: docs/05-development/prototype-loop.md, OD-33.
+#
+# WHY THIS EXISTS. The first Stage experiment (gym-turret / gym-turret-ap5, solo
+# Momotaro) produced a clean NEGATIVE: the 3 AP remainder was managed but never
+# cost anything — "reckon I could not be killed" — so both options were viable
+# and nothing was traded. Log: docs/06-validation/stage-log-2026-08-16-ap-economy.md.
+# Two structural faults caused it, and both are fixed here:
+#   1  nothing could kill the party        -> see LETHALITY below
+#   2  a threat-free window with spare AP  -> the turret covers the spawn
+# The third finding was that the AP split is a PARTY property (the roles are
+# written for characters to cover each other), which a solo map cannot show.
+#
+# HYPOTHESIS
+#   H-DUO  A 4 AP unit and a 5 AP unit in the same party divide the work by
+#          hit-count arithmetic rather than by preference: the 5 AP unit opens,
+#          the 4 AP unit finishes, and the leftover AP has somewhere to be.
+#
+# FALSIFIED IF (any one)
+#   F1  the two units' action mixes are indistinguishable -> no division exists
+#   F2  the control (uniform 4 AP) plays the same way     -> the split did
+#                                                            nothing, party size
+#                                                            did the work
+#   F3  nothing is ever given up                          -> the previous
+#                                                            failure, repeated
+#
+# INVALID IF
+#   I1  Genjin dies in round 1 before a choice is made -> too lethal, not a test
+#   I2  the party wins without taking meaningful damage -> fault 1 not fixed
+#
+# THE ARITHMETIC THIS MAP IS BUILT ON (computed before building, not after)
+#
+#   Momotaro  ATK 60, attack 4 AP -> 8 AP buys TWO hits of 40  = 80 a turn
+#   Genjin_A  ATK 90, attack 5 AP -> 8 AP buys ONE hit of 70   = 70 a turn
+#                                    (two hits need the 10 AP cap, i.e. banking)
+#
+#   vs kohaku      DEF 20, HP  80:  Momotaro 2 hits | Genjin 2 hits
+#   vs kohaku_3hit DEF 20, HP 120:  Momotaro 3 hits | Genjin 2 hits
+#
+#   THE CELL THIS MAP IS REALLY ABOUT:
+#     Genjin 70 + Momotaro 40 = 110 against kohaku_3hit's 120.
+#     TEN SHORT. One hit each does not kill it; somebody has to commit a second
+#     action, and whoever does gives up whatever else that action was for.
+#     Against the 80 HP kohaku the same pair is 110 vs 80 — an overkill of 30,
+#     and Momotaro still holds 4 AP afterwards. The same two actions are
+#     wasteful on one target and insufficient on the other.
+#
+# LETHALITY — the thing the last map got wrong
+#   kohaku / kohaku_3hit / test_turret all carry ATK 100 and attack twice.
+#     -> vs Momotaro (DEF 50): 50 a hit, 100 a turn.  300 HP = 3 turns
+#     -> vs Genjin   (DEF 35): 65 a hit, 130 a turn.  220 HP = 1.7 turns
+#   Party 520 HP against up to 300 a turn if everything is allowed to engage.
+#   Genjin CAN die. That is the point: it is what makes standing in front, and
+#   spending AP on position rather than damage, cost something.
+#
+# THE TURRET IS AT (4,3) ON PURPOSE. Its 3 cells reach BOTH spawn squares, so
+# there is no free-rest window to retreat into: the fight is taxed from round 1.
+# The only untaxed ground is the x=1 corners, and going there means giving up
+# the tempo the melee will not give you. It is also ai=hunter, so it shoots the
+# LOWEST HP unit — it ignores whoever is standing in front, which is the one
+# threat structure §18.5 measured as missing ("not enough threats that get past
+# the wall"). Watch for the moment Momotaro drops below Genjin and it switches.
+#
+# ROSTER NOTE. Momotaro is the SHIPPED stat block, untouched. Genjin_A is the
+# existing 5 AP role variant — no new unit was added for this experiment, and
+# no Armor Break: that is a RULE-GAP needing a new Command + UnitState +
+# StateHasher, and it would move the A4 golden hash. Data only.
+#
+# SPAWNS ARE SYMMETRIC ABOUT y=3 AND BOTH PLAYERS SIT ON x=2. Neither starts
+# closer to the enemies, so "who stands in front" is a decision the player makes
+# rather than one the spawn made for them.
+#
+#   #  Blocking   .  Road(1)
+#   Coordinates are (x, y), y = 0 at the TOP.
+
+encounter id=gym-duo-division name=DUO-division-4+5
+
+objective type=rout
+
+map
+##########
+#........#
+#........#
+#........#
+#........#
+#........#
+##########
+endmap
+
+# --- 討鬼團 x2: the mixed economy ------------------------------------------
+spawn faction=player unit=momotaro x=2 y=2
+spawn faction=player unit=Genjin_A x=2 y=4
+
+# --- the tax that reaches the back line ------------------------------------
+# MOVE 0, range 3, and it picks the lowest HP target. It covers both spawns.
+spawn faction=enemy unit=test_turret  x=4 y=3 ai=hunter
+
+# --- staggered melee: rusher arrives first, cautious trails ----------------
+# 80 HP dies to one turn of Momotaro; 120 HP does not, and that is the split.
+spawn faction=enemy unit=kohaku       x=7 y=2 ai=rusher
+spawn faction=enemy unit=kohaku_3hit  x=7 y=4 ai=cautious

@@ -1,0 +1,47 @@
+# GYM ARENA — one variable against gym-arena-contact: DIVISIBILITY.
+#
+# Same open map, same "everyone in reach on round 1", but the enemy roster is
+# Scenario A from the target-priority note (§7.1):
+#
+#   3x kohaku_1hit   1 hit to kill, 20 damage a turn   TPA 20
+#   1x kohaku_3hit   3 hits to kill, 100 damage a turn TPA 33
+#
+# Momotaro gets two attacks a turn, and the elite needs three. So on the turn
+# he starts on the elite there is one action left that cannot finish it — and
+# that spare action can kill a minion outright. The priority formula says
+# "elite first, it has the higher threat per action"; the paper model says the
+# formula is 12% worse than actually best.
+#
+# This is the ONE configuration out of fifteen in that note's sweep (§5.1)
+# where the ordering formula is measurably wrong. It is here to check whether
+# the running game reproduces it, because if it does not, the paper model does
+# not describe this game.
+#
+# The control is gym-arena-contact: 4x kohaku, 2 hits each, no spare action
+# ever. Everything else about the two files is identical.
+#
+# PREDICTION:
+#   M1b per-unit action mixes MORE varied than gym-arena-contact
+#   M5 win rate higher (the roster is weaker overall — read the gap, not the level)
+
+encounter id=gym-arena-residue name=ARENA-residue
+objective type=rout
+
+map
+################
+#..............#
+#..............#
+#..............#
+#..............#
+#..............#
+#..............#
+#..............#
+################
+endmap
+
+spawn faction=player unit=momotaro x=2 y=4
+
+spawn faction=enemy unit=kohaku_1hit x=4 y=2 ai=rusher
+spawn faction=enemy unit=kohaku_1hit x=4 y=6 ai=rusher
+spawn faction=enemy unit=kohaku_1hit x=2 y=2 ai=cautious
+spawn faction=enemy unit=kohaku_3hit x=5 y=4 ai=hunter

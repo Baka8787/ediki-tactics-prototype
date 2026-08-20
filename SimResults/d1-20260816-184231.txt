@@ -1,0 +1,80 @@
+=== Ediki Stage 01 Prototype — Metrics ===
+runs per cell : 50
+base seed     : 1
+noise         : 15%  (sampling device, not a rule)
+round cap     : 60  (safety net, not a rule — R-WIN-04)
+
+=== gym-e3-slowcontrol.encounter — encounter profile (derived) ===
+  profile: Kagemaru_A   HP 195   attacks/turn 1   lethal exposure 5
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    e3_sprinter       2     2        40     20        0           800
+    no target leaves a spare action — focus fire is the only play
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+gym-e3-slowcontrol.encounter / slow-instrument  (50 runs)
+  M5 win rate      : 52%  (26W / 24L / 0unresolved)
+  M1 top action mix: Attack+Wait+Slow  25% of player turns
+  M1 variety       : 22 distinct mixes, top-3 = 56%
+                     Attack+Wait+Slow 68   Move+Wait 48   Wait+Slowx2 36   
+  M1b per unit     : 22 distinct, top 25%, top-3 = 56%   <- compare THIS across party sizes
+  M1b skill use    : 75% of unit-turns issued a skill
+  M2 AP waste      : 13%
+  M3 turns         : mean 5.36  min 4  max 7
+  M4 exposure      : mean 1.14   [0]32 [1]165 [2]71 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 2.51   contact turns 4.36
+                     r2:50  r3:49  r4:1  
+  final player HP  : mean 27
+  role metrics     : 50 battle(s), 268 player round(s)
+    player         : 127 attacks, 53 kills, 2794 damage dealt   skills: push 0 / slow 248 / taunt 0
+    taken          : 435 enemy attacks, 8590 damage received
+    counter        : 0 fired of 0 opportunities  (n/a)   damage 0
+    AP spent       : attack 635  move 455  skill 744  guard 24  rest 16  counter 0
+    AP reserved    : 634 carried into enemy phases  (mean 2.36 per round)   regen wasted 288   rejected commands 0
+    per player unit:
+      Kagemaru-A      dmg    8590  share 100%   attacks taken 435   mean final HP 27/195  (14%)
+  Occupancy heatmap  24x6   unit-rounds standing here   total 660  peak 109  over 50 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901234567890123
+    0  ########################
+    1  #244239*****4*.....*...#
+    2  #..315*7***671.12......#
+    3  #..13443*94532..4......#
+    4  #....23.***34...2......#
+    5  ########################
+
+  Clash heatmap  24x6   damaging effects landed here   total 562  peak 155  over 50 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901234567890123
+    0  ########################
+    1  #.621.*******1.........#
+    2  #...252*4*1622..2......#
+    3  #..8.2*.*.*.9...5......#
+    4  #....6.25*28....2......#
+    5  ########################
+
+=== threshold check (docs/06-validation/playtest-metrics.md) ===
+gym-e3-slowcontrol.encounter / slow-instrument:
+  M1 < 70%   : PASS  (25%)
+  M2 < 15%   : PASS  (13%)
+  M3 6-10    : FAIL  (5.36)
+  M4 <= 2    : PASS  (1.14)
+
+M5 comparison (corridor-hold should beat charge, and the chokepoint map
+should beat the open control — otherwise the map taught nothing):
+  gym-e3-slowcontrol.encounter / slow-instrument : 52%
+
+=== anomalies (see SimResults/anomalies.json for the seeds) ===
+  0 of 50 battles flagged
+  TIMEOUT_UNRESOLVED            0
+  ABORTED_BY_REJECTED_COMMAND   0
+  DEFEAT_WITH_HIGH_REMAINING_HP 0
+  UNEXPECTED_SKILL_USAGE        0
+
+=== Strategy Persona Matrix ===
+  gym-e3-slowcontrol.encounter
+    Strategy            N    Win%   AvgRounds   AvgHP%   Timeout%   SkillActs(strategy/noise)
+    slow-instrument     50     52%        5.36    14.3%         0%          247/1
+
+=== Pairwise comparison (screening heuristic) ===
+  comparison unavailable — the configured pair is not present on any encounter

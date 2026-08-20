@@ -1,0 +1,1593 @@
+=== Ediki Stage 01 Prototype — Metrics ===
+runs per cell : 200
+base seed     : 1
+noise         : 15%  (sampling device, not a rule)
+round cap     : 60  (safety net, not a rule — R-WIN-04)
+
+=== gym-opening — encounter profile (derived) ===
+  profile: genjin   HP 220   attacks/turn 2   lethal exposure 2  <- two attackers is death; one mistake ends the battle
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    test_turret       2     2       130     65        0          1100
+    kohaku_3hit       2     2       130     65        0          1300
+    kohaku_bowfair    2     2       130     65        0          1200
+    kohaku            2     2       130     65        0           500
+    no target leaves a spare action — focus fire is the only play
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+  profile: zhengshou_taunt   HP 435   attacks/turn 2   lethal exposure 8
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    test_turret       2     7        60      8        1          1200
+    kohaku_3hit       2    10        60      6        0          1400
+    kohaku_bowfair    2     7        60      8        1          1300
+    kohaku            2     7        60      8        1           600
+    at least one target leaves a spare action — what to spend it on is a choice
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+  profile: momotaro_push   HP 300   attacks/turn 2   lethal exposure 3
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    test_turret       2     2       100     50        0          1100
+    kohaku_3hit       2     3       100     33        1          1400
+    kohaku_bowfair    2     2       100     50        0          1300
+    kohaku            2     2       100     50        0           600
+    at least one target leaves a spare action — what to spend it on is a choice
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+  profile: kagemaru   HP 195   attacks/turn 2   lethal exposure 2  <- two attackers is death; one mistake ends the battle
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    test_turret       2     4       140     35        0           800
+    kohaku_3hit       2     6       140     23        0          1100
+    kohaku_bowfair    2     4       140     35        0           700
+    kohaku            2     4       140     35        0           300
+    no target leaves a spare action — focus fire is the only play
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+gym-opening / corridor-hold  (200 runs)
+  M5 win rate      : 40%  (81W / 53L / 66unresolved)
+  M1 top action mix: Guard+Wait  10% of player turns
+  M1 variety       : 607 distinct mixes, top-3 = 24%
+                     Guard+Wait 879   Guardx2+Waitx2 667   Move+Guardx2+Waitx2 402   
+  M1b per unit     : 44 distinct, top 31%, top-3 = 63%   <- compare THIS across party sizes
+  M2 AP waste      : 34%
+  M3 turns         : mean 30.39  min 10  max 59
+  M4 exposure      : mean 0.29   [0]13698 [1]3143 [2]656 [3]196 [4]45 [5]5 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 7.44   contact turns 48.86
+                     r2:411  r3:208  r4:183  r5:255  r6:109  r7:26  r8:14  r9:7  r10:11  r11:20  r12:21  r13:14  r14:12  r15:15  r16:14  r17:14  r18:5  r19:9  r20:10  r21:11  r22:8  r23:6  r24:7  r25:8  r26:8  r27:5  r28:4  r29:7  r30:5  r31:4  r32:8  r33:2  r34:5  r35:5  r36:2  r37:6  r38:6  r39:6  r40:4  r41:3  r42:3  r43:3  r44:2  r45:1  r47:1  r48:2  r50:1  r51:1  r52:1  r53:1  r55:3  r58:2  r60:1  never:100
+  M6 route use     : 183/200 runs crossed, top route x=2 49%
+                     x=2:91  x=7:39  x=8:22  x=12:10  x=13:21  never:17
+                     per unit: x=2:118  x=7:111  x=8:62  x=12:39  x=13:37  
+  final player HP  : mean 346
+
+gym-opening / tpa-order  (200 runs)
+  M5 win rate      : 41%  (83W / 50L / 67unresolved)
+  M1 top action mix: Guard+Wait  12% of player turns
+  M1 variety       : 617 distinct mixes, top-3 = 24%
+                     Guard+Wait 1002   Guardx2+Waitx2 586   Move+Guard+Wait 401   
+  M1b per unit     : 44 distinct, top 31%, top-3 = 62%   <- compare THIS across party sizes
+  M2 AP waste      : 34%
+  M3 turns         : mean 30.64  min 10  max 57
+  M4 exposure      : mean 0.28   [0]13645 [1]3136 [2]626 [3]180 [4]38 [5]2 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 7.68   contact turns 47.55
+                     r2:411  r3:208  r4:183  r5:252  r6:114  r7:23  r8:14  r9:8  r10:9  r11:18  r12:17  r13:14  r14:10  r15:16  r16:18  r17:11  r18:7  r19:7  r20:9  r21:8  r22:9  r23:6  r24:5  r25:7  r26:5  r27:9  r28:7  r29:4  r30:4  r31:3  r32:10  r33:2  r34:3  r35:3  r36:3  r37:7  r38:4  r39:6  r40:4  r41:5  r42:2  r43:2  r44:4  r45:1  r46:2  r47:1  r48:3  r49:2  r50:1  r51:2  r52:1  r53:1  r55:3  r56:2  r58:2  r59:1  r60:3  never:104
+  M6 route use     : 181/200 runs crossed, top route x=2 48%
+                     x=2:87  x=7:45  x=8:22  x=12:8  x=13:19  never:19
+                     per unit: x=2:109  x=7:114  x=8:61  x=12:45  x=13:35  
+  final player HP  : mean 346
+
+gym-opening / control-hold  (200 runs)
+  M5 win rate      : 25%  (50W / 86L / 64unresolved)
+  M1 top action mix: Guard+Wait  11% of player turns
+  M1 variety       : 616 distinct mixes, top-3 = 24%
+                     Guard+Wait 829   Move+Guard+Wait 515   Guardx2+Waitx2 404   
+  M1b per unit     : 43 distinct, top 25%, top-3 = 59%   <- compare THIS across party sizes
+  M2 AP waste      : 30%
+  M3 turns         : mean 24.91  min 7  max 60
+  M4 exposure      : mean 0.39   [0]10912 [1]3063 [2]860 [3]297 [4]67 [5]3 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 7.25   contact turns 52.62
+                     r2:409  r3:172  r4:212  r5:270  r6:86  r7:31  r8:15  r9:12  r10:14  r11:12  r12:19  r13:19  r14:16  r15:16  r16:14  r17:13  r18:6  r19:2  r20:9  r21:2  r22:8  r23:5  r24:3  r25:4  r26:6  r27:7  r28:8  r29:6  r30:4  r31:6  r32:1  r33:1  r34:3  r35:3  r36:4  r37:1  r38:1  r39:2  r40:1  r41:1  r42:3  r43:2  r44:2  r45:2  r46:2  r47:2  r48:2  r49:2  r50:6  r51:3  r52:4  r53:1  r54:3  r55:2  r57:1  r60:2  never:137
+  M6 route use     : 178/200 runs crossed, top route x=2 52%
+                     x=2:94  x=7:37  x=8:21  x=12:14  x=13:12  never:22
+                     per unit: x=2:126  x=7:90  x=8:42  x=12:26  x=13:24  
+  final player HP  : mean 237
+
+gym-opening / charge  (200 runs)
+  M5 win rate      : 8%  (16W / 184L / 0unresolved)
+  M1 top action mix: Attackx2+Wait  14% of player turns
+  M1 variety       : 244 distinct mixes, top-3 = 21%
+                     Attackx2+Wait 280   Movex4+Attack+Waitx4 81   Move+Wait 69   
+  M1b per unit     : 35 distinct, top 27%, top-3 = 60%   <- compare THIS across party sizes
+  M2 AP waste      : 22%
+  M3 turns         : mean 9.91  min 6  max 20
+  M4 exposure      : mean 1.06   [0]1208 [1]2412 [2]974 [3]260 [4]16 [5]1 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 3.53   contact turns 16.58
+                     r2:586  r3:257  r4:243  r5:65  r6:51  r7:32  r8:12  r9:13  r10:11  r11:10  r12:15  r13:10  r14:5  r15:2  r16:1  r19:1  never:286
+  M6 route use     : 150/200 runs crossed, top route x=12 50%
+                     x=2:7  x=7:22  x=8:26  x=12:76  x=13:19  never:50
+                     per unit: x=2:15  x=7:73  x=8:46  x=12:86  x=13:48  
+  final player HP  : mean 15
+
+=== gym-opening-noskill — encounter profile (derived) ===
+  profile: genjin   HP 220   attacks/turn 2   lethal exposure 2  <- two attackers is death; one mistake ends the battle
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    test_turret       2     2       130     65        0          1100
+    kohaku_3hit       2     2       130     65        0          1300
+    kohaku_bowfair    2     2       130     65        0          1200
+    kohaku            2     2       130     65        0           500
+    no target leaves a spare action — focus fire is the only play
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+  profile: zhengshou   HP 435   attacks/turn 2   lethal exposure 8
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    test_turret       2     7        60      8        1          1200
+    kohaku_3hit       2    10        60      6        0          1400
+    kohaku_bowfair    2     7        60      8        1          1300
+    kohaku            2     7        60      8        1           600
+    at least one target leaves a spare action — what to spend it on is a choice
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+  profile: momotaro   HP 300   attacks/turn 2   lethal exposure 3
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    test_turret       2     2       100     50        0          1100
+    kohaku_3hit       2     3       100     33        1          1400
+    kohaku_bowfair    2     2       100     50        0          1300
+    kohaku            2     2       100     50        0           600
+    at least one target leaves a spare action — what to spend it on is a choice
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+  profile: kagemaru_plain   HP 195   attacks/turn 2   lethal exposure 2  <- two attackers is death; one mistake ends the battle
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    test_turret       2     4       140     35        0           800
+    kohaku_3hit       2     6       140     23        0          1100
+    kohaku_bowfair    2     4       140     35        0           700
+    kohaku            2     4       140     35        0           300
+    no target leaves a spare action — focus fire is the only play
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+gym-opening-noskill / corridor-hold  (200 runs)
+  M5 win rate      : 44%  (89W / 41L / 70unresolved)
+  M1 top action mix: Guard+Wait  10% of player turns
+  M1 variety       : 622 distinct mixes, top-3 = 23%
+                     Guard+Wait 893   Guardx2+Waitx2 720   Move+Guardx2+Waitx2 419   
+  M1b per unit     : 45 distinct, top 30%, top-3 = 62%   <- compare THIS across party sizes
+  M2 AP waste      : 35%
+  M3 turns         : mean 33.58  min 8  max 60
+  M4 exposure      : mean 0.28   [0]14648 [1]3141 [2]698 [3]183 [4]34 [5]4 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 8.01   contact turns 51.80
+                     r2:413  r3:215  r4:181  r5:259  r6:103  r7:24  r8:8  r9:6  r10:11  r11:17  r12:19  r13:20  r14:11  r15:14  r16:12  r17:6  r18:15  r19:8  r20:8  r21:14  r22:4  r23:7  r24:9  r25:8  r26:9  r27:2  r28:6  r29:6  r30:6  r31:5  r32:6  r33:10  r34:4  r35:6  r36:5  r37:6  r38:3  r39:4  r40:9  r42:5  r43:1  r44:4  r45:2  r46:1  r47:3  r49:7  r50:2  r51:2  r52:2  r53:1  r55:3  r57:2  r58:1  r59:3  never:82
+  M6 route use     : 184/200 runs crossed, top route x=2 41%
+                     x=2:77  x=7:47  x=8:29  x=12:18  x=13:13  never:16
+                     per unit: x=2:102  x=7:124  x=8:62  x=12:59  x=13:32  
+  final player HP  : mean 364
+
+gym-opening-noskill / tpa-order  (200 runs)
+  M5 win rate      : 48%  (96W / 36L / 68unresolved)
+  M1 top action mix: Guard+Wait  12% of player turns
+  M1 variety       : 620 distinct mixes, top-3 = 24%
+                     Guard+Wait 1042   Guardx2+Waitx2 618   Move+Guard+Wait 427   
+  M1b per unit     : 47 distinct, top 30%, top-3 = 62%   <- compare THIS across party sizes
+  M2 AP waste      : 34%
+  M3 turns         : mean 33.83  min 9  max 60
+  M4 exposure      : mean 0.28   [0]14238 [1]3222 [2]649 [3]175 [4]26 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 7.99   contact turns 48.63
+                     r2:413  r3:215  r4:181  r5:261  r6:104  r7:19  r8:8  r9:6  r10:9  r11:13  r12:18  r13:21  r14:12  r15:11  r16:14  r17:9  r18:11  r19:12  r20:13  r21:10  r22:4  r23:12  r24:8  r25:6  r26:13  r27:4  r28:7  r29:11  r30:6  r31:10  r32:5  r33:6  r34:4  r35:3  r36:6  r37:7  r38:4  r39:1  r40:4  r41:1  r42:2  r43:4  r44:5  r45:2  r46:1  r47:2  r49:5  r50:4  r51:1  r52:1  r53:1  r54:1  r55:2  r56:2  r57:1  r59:3  never:81
+  M6 route use     : 185/200 runs crossed, top route x=2 40%
+                     x=2:75  x=7:47  x=8:30  x=12:17  x=13:16  never:15
+                     per unit: x=2:96  x=7:127  x=8:67  x=12:54  x=13:31  
+  final player HP  : mean 361
+
+gym-opening-noskill / control-hold  (200 runs)
+  M5 win rate      : 44%  (89W / 41L / 70unresolved)
+  M1 top action mix: Guard+Wait  10% of player turns
+  M1 variety       : 622 distinct mixes, top-3 = 23%
+                     Guard+Wait 893   Guardx2+Waitx2 720   Move+Guardx2+Waitx2 419   
+  M1b per unit     : 45 distinct, top 30%, top-3 = 62%   <- compare THIS across party sizes
+  M2 AP waste      : 35%
+  M3 turns         : mean 33.58  min 8  max 60
+  M4 exposure      : mean 0.28   [0]14648 [1]3141 [2]698 [3]183 [4]34 [5]4 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 8.01   contact turns 51.80
+                     r2:413  r3:215  r4:181  r5:259  r6:103  r7:24  r8:8  r9:6  r10:11  r11:17  r12:19  r13:20  r14:11  r15:14  r16:12  r17:6  r18:15  r19:8  r20:8  r21:14  r22:4  r23:7  r24:9  r25:8  r26:9  r27:2  r28:6  r29:6  r30:6  r31:5  r32:6  r33:10  r34:4  r35:6  r36:5  r37:6  r38:3  r39:4  r40:9  r42:5  r43:1  r44:4  r45:2  r46:1  r47:3  r49:7  r50:2  r51:2  r52:2  r53:1  r55:3  r57:2  r58:1  r59:3  never:82
+  M6 route use     : 184/200 runs crossed, top route x=2 41%
+                     x=2:77  x=7:47  x=8:29  x=12:18  x=13:13  never:16
+                     per unit: x=2:102  x=7:124  x=8:62  x=12:59  x=13:32  
+  final player HP  : mean 364
+
+gym-opening-noskill / charge  (200 runs)
+  M5 win rate      : 6%  (13W / 187L / 0unresolved)
+  M1 top action mix: Attackx2+Wait  15% of player turns
+  M1 variety       : 256 distinct mixes, top-3 = 22%
+                     Attackx2+Wait 302   Movex4+Attack+Waitx4 78   Move+Attackx2+Wait 69   
+  M1b per unit     : 36 distinct, top 26%, top-3 = 59%   <- compare THIS across party sizes
+  M2 AP waste      : 22%
+  M3 turns         : mean 9.96  min 6  max 21
+  M4 exposure      : mean 1.09   [0]1093 [1]2422 [2]1025 [3]243 [4]6 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 3.55   contact turns 16.66
+                     r2:585  r3:257  r4:233  r5:65  r6:53  r7:26  r8:17  r9:19  r10:10  r11:7  r12:10  r13:9  r14:3  r15:5  r16:3  r17:1  r18:1  r19:1  never:295
+  M6 route use     : 145/200 runs crossed, top route x=12 44%
+                     x=2:12  x=7:21  x=8:20  x=12:64  x=13:28  never:55
+                     per unit: x=2:15  x=7:65  x=8:34  x=12:77  x=13:55  
+  final player HP  : mean 9
+
+=== gym-opening-solo — encounter profile (derived) ===
+  profile: momotaro   HP 300   attacks/turn 2   lethal exposure 3
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    test_turret       2     2       100     50        0          1100
+    kohaku_3hit       2     3       100     33        1          1400
+    kohaku_bowfair    2     2       100     50        0          1300
+    kohaku            2     2       100     50        0           600
+    at least one target leaves a spare action — what to spend it on is a choice
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+gym-opening-solo / corridor-hold  (200 runs)
+  M5 win rate      : 0%  (0W / 200L / 0unresolved)
+  M1 top action mix: Move+Guard+Wait  30% of player turns
+  M1 variety       : 32 distinct mixes, top-3 = 51%
+                     Move+Guard+Wait 409   Move+Attackx2+Wait 144   Attackx2+Wait 135   
+  M1b per unit     : 32 distinct, top 30%, top-3 = 51%   <- compare THIS across party sizes
+  M2 AP waste      : 11%
+  M3 turns         : mean 6.68  min 4  max 22
+  M4 exposure      : mean 0.92   [0]684 [1]316 [2]171 [3]108 [4]34 [5]23 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 4.21   contact turns 8.96
+                     r2:212  r3:334  r4:72  r5:95  r6:206  r7:113  r8:9  r9:1  r10:1  r12:4  r15:1  r16:2  r17:1  r19:1  never:548
+  M6 route use     : 14/200 runs crossed, top route x=13 42%
+                     x=2:5  x=7:1  x=12:2  x=13:6  never:186
+  final player HP  : mean 0
+
+gym-opening-solo / tpa-order  (200 runs)
+  M5 win rate      : 0%  (0W / 200L / 0unresolved)
+  M1 top action mix: Move+Guard+Wait  30% of player turns
+  M1 variety       : 32 distinct mixes, top-3 = 50%
+                     Move+Guard+Wait 410   Move+Attackx2+Wait 143   Attackx2+Wait 133   
+  M1b per unit     : 32 distinct, top 30%, top-3 = 50%   <- compare THIS across party sizes
+  M2 AP waste      : 11%
+  M3 turns         : mean 6.83  min 4  max 26
+  M4 exposure      : mean 0.86   [0]706 [1]323 [2]207 [3]79 [4]42 [5]9 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 4.24   contact turns 9.38
+                     r2:212  r3:334  r4:72  r5:95  r6:206  r7:113  r8:12  r9:1  r10:1  r12:4  r15:1  r16:3  r17:1  r19:1  never:544
+  M6 route use     : 15/200 runs crossed, top route x=2 40%
+                     x=2:6  x=7:1  x=12:2  x=13:6  never:185
+  final player HP  : mean 0
+
+gym-opening-solo / control-hold  (200 runs)
+  M5 win rate      : 0%  (0W / 200L / 0unresolved)
+  M1 top action mix: Move+Guard+Wait  30% of player turns
+  M1 variety       : 32 distinct mixes, top-3 = 51%
+                     Move+Guard+Wait 409   Move+Attackx2+Wait 144   Attackx2+Wait 135   
+  M1b per unit     : 32 distinct, top 30%, top-3 = 51%   <- compare THIS across party sizes
+  M2 AP waste      : 11%
+  M3 turns         : mean 6.68  min 4  max 22
+  M4 exposure      : mean 0.92   [0]684 [1]316 [2]171 [3]108 [4]34 [5]23 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 4.21   contact turns 8.96
+                     r2:212  r3:334  r4:72  r5:95  r6:206  r7:113  r8:9  r9:1  r10:1  r12:4  r15:1  r16:2  r17:1  r19:1  never:548
+  M6 route use     : 14/200 runs crossed, top route x=13 42%
+                     x=2:5  x=7:1  x=12:2  x=13:6  never:186
+  final player HP  : mean 0
+
+gym-opening-solo / charge  (200 runs)
+  M5 win rate      : 0%  (0W / 200L / 0unresolved)
+  M1 top action mix: Move+Attack+Wait  26% of player turns
+  M1 variety       : 27 distinct mixes, top-3 = 72%
+                     Move+Attack+Wait 209   Move+Wait 187   Move+Attackx2+Wait 177   
+  M1b per unit     : 27 distinct, top 26%, top-3 = 72%   <- compare THIS across party sizes
+  M2 AP waste      : 14%
+  M3 turns         : mean 3.97  min 3  max 5
+  M4 exposure      : mean 1.33   [0]60 [1]553 [2]61 [3]105 [4]11 [5]5 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 3.04   contact turns 1.47
+                     r2:202  r3:256  r4:162  r5:34  never:946
+  M6 route use     : 7/200 runs crossed, top route x=13 71%
+                     x=12:2  x=13:5  never:193
+  final player HP  : mean 0
+
+=== gym-big-split — encounter profile (derived) ===
+  profile: momotaro   HP 300   attacks/turn 2   lethal exposure 3
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    kohaku            4     2       100     50        0           600
+    no target leaves a spare action — focus fire is the only play
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+gym-big-split / corridor-hold  (200 runs)
+  M5 win rate      : 52%  (104W / 96L / 0unresolved)
+  M1 top action mix: Move+Attackx2+Wait  18% of player turns
+  M1 variety       : 41 distinct mixes, top-3 = 45%
+                     Move+Attackx2+Wait 272   Move+Guard+Wait 271   Movex3+Guard+Wait 136   
+  M1b per unit     : 41 distinct, top 18%, top-3 = 45%   <- compare THIS across party sizes
+  M2 AP waste      : 13%
+  M3 turns         : mean 7.45  min 4  max 27
+  M4 exposure      : mean 0.53   [0]833 [1]523 [2]129 [3]5 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 4.02   contact turns 5.82
+                     r2:200  r3:68  r4:166  r5:237  r6:74  r7:20  r8:6  r9:3  never:26
+  M6 route use     : 25/200 runs crossed, top route x=7 52%
+                     x=3:11  x=7:13  x=12:1  never:175
+  final player HP  : mean 64
+
+gym-big-split / tpa-order  (200 runs)
+  M5 win rate      : 52%  (104W / 96L / 0unresolved)
+  M1 top action mix: Move+Attackx2+Wait  18% of player turns
+  M1 variety       : 41 distinct mixes, top-3 = 45%
+                     Move+Attackx2+Wait 270   Move+Guard+Wait 265   Movex3+Guard+Wait 133   
+  M1b per unit     : 41 distinct, top 18%, top-3 = 45%   <- compare THIS across party sizes
+  M2 AP waste      : 13%
+  M3 turns         : mean 7.34  min 4  max 24
+  M4 exposure      : mean 0.54   [0]812 [1]524 [2]129 [3]4 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 4.01   contact turns 5.71
+                     r2:200  r3:68  r4:166  r5:238  r6:75  r7:19  r8:6  r9:2  never:26
+  M6 route use     : 23/200 runs crossed, top route x=7 56%
+                     x=3:9  x=7:13  x=12:1  never:177
+  final player HP  : mean 64
+
+gym-big-split / control-hold  (200 runs)
+  M5 win rate      : 52%  (104W / 96L / 0unresolved)
+  M1 top action mix: Move+Attackx2+Wait  18% of player turns
+  M1 variety       : 41 distinct mixes, top-3 = 45%
+                     Move+Attackx2+Wait 272   Move+Guard+Wait 271   Movex3+Guard+Wait 136   
+  M1b per unit     : 41 distinct, top 18%, top-3 = 45%   <- compare THIS across party sizes
+  M2 AP waste      : 13%
+  M3 turns         : mean 7.45  min 4  max 27
+  M4 exposure      : mean 0.53   [0]833 [1]523 [2]129 [3]5 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 4.02   contact turns 5.82
+                     r2:200  r3:68  r4:166  r5:237  r6:74  r7:20  r8:6  r9:3  never:26
+  M6 route use     : 25/200 runs crossed, top route x=7 52%
+                     x=3:11  x=7:13  x=12:1  never:175
+  final player HP  : mean 64
+
+gym-big-split / charge  (200 runs)
+  M5 win rate      : 3%  (6W / 194L / 0unresolved)
+  M1 top action mix: Move+Attack+Wait  28% of player turns
+  M1 variety       : 27 distinct mixes, top-3 = 70%
+                     Move+Attack+Wait 254   Move+Wait 203   Move+Attackx2+Wait 175   
+  M1b per unit     : 27 distinct, top 28%, top-3 = 70%   <- compare THIS across party sizes
+  M2 AP waste      : 14%
+  M3 turns         : mean 4.47  min 3  max 8
+  M4 exposure      : mean 0.77   [0]235 [1]626 [2]34 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 3.15   contact turns 1.24
+                     r2:200  r3:157  r4:54  r5:69  r6:21  r7:4  r8:1  never:294
+  M6 route use     : 10/200 runs crossed, top route x=3 40%
+                     x=3:4  x=7:3  x=8:3  never:190
+  final player HP  : mean 1
+
+=== gym-big-split-kill — encounter profile (derived) ===
+  profile: momotaro   HP 300   attacks/turn 2   lethal exposure 3
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    kohaku            4     2       100     50        0           600
+    no target leaves a spare action — focus fire is the only play
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+gym-big-split-kill / corridor-hold  (200 runs)
+  M5 win rate      : 62%  (125W / 75L / 0unresolved)
+  M1 top action mix: Move+Guard+Wait  19% of player turns
+  M1 variety       : 40 distinct mixes, top-3 = 44%
+                     Move+Guard+Wait 265   Move+Attackx2+Wait 214   Movex3+Guard+Wait 126   
+  M1b per unit     : 40 distinct, top 19%, top-3 = 44%   <- compare THIS across party sizes
+  M2 AP waste      : 13%
+  M3 turns         : mean 6.81  min 4  max 27
+  M4 exposure      : mean 0.57   [0]723 [1]507 [2]129 [3]4 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 4.01   contact turns 5.17
+                     r2:200  r3:68  r4:166  r5:237  r6:70  r7:20  r8:6  r9:3  never:30
+  M6 route use     : 22/200 runs crossed, top route x=7 54%
+                     x=3:10  x=7:12  never:178
+  final player HP  : mean 104
+
+gym-big-split-kill / tpa-order  (200 runs)
+  M5 win rate      : 65%  (131W / 69L / 0unresolved)
+  M1 top action mix: Move+Guard+Wait  19% of player turns
+  M1 variety       : 40 distinct mixes, top-3 = 44%
+                     Move+Guard+Wait 258   Move+Attackx2+Wait 213   Movex3+Guard+Wait 123   
+  M1b per unit     : 40 distinct, top 19%, top-3 = 44%   <- compare THIS across party sizes
+  M2 AP waste      : 13%
+  M3 turns         : mean 6.68  min 4  max 20
+  M4 exposure      : mean 0.57   [0]698 [1]506 [2]128 [3]4 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 4.00   contact turns 5.04
+                     r2:200  r3:68  r4:166  r5:238  r6:72  r7:19  r8:6  r9:2  never:29
+  M6 route use     : 20/200 runs crossed, top route x=7 60%
+                     x=3:8  x=7:12  never:180
+  final player HP  : mean 106
+
+gym-big-split-kill / control-hold  (200 runs)
+  M5 win rate      : 62%  (125W / 75L / 0unresolved)
+  M1 top action mix: Move+Guard+Wait  19% of player turns
+  M1 variety       : 40 distinct mixes, top-3 = 44%
+                     Move+Guard+Wait 265   Move+Attackx2+Wait 214   Movex3+Guard+Wait 126   
+  M1b per unit     : 40 distinct, top 19%, top-3 = 44%   <- compare THIS across party sizes
+  M2 AP waste      : 13%
+  M3 turns         : mean 6.81  min 4  max 27
+  M4 exposure      : mean 0.57   [0]723 [1]507 [2]129 [3]4 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 4.01   contact turns 5.17
+                     r2:200  r3:68  r4:166  r5:237  r6:70  r7:20  r8:6  r9:3  never:30
+  M6 route use     : 22/200 runs crossed, top route x=7 54%
+                     x=3:10  x=7:12  never:178
+  final player HP  : mean 104
+
+gym-big-split-kill / charge  (200 runs)
+  M5 win rate      : 17%  (35W / 165L / 0unresolved)
+  M1 top action mix: Move+Attack+Wait  28% of player turns
+  M1 variety       : 27 distinct mixes, top-3 = 69%
+                     Move+Attack+Wait 250   Move+Wait 201   Move+Attackx2+Wait 169   
+  M1b per unit     : 27 distinct, top 28%, top-3 = 69%   <- compare THIS across party sizes
+  M2 AP waste      : 14%
+  M3 turns         : mean 4.44  min 3  max 8
+  M4 exposure      : mean 0.77   [0]231 [1]623 [2]34 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 3.13   contact turns 1.22
+                     r2:200  r3:157  r4:54  r5:69  r6:19  r7:3  r8:1  never:297
+  M6 route use     : 10/200 runs crossed, top route x=3 40%
+                     x=3:4  x=7:3  x=8:3  never:190
+  final player HP  : mean 11
+
+=== gym-big-split-boss3 — encounter profile (derived) ===
+  profile: momotaro   HP 300   attacks/turn 2   lethal exposure 3
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    kohaku            3     2       100     50        0           600
+    kohaku_3hit       1     3       100     33        1          1500
+    at least one target leaves a spare action — what to spend it on is a choice
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+gym-big-split-boss3 / corridor-hold  (200 runs)
+  M5 win rate      : 14%  (28W / 172L / 0unresolved)
+  M1 top action mix: Move+Guard+Wait  18% of player turns
+  M1 variety       : 39 distinct mixes, top-3 = 46%
+                     Move+Guard+Wait 270   Move+Attackx2+Wait 237   Attackx2+Wait 175   
+  M1b per unit     : 39 distinct, top 18%, top-3 = 46%   <- compare THIS across party sizes
+  M2 AP waste      : 13%
+  M3 turns         : mean 7.37  min 4  max 36
+  M4 exposure      : mean 0.64   [0]748 [1]512 [2]210 [3]5 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 4.01   contact turns 6.06
+                     r2:200  r3:68  r4:166  r5:237  r6:70  r7:20  r8:6  r9:3  never:30
+  M6 route use     : 25/200 runs crossed, top route x=7 52%
+                     x=3:11  x=7:13  x=12:1  never:175
+  final player HP  : mean 10
+
+gym-big-split-boss3 / tpa-order  (200 runs)
+  M5 win rate      : 15%  (30W / 170L / 0unresolved)
+  M1 top action mix: Move+Guard+Wait  18% of player turns
+  M1 variety       : 39 distinct mixes, top-3 = 46%
+                     Move+Guard+Wait 263   Move+Attackx2+Wait 236   Attackx2+Wait 178   
+  M1b per unit     : 39 distinct, top 18%, top-3 = 46%   <- compare THIS across party sizes
+  M2 AP waste      : 13%
+  M3 turns         : mean 7.29  min 4  max 36
+  M4 exposure      : mean 0.64   [0]735 [1]519 [2]199 [3]6 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 4.00   contact turns 5.98
+                     r2:200  r3:68  r4:166  r5:238  r6:72  r7:19  r8:6  r9:2  never:29
+  M6 route use     : 24/200 runs crossed, top route x=7 54%
+                     x=3:9  x=7:13  x=8:1  x=12:1  never:176
+  final player HP  : mean 10
+
+gym-big-split-boss3 / control-hold  (200 runs)
+  M5 win rate      : 14%  (28W / 172L / 0unresolved)
+  M1 top action mix: Move+Guard+Wait  18% of player turns
+  M1 variety       : 39 distinct mixes, top-3 = 46%
+                     Move+Guard+Wait 270   Move+Attackx2+Wait 237   Attackx2+Wait 175   
+  M1b per unit     : 39 distinct, top 18%, top-3 = 46%   <- compare THIS across party sizes
+  M2 AP waste      : 13%
+  M3 turns         : mean 7.37  min 4  max 36
+  M4 exposure      : mean 0.64   [0]748 [1]512 [2]210 [3]5 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 4.01   contact turns 6.06
+                     r2:200  r3:68  r4:166  r5:237  r6:70  r7:20  r8:6  r9:3  never:30
+  M6 route use     : 25/200 runs crossed, top route x=7 52%
+                     x=3:11  x=7:13  x=12:1  never:175
+  final player HP  : mean 10
+
+gym-big-split-boss3 / charge  (200 runs)
+  M5 win rate      : 0%  (0W / 200L / 0unresolved)
+  M1 top action mix: Move+Attack+Wait  28% of player turns
+  M1 variety       : 24 distinct mixes, top-3 = 70%
+                     Move+Attack+Wait 252   Move+Wait 201   Move+Attackx2+Wait 173   
+  M1b per unit     : 24 distinct, top 28%, top-3 = 70%   <- compare THIS across party sizes
+  M2 AP waste      : 14%
+  M3 turns         : mean 4.45  min 3  max 8
+  M4 exposure      : mean 0.79   [0]226 [1]621 [2]43 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 3.13   contact turns 1.23
+                     r2:200  r3:157  r4:54  r5:69  r6:19  r7:4  r8:1  never:296
+  M6 route use     : 10/200 runs crossed, top route x=3 40%
+                     x=3:4  x=7:3  x=8:3  never:190
+  final player HP  : mean 0
+
+=== gym-big-split-boss3-kill — encounter profile (derived) ===
+  profile: momotaro   HP 300   attacks/turn 2   lethal exposure 3
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    kohaku            3     2       100     50        0           600
+    kohaku_3hit       1     3       100     33        1          1500
+    at least one target leaves a spare action — what to spend it on is a choice
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+gym-big-split-boss3-kill / corridor-hold  (200 runs)
+  M5 win rate      : 16%  (32W / 168L / 0unresolved)
+  M1 top action mix: Move+Guard+Wait  18% of player turns
+  M1 variety       : 40 distinct mixes, top-3 = 46%
+                     Move+Guard+Wait 267   Move+Attackx2+Wait 236   Attackx2+Wait 171   
+  M1b per unit     : 40 distinct, top 18%, top-3 = 46%   <- compare THIS across party sizes
+  M2 AP waste      : 13%
+  M3 turns         : mean 7.22  min 4  max 27
+  M4 exposure      : mean 0.65   [0]719 [1]510 [2]210 [3]5 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 4.01   contact turns 5.90
+                     r2:200  r3:68  r4:166  r5:237  r6:70  r7:20  r8:6  r9:3  never:30
+  M6 route use     : 24/200 runs crossed, top route x=7 50%
+                     x=3:11  x=7:12  x=12:1  never:176
+  final player HP  : mean 11
+
+gym-big-split-boss3-kill / tpa-order  (200 runs)
+  M5 win rate      : 36%  (73W / 127L / 0unresolved)
+  M1 top action mix: Move+Guard+Wait  18% of player turns
+  M1 variety       : 41 distinct mixes, top-3 = 44%
+                     Move+Guard+Wait 260   Move+Attackx2+Wait 235   Attackx2+Wait 137   
+  M1b per unit     : 41 distinct, top 18%, top-3 = 44%   <- compare THIS across party sizes
+  M2 AP waste      : 13%
+  M3 turns         : mean 7.10  min 4  max 20
+  M4 exposure      : mean 0.65   [0]697 [1]518 [2]199 [3]6 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 4.00   contact turns 5.78
+                     r2:200  r3:68  r4:166  r5:238  r6:72  r7:19  r8:6  r9:2  never:29
+  M6 route use     : 22/200 runs crossed, top route x=7 54%
+                     x=3:9  x=7:12  x=12:1  never:178
+  final player HP  : mean 23
+
+gym-big-split-boss3-kill / control-hold  (200 runs)
+  M5 win rate      : 16%  (32W / 168L / 0unresolved)
+  M1 top action mix: Move+Guard+Wait  18% of player turns
+  M1 variety       : 40 distinct mixes, top-3 = 46%
+                     Move+Guard+Wait 267   Move+Attackx2+Wait 236   Attackx2+Wait 171   
+  M1b per unit     : 40 distinct, top 18%, top-3 = 46%   <- compare THIS across party sizes
+  M2 AP waste      : 13%
+  M3 turns         : mean 7.22  min 4  max 27
+  M4 exposure      : mean 0.65   [0]719 [1]510 [2]210 [3]5 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 4.01   contact turns 5.90
+                     r2:200  r3:68  r4:166  r5:237  r6:70  r7:20  r8:6  r9:3  never:30
+  M6 route use     : 24/200 runs crossed, top route x=7 50%
+                     x=3:11  x=7:12  x=12:1  never:176
+  final player HP  : mean 11
+
+gym-big-split-boss3-kill / charge  (200 runs)
+  M5 win rate      : 1%  (3W / 197L / 0unresolved)
+  M1 top action mix: Move+Attack+Wait  28% of player turns
+  M1 variety       : 27 distinct mixes, top-3 = 70%
+                     Move+Attack+Wait 251   Move+Wait 201   Move+Attackx2+Wait 172   
+  M1b per unit     : 27 distinct, top 28%, top-3 = 70%   <- compare THIS across party sizes
+  M2 AP waste      : 14%
+  M3 turns         : mean 4.45  min 3  max 8
+  M4 exposure      : mean 0.79   [0]226 [1]621 [2]43 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 3.13   contact turns 1.23
+                     r2:200  r3:157  r4:54  r5:69  r6:19  r7:4  r8:1  never:296
+  M6 route use     : 10/200 runs crossed, top route x=3 40%
+                     x=3:4  x=7:3  x=8:3  never:190
+  final player HP  : mean 0
+
+=== gym-big-split-boss4 — encounter profile (derived) ===
+  profile: momotaro   HP 300   attacks/turn 2   lethal exposure 3
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    kohaku            3     2       100     50        0           600
+    test_boss4        1     4       100     25        0          1500
+    no target leaves a spare action — focus fire is the only play
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+gym-big-split-boss4 / corridor-hold  (200 runs)
+  M5 win rate      : 9%  (18W / 182L / 0unresolved)
+  M1 top action mix: Move+Guard+Wait  18% of player turns
+  M1 variety       : 38 distinct mixes, top-3 = 47%
+                     Move+Guard+Wait 268   Move+Attackx2+Wait 238   Attackx2+Wait 186   
+  M1b per unit     : 38 distinct, top 18%, top-3 = 47%   <- compare THIS across party sizes
+  M2 AP waste      : 13%
+  M3 turns         : mean 7.33  min 4  max 28
+  M4 exposure      : mean 0.65   [0]725 [1]525 [2]211 [3]5 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 4.01   contact turns 6.02
+                     r2:200  r3:68  r4:166  r5:237  r6:70  r7:20  r8:6  r9:3  never:30
+  M6 route use     : 24/200 runs crossed, top route x=7 50%
+                     x=3:11  x=7:12  x=12:1  never:176
+  final player HP  : mean 5
+
+gym-big-split-boss4 / tpa-order  (200 runs)
+  M5 win rate      : 9%  (18W / 182L / 0unresolved)
+  M1 top action mix: Move+Guard+Wait  18% of player turns
+  M1 variety       : 38 distinct mixes, top-3 = 47%
+                     Move+Guard+Wait 261   Move+Attackx2+Wait 237   Attackx2+Wait 187   
+  M1b per unit     : 38 distinct, top 18%, top-3 = 47%   <- compare THIS across party sizes
+  M2 AP waste      : 13%
+  M3 turns         : mean 7.20  min 4  max 27
+  M4 exposure      : mean 0.66   [0]704 [1]526 [2]205 [3]6 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 4.00   contact turns 5.90
+                     r2:200  r3:68  r4:166  r5:238  r6:72  r7:19  r8:6  r9:2  never:29
+  M6 route use     : 22/200 runs crossed, top route x=7 54%
+                     x=3:9  x=7:12  x=12:1  never:178
+  final player HP  : mean 5
+
+gym-big-split-boss4 / control-hold  (200 runs)
+  M5 win rate      : 9%  (18W / 182L / 0unresolved)
+  M1 top action mix: Move+Guard+Wait  18% of player turns
+  M1 variety       : 38 distinct mixes, top-3 = 47%
+                     Move+Guard+Wait 268   Move+Attackx2+Wait 238   Attackx2+Wait 186   
+  M1b per unit     : 38 distinct, top 18%, top-3 = 47%   <- compare THIS across party sizes
+  M2 AP waste      : 13%
+  M3 turns         : mean 7.33  min 4  max 28
+  M4 exposure      : mean 0.65   [0]725 [1]525 [2]211 [3]5 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 4.01   contact turns 6.02
+                     r2:200  r3:68  r4:166  r5:237  r6:70  r7:20  r8:6  r9:3  never:30
+  M6 route use     : 24/200 runs crossed, top route x=7 50%
+                     x=3:11  x=7:12  x=12:1  never:176
+  final player HP  : mean 5
+
+gym-big-split-boss4 / charge  (200 runs)
+  M5 win rate      : 0%  (0W / 200L / 0unresolved)
+  M1 top action mix: Move+Attack+Wait  28% of player turns
+  M1 variety       : 24 distinct mixes, top-3 = 70%
+                     Move+Attack+Wait 251   Move+Wait 201   Move+Attackx2+Wait 173   
+  M1b per unit     : 24 distinct, top 28%, top-3 = 70%   <- compare THIS across party sizes
+  M2 AP waste      : 14%
+  M3 turns         : mean 4.45  min 3  max 8
+  M4 exposure      : mean 0.79   [0]226 [1]620 [2]44 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 3.13   contact turns 1.23
+                     r2:200  r3:157  r4:54  r5:69  r6:19  r7:4  r8:1  never:296
+  M6 route use     : 10/200 runs crossed, top route x=3 40%
+                     x=3:4  x=7:3  x=8:3  never:190
+  final player HP  : mean 0
+
+=== gym-big-split-boss4-kill — encounter profile (derived) ===
+  profile: momotaro   HP 300   attacks/turn 2   lethal exposure 3
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    kohaku            3     2       100     50        0           600
+    test_boss4        1     4       100     25        0          1500
+    no target leaves a spare action — focus fire is the only play
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+gym-big-split-boss4-kill / corridor-hold  (200 runs)
+  M5 win rate      : 11%  (23W / 177L / 0unresolved)
+  M1 top action mix: Move+Guard+Wait  18% of player turns
+  M1 variety       : 39 distinct mixes, top-3 = 47%
+                     Move+Guard+Wait 267   Move+Attackx2+Wait 238   Attackx2+Wait 182   
+  M1b per unit     : 39 distinct, top 18%, top-3 = 47%   <- compare THIS across party sizes
+  M2 AP waste      : 13%
+  M3 turns         : mean 7.25  min 4  max 28
+  M4 exposure      : mean 0.66   [0]711 [1]523 [2]211 [3]5 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 4.01   contact turns 5.94
+                     r2:200  r3:68  r4:166  r5:237  r6:70  r7:20  r8:6  r9:3  never:30
+  M6 route use     : 24/200 runs crossed, top route x=7 50%
+                     x=3:11  x=7:12  x=12:1  never:176
+  final player HP  : mean 6
+
+gym-big-split-boss4-kill / tpa-order  (200 runs)
+  M5 win rate      : 10%  (21W / 179L / 0unresolved)
+  M1 top action mix: Move+Guard+Wait  18% of player turns
+  M1 variety       : 39 distinct mixes, top-3 = 47%
+                     Move+Guard+Wait 260   Move+Attackx2+Wait 237   Attackx2+Wait 185   
+  M1b per unit     : 39 distinct, top 18%, top-3 = 47%   <- compare THIS across party sizes
+  M2 AP waste      : 13%
+  M3 turns         : mean 7.12  min 4  max 21
+  M4 exposure      : mean 0.66   [0]690 [1]524 [2]205 [3]6 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 4.00   contact turns 5.82
+                     r2:200  r3:68  r4:166  r5:238  r6:72  r7:19  r8:6  r9:2  never:29
+  M6 route use     : 22/200 runs crossed, top route x=7 54%
+                     x=3:9  x=7:12  x=12:1  never:178
+  final player HP  : mean 6
+
+gym-big-split-boss4-kill / control-hold  (200 runs)
+  M5 win rate      : 11%  (23W / 177L / 0unresolved)
+  M1 top action mix: Move+Guard+Wait  18% of player turns
+  M1 variety       : 39 distinct mixes, top-3 = 47%
+                     Move+Guard+Wait 267   Move+Attackx2+Wait 238   Attackx2+Wait 182   
+  M1b per unit     : 39 distinct, top 18%, top-3 = 47%   <- compare THIS across party sizes
+  M2 AP waste      : 13%
+  M3 turns         : mean 7.25  min 4  max 28
+  M4 exposure      : mean 0.66   [0]711 [1]523 [2]211 [3]5 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 4.01   contact turns 5.94
+                     r2:200  r3:68  r4:166  r5:237  r6:70  r7:20  r8:6  r9:3  never:30
+  M6 route use     : 24/200 runs crossed, top route x=7 50%
+                     x=3:11  x=7:12  x=12:1  never:176
+  final player HP  : mean 6
+
+gym-big-split-boss4-kill / charge  (200 runs)
+  M5 win rate      : 1%  (2W / 198L / 0unresolved)
+  M1 top action mix: Move+Attack+Wait  28% of player turns
+  M1 variety       : 26 distinct mixes, top-3 = 70%
+                     Move+Attack+Wait 251   Move+Wait 201   Move+Attackx2+Wait 172   
+  M1b per unit     : 26 distinct, top 28%, top-3 = 70%   <- compare THIS across party sizes
+  M2 AP waste      : 14%
+  M3 turns         : mean 4.45  min 3  max 8
+  M4 exposure      : mean 0.79   [0]226 [1]620 [2]44 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 3.13   contact turns 1.23
+                     r2:200  r3:157  r4:54  r5:69  r6:19  r7:4  r8:1  never:296
+  M6 route use     : 10/200 runs crossed, top route x=3 40%
+                     x=3:4  x=7:3  x=8:3  never:190
+  final player HP  : mean 0
+
+=== gym-big-split-boss6 — encounter profile (derived) ===
+  profile: momotaro   HP 300   attacks/turn 2   lethal exposure 3
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    kohaku            3     2       100     50        0           600
+    test_boss6        1     6       100     16        0          1500
+    no target leaves a spare action — focus fire is the only play
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+gym-big-split-boss6 / corridor-hold  (200 runs)
+  M5 win rate      : 1%  (2W / 198L / 0unresolved)
+  M1 top action mix: Move+Guard+Wait  18% of player turns
+  M1 variety       : 37 distinct mixes, top-3 = 48%
+                     Move+Guard+Wait 267   Move+Attackx2+Wait 240   Attackx2+Wait 202   
+  M1b per unit     : 37 distinct, top 18%, top-3 = 48%   <- compare THIS across party sizes
+  M2 AP waste      : 13%
+  M3 turns         : mean 7.26  min 4  max 28
+  M4 exposure      : mean 0.67   [0]698 [1]534 [2]215 [3]6 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 4.01   contact turns 5.96
+                     r2:200  r3:68  r4:166  r5:237  r6:70  r7:20  r8:6  r9:3  never:30
+  M6 route use     : 25/200 runs crossed, top route x=3 48%
+                     x=3:12  x=7:12  x=12:1  never:175
+  final player HP  : mean 0
+
+gym-big-split-boss6 / tpa-order  (200 runs)
+  M5 win rate      : 1%  (2W / 198L / 0unresolved)
+  M1 top action mix: Move+Guard+Wait  18% of player turns
+  M1 variety       : 37 distinct mixes, top-3 = 49%
+                     Move+Guard+Wait 260   Move+Attackx2+Wait 239   Attackx2+Wait 203   
+  M1b per unit     : 37 distinct, top 18%, top-3 = 49%   <- compare THIS across party sizes
+  M2 AP waste      : 12%
+  M3 turns         : mean 7.14  min 4  max 21
+  M4 exposure      : mean 0.68   [0]677 [1]536 [2]209 [3]6 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 4.00   contact turns 5.84
+                     r2:200  r3:68  r4:166  r5:238  r6:72  r7:19  r8:6  r9:2  never:29
+  M6 route use     : 23/200 runs crossed, top route x=7 52%
+                     x=3:10  x=7:12  x=12:1  never:177
+  final player HP  : mean 0
+
+gym-big-split-boss6 / control-hold  (200 runs)
+  M5 win rate      : 1%  (2W / 198L / 0unresolved)
+  M1 top action mix: Move+Guard+Wait  18% of player turns
+  M1 variety       : 37 distinct mixes, top-3 = 48%
+                     Move+Guard+Wait 267   Move+Attackx2+Wait 240   Attackx2+Wait 202   
+  M1b per unit     : 37 distinct, top 18%, top-3 = 48%   <- compare THIS across party sizes
+  M2 AP waste      : 13%
+  M3 turns         : mean 7.26  min 4  max 28
+  M4 exposure      : mean 0.67   [0]698 [1]534 [2]215 [3]6 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 4.01   contact turns 5.96
+                     r2:200  r3:68  r4:166  r5:237  r6:70  r7:20  r8:6  r9:3  never:30
+  M6 route use     : 25/200 runs crossed, top route x=3 48%
+                     x=3:12  x=7:12  x=12:1  never:175
+  final player HP  : mean 0
+
+gym-big-split-boss6 / charge  (200 runs)
+  M5 win rate      : 0%  (0W / 200L / 0unresolved)
+  M1 top action mix: Move+Attack+Wait  28% of player turns
+  M1 variety       : 24 distinct mixes, top-3 = 70%
+                     Move+Attack+Wait 251   Move+Wait 201   Move+Attackx2+Wait 173   
+  M1b per unit     : 24 distinct, top 28%, top-3 = 70%   <- compare THIS across party sizes
+  M2 AP waste      : 14%
+  M3 turns         : mean 4.45  min 3  max 8
+  M4 exposure      : mean 0.79   [0]226 [1]618 [2]46 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 3.13   contact turns 1.23
+                     r2:200  r3:157  r4:54  r5:69  r6:19  r7:4  r8:1  never:296
+  M6 route use     : 10/200 runs crossed, top route x=3 40%
+                     x=3:4  x=7:3  x=8:3  never:190
+  final player HP  : mean 0
+
+=== gym-big-split-boss6-kill — encounter profile (derived) ===
+  profile: momotaro   HP 300   attacks/turn 2   lethal exposure 3
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    kohaku            3     2       100     50        0           600
+    test_boss6        1     6       100     16        0          1500
+    no target leaves a spare action — focus fire is the only play
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+gym-big-split-boss6-kill / corridor-hold  (200 runs)
+  M5 win rate      : 1%  (2W / 198L / 0unresolved)
+  M1 top action mix: Move+Guard+Wait  18% of player turns
+  M1 variety       : 37 distinct mixes, top-3 = 48%
+                     Move+Guard+Wait 267   Move+Attackx2+Wait 240   Attackx2+Wait 202   
+  M1b per unit     : 37 distinct, top 18%, top-3 = 48%   <- compare THIS across party sizes
+  M2 AP waste      : 13%
+  M3 turns         : mean 7.26  min 4  max 28
+  M4 exposure      : mean 0.67   [0]698 [1]534 [2]215 [3]6 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 4.01   contact turns 5.96
+                     r2:200  r3:68  r4:166  r5:237  r6:70  r7:20  r8:6  r9:3  never:30
+  M6 route use     : 25/200 runs crossed, top route x=3 48%
+                     x=3:12  x=7:12  x=12:1  never:175
+  final player HP  : mean 0
+
+gym-big-split-boss6-kill / tpa-order  (200 runs)
+  M5 win rate      : 1%  (2W / 198L / 0unresolved)
+  M1 top action mix: Move+Guard+Wait  18% of player turns
+  M1 variety       : 37 distinct mixes, top-3 = 49%
+                     Move+Guard+Wait 260   Move+Attackx2+Wait 239   Attackx2+Wait 203   
+  M1b per unit     : 37 distinct, top 18%, top-3 = 49%   <- compare THIS across party sizes
+  M2 AP waste      : 12%
+  M3 turns         : mean 7.14  min 4  max 21
+  M4 exposure      : mean 0.68   [0]677 [1]536 [2]209 [3]6 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 4.00   contact turns 5.84
+                     r2:200  r3:68  r4:166  r5:238  r6:72  r7:19  r8:6  r9:2  never:29
+  M6 route use     : 23/200 runs crossed, top route x=7 52%
+                     x=3:10  x=7:12  x=12:1  never:177
+  final player HP  : mean 0
+
+gym-big-split-boss6-kill / control-hold  (200 runs)
+  M5 win rate      : 1%  (2W / 198L / 0unresolved)
+  M1 top action mix: Move+Guard+Wait  18% of player turns
+  M1 variety       : 37 distinct mixes, top-3 = 48%
+                     Move+Guard+Wait 267   Move+Attackx2+Wait 240   Attackx2+Wait 202   
+  M1b per unit     : 37 distinct, top 18%, top-3 = 48%   <- compare THIS across party sizes
+  M2 AP waste      : 13%
+  M3 turns         : mean 7.26  min 4  max 28
+  M4 exposure      : mean 0.67   [0]698 [1]534 [2]215 [3]6 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 4.01   contact turns 5.96
+                     r2:200  r3:68  r4:166  r5:237  r6:70  r7:20  r8:6  r9:3  never:30
+  M6 route use     : 25/200 runs crossed, top route x=3 48%
+                     x=3:12  x=7:12  x=12:1  never:175
+  final player HP  : mean 0
+
+gym-big-split-boss6-kill / charge  (200 runs)
+  M5 win rate      : 0%  (0W / 200L / 0unresolved)
+  M1 top action mix: Move+Attack+Wait  28% of player turns
+  M1 variety       : 24 distinct mixes, top-3 = 70%
+                     Move+Attack+Wait 251   Move+Wait 201   Move+Attackx2+Wait 173   
+  M1b per unit     : 24 distinct, top 28%, top-3 = 70%   <- compare THIS across party sizes
+  M2 AP waste      : 14%
+  M3 turns         : mean 4.45  min 3  max 8
+  M4 exposure      : mean 0.79   [0]226 [1]618 [2]46 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 3.13   contact turns 1.23
+                     r2:200  r3:157  r4:54  r5:69  r6:19  r7:4  r8:1  never:296
+  M6 route use     : 10/200 runs crossed, top route x=3 40%
+                     x=3:4  x=7:3  x=8:3  never:190
+  final player HP  : mean 0
+
+=== gym-lanes — encounter profile (derived) ===
+  profile: momotaro   HP 300   attacks/turn 2   lethal exposure 3
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    kohaku            4     2       100     50        0           800
+    no target leaves a spare action — focus fire is the only play
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+gym-lanes / corridor-hold  (200 runs)
+  M5 win rate      : 67%  (134W / 66L / 0unresolved)
+  M1 top action mix: Move+Guard+Wait  18% of player turns
+  M1 variety       : 44 distinct mixes, top-3 = 46%
+                     Move+Guard+Wait 500   Movex3+Guard+Wait 489   Movex2+Guard+Wait 298   
+  M1b per unit     : 44 distinct, top 18%, top-3 = 46%   <- compare THIS across party sizes
+  M2 AP waste      : 15%
+  M3 turns         : mean 13.77  min 5  max 30
+  M4 exposure      : mean 0.32   [0]1959 [1]692 [2]99 [3]5 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 5.56   contact turns 14.35
+                     r2:188  r3:12  r4:154  r5:60  r6:91  r7:78  r8:26  r9:104  r10:29  r11:18  r12:9  r13:3  r15:2  r16:1  r17:1  r18:2  r19:1  r20:1  never:20
+  M6 route use     : 67/200 runs crossed, top route x=12 29%
+                     x=3:18  x=11:9  x=12:20  x=20:20  never:133
+  final player HP  : mean 87
+
+gym-lanes / tpa-order  (200 runs)
+  M5 win rate      : 67%  (134W / 66L / 0unresolved)
+  M1 top action mix: Move+Guard+Wait  18% of player turns
+  M1 variety       : 44 distinct mixes, top-3 = 46%
+                     Move+Guard+Wait 499   Movex3+Guard+Wait 486   Movex2+Guard+Wait 297   
+  M1b per unit     : 44 distinct, top 18%, top-3 = 46%   <- compare THIS across party sizes
+  M2 AP waste      : 15%
+  M3 turns         : mean 13.75  min 5  max 30
+  M4 exposure      : mean 0.32   [0]1956 [1]693 [2]97 [3]5 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 5.56   contact turns 14.32
+                     r2:188  r3:12  r4:154  r5:60  r6:91  r7:78  r8:26  r9:103  r10:30  r11:18  r12:9  r13:3  r15:2  r16:1  r17:1  r18:2  r19:1  r20:1  never:20
+  M6 route use     : 67/200 runs crossed, top route x=20 29%
+                     x=3:18  x=11:10  x=12:19  x=20:20  never:133
+  final player HP  : mean 87
+
+gym-lanes / control-hold  (200 runs)
+  M5 win rate      : 67%  (134W / 66L / 0unresolved)
+  M1 top action mix: Move+Guard+Wait  18% of player turns
+  M1 variety       : 44 distinct mixes, top-3 = 46%
+                     Move+Guard+Wait 500   Movex3+Guard+Wait 489   Movex2+Guard+Wait 298   
+  M1b per unit     : 44 distinct, top 18%, top-3 = 46%   <- compare THIS across party sizes
+  M2 AP waste      : 15%
+  M3 turns         : mean 13.77  min 5  max 30
+  M4 exposure      : mean 0.32   [0]1959 [1]692 [2]99 [3]5 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 5.56   contact turns 14.35
+                     r2:188  r3:12  r4:154  r5:60  r6:91  r7:78  r8:26  r9:104  r10:29  r11:18  r12:9  r13:3  r15:2  r16:1  r17:1  r18:2  r19:1  r20:1  never:20
+  M6 route use     : 67/200 runs crossed, top route x=12 29%
+                     x=3:18  x=11:9  x=12:20  x=20:20  never:133
+  final player HP  : mean 87
+
+gym-lanes / charge  (200 runs)
+  M5 win rate      : 44%  (89W / 111L / 0unresolved)
+  M1 top action mix: Move+Wait  25% of player turns
+  M1 variety       : 33 distinct mixes, top-3 = 58%
+                     Move+Wait 355   Move+Attack+Wait 253   Move+Attackx2+Wait 209   
+  M1b per unit     : 33 distinct, top 25%, top-3 = 58%   <- compare THIS across party sizes
+  M2 AP waste      : 14%
+  M3 turns         : mean 6.97  min 4  max 10
+  M4 exposure      : mean 0.48   [0]726 [1]656 [2]12 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 4.53   contact turns 1.49
+                     r2:188  r3:12  r4:169  r5:37  r6:193  r7:62  r8:33  r9:4  never:102
+  M6 route use     : 62/200 runs crossed, top route x=11 90%
+                     x=3:2  x=11:56  x=12:4  never:138
+  final player HP  : mean 35
+
+=== gym-lanes-kill — encounter profile (derived) ===
+  profile: momotaro   HP 300   attacks/turn 2   lethal exposure 3
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    kohaku            4     2       100     50        0           800
+    no target leaves a spare action — focus fire is the only play
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+gym-lanes-kill / corridor-hold  (200 runs)
+  M5 win rate      : 73%  (146W / 54L / 0unresolved)
+  M1 top action mix: Move+Guard+Wait  18% of player turns
+  M1 variety       : 44 distinct mixes, top-3 = 47%
+                     Move+Guard+Wait 484   Movex3+Guard+Wait 465   Movex2+Guard+Wait 287   
+  M1b per unit     : 44 distinct, top 18%, top-3 = 47%   <- compare THIS across party sizes
+  M2 AP waste      : 15%
+  M3 turns         : mean 12.92  min 5  max 26
+  M4 exposure      : mean 0.34   [0]1820 [1]656 [2]104 [3]5 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 5.51   contact turns 13.38
+                     r2:188  r3:12  r4:154  r5:60  r6:91  r7:78  r8:26  r9:100  r10:28  r11:18  r12:8  r13:2  r15:2  r16:1  r17:1  r18:2  r19:1  r20:1  never:27
+  M6 route use     : 59/200 runs crossed, top route x=3 28%
+                     x=3:17  x=11:9  x=12:17  x=20:16  never:141
+  final player HP  : mean 108
+
+gym-lanes-kill / tpa-order  (200 runs)
+  M5 win rate      : 73%  (146W / 54L / 0unresolved)
+  M1 top action mix: Move+Guard+Wait  18% of player turns
+  M1 variety       : 44 distinct mixes, top-3 = 47%
+                     Move+Guard+Wait 483   Movex3+Guard+Wait 462   Movex2+Guard+Wait 286   
+  M1b per unit     : 44 distinct, top 18%, top-3 = 47%   <- compare THIS across party sizes
+  M2 AP waste      : 15%
+  M3 turns         : mean 12.90  min 5  max 26
+  M4 exposure      : mean 0.33   [0]1817 [1]657 [2]102 [3]5 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 5.52   contact turns 13.35
+                     r2:188  r3:12  r4:154  r5:60  r6:91  r7:78  r8:26  r9:99  r10:29  r11:18  r12:8  r13:2  r15:2  r16:1  r17:1  r18:2  r19:1  r20:1  never:27
+  M6 route use     : 59/200 runs crossed, top route x=3 28%
+                     x=3:17  x=11:10  x=12:16  x=20:16  never:141
+  final player HP  : mean 108
+
+gym-lanes-kill / control-hold  (200 runs)
+  M5 win rate      : 73%  (146W / 54L / 0unresolved)
+  M1 top action mix: Move+Guard+Wait  18% of player turns
+  M1 variety       : 44 distinct mixes, top-3 = 47%
+                     Move+Guard+Wait 484   Movex3+Guard+Wait 465   Movex2+Guard+Wait 287   
+  M1b per unit     : 44 distinct, top 18%, top-3 = 47%   <- compare THIS across party sizes
+  M2 AP waste      : 15%
+  M3 turns         : mean 12.92  min 5  max 26
+  M4 exposure      : mean 0.34   [0]1820 [1]656 [2]104 [3]5 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 5.51   contact turns 13.38
+                     r2:188  r3:12  r4:154  r5:60  r6:91  r7:78  r8:26  r9:100  r10:28  r11:18  r12:8  r13:2  r15:2  r16:1  r17:1  r18:2  r19:1  r20:1  never:27
+  M6 route use     : 59/200 runs crossed, top route x=3 28%
+                     x=3:17  x=11:9  x=12:17  x=20:16  never:141
+  final player HP  : mean 108
+
+gym-lanes-kill / charge  (200 runs)
+  M5 win rate      : 48%  (96W / 104L / 0unresolved)
+  M1 top action mix: Move+Wait  25% of player turns
+  M1 variety       : 33 distinct mixes, top-3 = 58%
+                     Move+Wait 354   Move+Attack+Wait 249   Move+Attackx2+Wait 203   
+  M1b per unit     : 33 distinct, top 25%, top-3 = 58%   <- compare THIS across party sizes
+  M2 AP waste      : 14%
+  M3 turns         : mean 6.94  min 4  max 10
+  M4 exposure      : mean 0.48   [0]729 [1]647 [2]12 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 4.51   contact turns 1.49
+                     r2:188  r3:12  r4:169  r5:37  r6:191  r7:61  r8:31  r9:4  never:107
+  M6 route use     : 62/200 runs crossed, top route x=11 90%
+                     x=3:2  x=11:56  x=12:4  never:138
+  final player HP  : mean 39
+
+=== gym-lanes-boss6 — encounter profile (derived) ===
+  profile: momotaro   HP 300   attacks/turn 2   lethal exposure 3
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    kohaku            3     2       100     50        0           800
+    test_boss6        1     6       100     16        0          2500
+    no target leaves a spare action — focus fire is the only play
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+gym-lanes-boss6 / corridor-hold  (200 runs)
+  M5 win rate      : 6%  (13W / 187L / 0unresolved)
+  M1 top action mix: Move+Guard+Wait  17% of player turns
+  M1 variety       : 41 distinct mixes, top-3 = 44%
+                     Move+Guard+Wait 494   Movex3+Guard+Wait 475   Movex2+Guard+Wait 298   
+  M1b per unit     : 41 distinct, top 17%, top-3 = 44%   <- compare THIS across party sizes
+  M2 AP waste      : 14%
+  M3 turns         : mean 14.10  min 5  max 31
+  M4 exposure      : mean 0.41   [0]1820 [1]852 [2]137 [3]11 [4]1 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 5.53   contact turns 15.11
+                     r2:188  r3:12  r4:154  r5:60  r6:91  r7:78  r8:27  r9:100  r10:28  r11:18  r12:8  r13:3  r15:2  r16:1  r17:1  r18:2  r19:1  r20:1  never:25
+  M6 route use     : 68/200 runs crossed, top route x=3 30%
+                     x=3:21  x=11:10  x=12:19  x=20:18  never:132
+  final player HP  : mean 4
+
+gym-lanes-boss6 / tpa-order  (200 runs)
+  M5 win rate      : 7%  (15W / 185L / 0unresolved)
+  M1 top action mix: Move+Guard+Wait  17% of player turns
+  M1 variety       : 41 distinct mixes, top-3 = 44%
+                     Move+Guard+Wait 494   Movex3+Guard+Wait 472   Movex2+Guard+Wait 297   
+  M1b per unit     : 41 distinct, top 17%, top-3 = 44%   <- compare THIS across party sizes
+  M2 AP waste      : 14%
+  M3 turns         : mean 14.15  min 5  max 31
+  M4 exposure      : mean 0.40   [0]1824 [1]874 [2]124 [3]9 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 5.53   contact turns 15.10
+                     r2:188  r3:12  r4:154  r5:60  r6:91  r7:78  r8:27  r9:99  r10:29  r11:18  r12:8  r13:3  r15:2  r16:1  r17:1  r18:2  r19:1  r20:1  never:25
+  M6 route use     : 69/200 runs crossed, top route x=3 30%
+                     x=3:21  x=11:11  x=12:19  x=20:18  never:131
+  final player HP  : mean 4
+
+gym-lanes-boss6 / control-hold  (200 runs)
+  M5 win rate      : 6%  (13W / 187L / 0unresolved)
+  M1 top action mix: Move+Guard+Wait  17% of player turns
+  M1 variety       : 41 distinct mixes, top-3 = 44%
+                     Move+Guard+Wait 494   Movex3+Guard+Wait 475   Movex2+Guard+Wait 298   
+  M1b per unit     : 41 distinct, top 17%, top-3 = 44%   <- compare THIS across party sizes
+  M2 AP waste      : 14%
+  M3 turns         : mean 14.10  min 5  max 31
+  M4 exposure      : mean 0.41   [0]1820 [1]852 [2]137 [3]11 [4]1 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 5.53   contact turns 15.11
+                     r2:188  r3:12  r4:154  r5:60  r6:91  r7:78  r8:27  r9:100  r10:28  r11:18  r12:8  r13:3  r15:2  r16:1  r17:1  r18:2  r19:1  r20:1  never:25
+  M6 route use     : 68/200 runs crossed, top route x=3 30%
+                     x=3:21  x=11:10  x=12:19  x=20:18  never:132
+  final player HP  : mean 4
+
+gym-lanes-boss6 / charge  (200 runs)
+  M5 win rate      : 0%  (1W / 199L / 0unresolved)
+  M1 top action mix: Move+Wait  25% of player turns
+  M1 variety       : 29 distinct mixes, top-3 = 57%
+                     Move+Wait 356   Move+Attack+Wait 250   Move+Attackx2+Wait 208   
+  M1b per unit     : 29 distinct, top 25%, top-3 = 57%   <- compare THIS across party sizes
+  M2 AP waste      : 14%
+  M3 turns         : mean 7.05  min 4  max 11
+  M4 exposure      : mean 0.55   [0]638 [1]758 [2]14 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 4.52   contact turns 1.60
+                     r2:188  r3:12  r4:169  r5:37  r6:191  r7:61  r8:32  r9:4  never:106
+  M6 route use     : 62/200 runs crossed, top route x=11 90%
+                     x=3:2  x=11:56  x=12:4  never:138
+  final player HP  : mean 0
+
+=== gym-lanes-boss6-kill — encounter profile (derived) ===
+  profile: momotaro   HP 300   attacks/turn 2   lethal exposure 3
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    kohaku            3     2       100     50        0           800
+    test_boss6        1     6       100     16        0          2500
+    no target leaves a spare action — focus fire is the only play
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+gym-lanes-boss6-kill / corridor-hold  (200 runs)
+  M5 win rate      : 9%  (18W / 182L / 0unresolved)
+  M1 top action mix: Move+Guard+Wait  17% of player turns
+  M1 variety       : 41 distinct mixes, top-3 = 44%
+                     Move+Guard+Wait 494   Movex3+Guard+Wait 475   Movex2+Guard+Wait 298   
+  M1b per unit     : 41 distinct, top 17%, top-3 = 44%   <- compare THIS across party sizes
+  M2 AP waste      : 14%
+  M3 turns         : mean 14.08  min 5  max 31
+  M4 exposure      : mean 0.41   [0]1817 [1]851 [2]137 [3]11 [4]1 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 5.53   contact turns 15.09
+                     r2:188  r3:12  r4:154  r5:60  r6:91  r7:78  r8:27  r9:100  r10:28  r11:18  r12:8  r13:3  r15:2  r16:1  r17:1  r18:2  r19:1  r20:1  never:25
+  M6 route use     : 68/200 runs crossed, top route x=3 30%
+                     x=3:21  x=11:10  x=12:19  x=20:18  never:132
+  final player HP  : mean 5
+
+gym-lanes-boss6-kill / tpa-order  (200 runs)
+  M5 win rate      : 10%  (20W / 180L / 0unresolved)
+  M1 top action mix: Move+Guard+Wait  17% of player turns
+  M1 variety       : 41 distinct mixes, top-3 = 44%
+                     Move+Guard+Wait 494   Movex3+Guard+Wait 472   Movex2+Guard+Wait 297   
+  M1b per unit     : 41 distinct, top 17%, top-3 = 44%   <- compare THIS across party sizes
+  M2 AP waste      : 14%
+  M3 turns         : mean 14.13  min 5  max 31
+  M4 exposure      : mean 0.40   [0]1821 [1]873 [2]124 [3]9 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 5.53   contact turns 15.08
+                     r2:188  r3:12  r4:154  r5:60  r6:91  r7:78  r8:27  r9:99  r10:29  r11:18  r12:8  r13:3  r15:2  r16:1  r17:1  r18:2  r19:1  r20:1  never:25
+  M6 route use     : 69/200 runs crossed, top route x=3 30%
+                     x=3:21  x=11:11  x=12:19  x=20:18  never:131
+  final player HP  : mean 5
+
+gym-lanes-boss6-kill / control-hold  (200 runs)
+  M5 win rate      : 9%  (18W / 182L / 0unresolved)
+  M1 top action mix: Move+Guard+Wait  17% of player turns
+  M1 variety       : 41 distinct mixes, top-3 = 44%
+                     Move+Guard+Wait 494   Movex3+Guard+Wait 475   Movex2+Guard+Wait 298   
+  M1b per unit     : 41 distinct, top 17%, top-3 = 44%   <- compare THIS across party sizes
+  M2 AP waste      : 14%
+  M3 turns         : mean 14.08  min 5  max 31
+  M4 exposure      : mean 0.41   [0]1817 [1]851 [2]137 [3]11 [4]1 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 5.53   contact turns 15.09
+                     r2:188  r3:12  r4:154  r5:60  r6:91  r7:78  r8:27  r9:100  r10:28  r11:18  r12:8  r13:3  r15:2  r16:1  r17:1  r18:2  r19:1  r20:1  never:25
+  M6 route use     : 68/200 runs crossed, top route x=3 30%
+                     x=3:21  x=11:10  x=12:19  x=20:18  never:132
+  final player HP  : mean 5
+
+gym-lanes-boss6-kill / charge  (200 runs)
+  M5 win rate      : 0%  (1W / 199L / 0unresolved)
+  M1 top action mix: Move+Wait  25% of player turns
+  M1 variety       : 29 distinct mixes, top-3 = 57%
+                     Move+Wait 356   Move+Attack+Wait 250   Move+Attackx2+Wait 208   
+  M1b per unit     : 29 distinct, top 25%, top-3 = 57%   <- compare THIS across party sizes
+  M2 AP waste      : 14%
+  M3 turns         : mean 7.05  min 4  max 11
+  M4 exposure      : mean 0.55   [0]638 [1]758 [2]14 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 4.52   contact turns 1.60
+                     r2:188  r3:12  r4:169  r5:37  r6:191  r7:61  r8:32  r9:4  never:106
+  M6 route use     : 62/200 runs crossed, top route x=11 90%
+                     x=3:2  x=11:56  x=12:4  never:138
+  final player HP  : mean 0
+
+=== threshold check (docs/06-validation/playtest-metrics.md) ===
+gym-opening / corridor-hold:
+  M1 < 70%   : PASS  (10%)
+  M2 < 15%   : FAIL  (34%)
+  M3 6-10    : FAIL  (30.39)
+  M4 <= 2    : PASS  (0.29)
+  M6 < 70%   : PASS  (x=2 49%)
+  ** 66 run(s) hit the round cap — possible stalemate
+gym-opening / tpa-order:
+  M1 < 70%   : PASS  (12%)
+  M2 < 15%   : FAIL  (34%)
+  M3 6-10    : FAIL  (30.64)
+  M4 <= 2    : PASS  (0.28)
+  M6 < 70%   : PASS  (x=2 48%)
+  ** 67 run(s) hit the round cap — possible stalemate
+gym-opening / control-hold:
+  M1 < 70%   : PASS  (11%)
+  M2 < 15%   : FAIL  (30%)
+  M3 6-10    : FAIL  (24.91)
+  M4 <= 2    : PASS  (0.39)
+  M6 < 70%   : PASS  (x=2 52%)
+  ** 64 run(s) hit the round cap — possible stalemate
+gym-opening / charge:
+  M1 < 70%   : PASS  (14%)
+  M2 < 15%   : FAIL  (22%)
+  M3 6-10    : PASS  (9.91)
+  M4 <= 2    : PASS  (1.06)
+  M6 < 70%   : PASS  (x=12 50%)
+gym-opening-noskill / corridor-hold:
+  M1 < 70%   : PASS  (10%)
+  M2 < 15%   : FAIL  (35%)
+  M3 6-10    : FAIL  (33.58)
+  M4 <= 2    : PASS  (0.28)
+  M6 < 70%   : PASS  (x=2 41%)
+  ** 70 run(s) hit the round cap — possible stalemate
+gym-opening-noskill / tpa-order:
+  M1 < 70%   : PASS  (12%)
+  M2 < 15%   : FAIL  (34%)
+  M3 6-10    : FAIL  (33.83)
+  M4 <= 2    : PASS  (0.28)
+  M6 < 70%   : PASS  (x=2 40%)
+  ** 68 run(s) hit the round cap — possible stalemate
+gym-opening-noskill / control-hold:
+  M1 < 70%   : PASS  (10%)
+  M2 < 15%   : FAIL  (35%)
+  M3 6-10    : FAIL  (33.58)
+  M4 <= 2    : PASS  (0.28)
+  M6 < 70%   : PASS  (x=2 41%)
+  ** 70 run(s) hit the round cap — possible stalemate
+gym-opening-noskill / charge:
+  M1 < 70%   : PASS  (15%)
+  M2 < 15%   : FAIL  (22%)
+  M3 6-10    : PASS  (9.96)
+  M4 <= 2    : PASS  (1.09)
+  M6 < 70%   : PASS  (x=12 44%)
+gym-opening-solo / corridor-hold:
+  M1 < 70%   : PASS  (30%)
+  M2 < 15%   : PASS  (11%)
+  M3 6-10    : PASS  (6.68)
+  M4 <= 2    : PASS  (0.92)
+  M6 < 70%   : PASS  (x=13 42%)
+  ** 186 run(s) never crossed the wall — the route sample is thin
+gym-opening-solo / tpa-order:
+  M1 < 70%   : PASS  (30%)
+  M2 < 15%   : PASS  (11%)
+  M3 6-10    : PASS  (6.83)
+  M4 <= 2    : PASS  (0.86)
+  M6 < 70%   : PASS  (x=2 40%)
+  ** 185 run(s) never crossed the wall — the route sample is thin
+gym-opening-solo / control-hold:
+  M1 < 70%   : PASS  (30%)
+  M2 < 15%   : PASS  (11%)
+  M3 6-10    : PASS  (6.68)
+  M4 <= 2    : PASS  (0.92)
+  M6 < 70%   : PASS  (x=13 42%)
+  ** 186 run(s) never crossed the wall — the route sample is thin
+gym-opening-solo / charge:
+  M1 < 70%   : PASS  (26%)
+  M2 < 15%   : PASS  (14%)
+  M3 6-10    : FAIL  (3.97)
+  M4 <= 2    : PASS  (1.33)
+  M6 < 70%   : FAIL  (x=13 71%)
+  ** 193 run(s) never crossed the wall — the route sample is thin
+gym-big-split / corridor-hold:
+  M1 < 70%   : PASS  (18%)
+  M2 < 15%   : PASS  (13%)
+  M3 6-10    : PASS  (7.45)
+  M4 <= 2    : PASS  (0.53)
+  M6 < 70%   : PASS  (x=7 52%)
+  ** 175 run(s) never crossed the wall — the route sample is thin
+gym-big-split / tpa-order:
+  M1 < 70%   : PASS  (18%)
+  M2 < 15%   : PASS  (13%)
+  M3 6-10    : PASS  (7.34)
+  M4 <= 2    : PASS  (0.54)
+  M6 < 70%   : PASS  (x=7 56%)
+  ** 177 run(s) never crossed the wall — the route sample is thin
+gym-big-split / control-hold:
+  M1 < 70%   : PASS  (18%)
+  M2 < 15%   : PASS  (13%)
+  M3 6-10    : PASS  (7.45)
+  M4 <= 2    : PASS  (0.53)
+  M6 < 70%   : PASS  (x=7 52%)
+  ** 175 run(s) never crossed the wall — the route sample is thin
+gym-big-split / charge:
+  M1 < 70%   : PASS  (28%)
+  M2 < 15%   : PASS  (14%)
+  M3 6-10    : FAIL  (4.47)
+  M4 <= 2    : PASS  (0.77)
+  M6 < 70%   : PASS  (x=3 40%)
+  ** 190 run(s) never crossed the wall — the route sample is thin
+gym-big-split-kill / corridor-hold:
+  M1 < 70%   : PASS  (19%)
+  M2 < 15%   : PASS  (13%)
+  M3 6-10    : PASS  (6.81)
+  M4 <= 2    : PASS  (0.57)
+  M6 < 70%   : PASS  (x=7 54%)
+  ** 178 run(s) never crossed the wall — the route sample is thin
+gym-big-split-kill / tpa-order:
+  M1 < 70%   : PASS  (19%)
+  M2 < 15%   : PASS  (13%)
+  M3 6-10    : PASS  (6.68)
+  M4 <= 2    : PASS  (0.57)
+  M6 < 70%   : PASS  (x=7 60%)
+  ** 180 run(s) never crossed the wall — the route sample is thin
+gym-big-split-kill / control-hold:
+  M1 < 70%   : PASS  (19%)
+  M2 < 15%   : PASS  (13%)
+  M3 6-10    : PASS  (6.81)
+  M4 <= 2    : PASS  (0.57)
+  M6 < 70%   : PASS  (x=7 54%)
+  ** 178 run(s) never crossed the wall — the route sample is thin
+gym-big-split-kill / charge:
+  M1 < 70%   : PASS  (28%)
+  M2 < 15%   : PASS  (14%)
+  M3 6-10    : FAIL  (4.44)
+  M4 <= 2    : PASS  (0.77)
+  M6 < 70%   : PASS  (x=3 40%)
+  ** 190 run(s) never crossed the wall — the route sample is thin
+gym-big-split-boss3 / corridor-hold:
+  M1 < 70%   : PASS  (18%)
+  M2 < 15%   : PASS  (13%)
+  M3 6-10    : PASS  (7.37)
+  M4 <= 2    : PASS  (0.64)
+  M6 < 70%   : PASS  (x=7 52%)
+  ** 175 run(s) never crossed the wall — the route sample is thin
+gym-big-split-boss3 / tpa-order:
+  M1 < 70%   : PASS  (18%)
+  M2 < 15%   : PASS  (13%)
+  M3 6-10    : PASS  (7.29)
+  M4 <= 2    : PASS  (0.64)
+  M6 < 70%   : PASS  (x=7 54%)
+  ** 176 run(s) never crossed the wall — the route sample is thin
+gym-big-split-boss3 / control-hold:
+  M1 < 70%   : PASS  (18%)
+  M2 < 15%   : PASS  (13%)
+  M3 6-10    : PASS  (7.37)
+  M4 <= 2    : PASS  (0.64)
+  M6 < 70%   : PASS  (x=7 52%)
+  ** 175 run(s) never crossed the wall — the route sample is thin
+gym-big-split-boss3 / charge:
+  M1 < 70%   : PASS  (28%)
+  M2 < 15%   : PASS  (14%)
+  M3 6-10    : FAIL  (4.45)
+  M4 <= 2    : PASS  (0.79)
+  M6 < 70%   : PASS  (x=3 40%)
+  ** 190 run(s) never crossed the wall — the route sample is thin
+gym-big-split-boss3-kill / corridor-hold:
+  M1 < 70%   : PASS  (18%)
+  M2 < 15%   : PASS  (13%)
+  M3 6-10    : PASS  (7.22)
+  M4 <= 2    : PASS  (0.65)
+  M6 < 70%   : PASS  (x=7 50%)
+  ** 176 run(s) never crossed the wall — the route sample is thin
+gym-big-split-boss3-kill / tpa-order:
+  M1 < 70%   : PASS  (18%)
+  M2 < 15%   : PASS  (13%)
+  M3 6-10    : PASS  (7.10)
+  M4 <= 2    : PASS  (0.65)
+  M6 < 70%   : PASS  (x=7 54%)
+  ** 178 run(s) never crossed the wall — the route sample is thin
+gym-big-split-boss3-kill / control-hold:
+  M1 < 70%   : PASS  (18%)
+  M2 < 15%   : PASS  (13%)
+  M3 6-10    : PASS  (7.22)
+  M4 <= 2    : PASS  (0.65)
+  M6 < 70%   : PASS  (x=7 50%)
+  ** 176 run(s) never crossed the wall — the route sample is thin
+gym-big-split-boss3-kill / charge:
+  M1 < 70%   : PASS  (28%)
+  M2 < 15%   : PASS  (14%)
+  M3 6-10    : FAIL  (4.45)
+  M4 <= 2    : PASS  (0.79)
+  M6 < 70%   : PASS  (x=3 40%)
+  ** 190 run(s) never crossed the wall — the route sample is thin
+gym-big-split-boss4 / corridor-hold:
+  M1 < 70%   : PASS  (18%)
+  M2 < 15%   : PASS  (13%)
+  M3 6-10    : PASS  (7.33)
+  M4 <= 2    : PASS  (0.65)
+  M6 < 70%   : PASS  (x=7 50%)
+  ** 176 run(s) never crossed the wall — the route sample is thin
+gym-big-split-boss4 / tpa-order:
+  M1 < 70%   : PASS  (18%)
+  M2 < 15%   : PASS  (13%)
+  M3 6-10    : PASS  (7.20)
+  M4 <= 2    : PASS  (0.66)
+  M6 < 70%   : PASS  (x=7 54%)
+  ** 178 run(s) never crossed the wall — the route sample is thin
+gym-big-split-boss4 / control-hold:
+  M1 < 70%   : PASS  (18%)
+  M2 < 15%   : PASS  (13%)
+  M3 6-10    : PASS  (7.33)
+  M4 <= 2    : PASS  (0.65)
+  M6 < 70%   : PASS  (x=7 50%)
+  ** 176 run(s) never crossed the wall — the route sample is thin
+gym-big-split-boss4 / charge:
+  M1 < 70%   : PASS  (28%)
+  M2 < 15%   : PASS  (14%)
+  M3 6-10    : FAIL  (4.45)
+  M4 <= 2    : PASS  (0.79)
+  M6 < 70%   : PASS  (x=3 40%)
+  ** 190 run(s) never crossed the wall — the route sample is thin
+gym-big-split-boss4-kill / corridor-hold:
+  M1 < 70%   : PASS  (18%)
+  M2 < 15%   : PASS  (13%)
+  M3 6-10    : PASS  (7.25)
+  M4 <= 2    : PASS  (0.66)
+  M6 < 70%   : PASS  (x=7 50%)
+  ** 176 run(s) never crossed the wall — the route sample is thin
+gym-big-split-boss4-kill / tpa-order:
+  M1 < 70%   : PASS  (18%)
+  M2 < 15%   : PASS  (13%)
+  M3 6-10    : PASS  (7.12)
+  M4 <= 2    : PASS  (0.66)
+  M6 < 70%   : PASS  (x=7 54%)
+  ** 178 run(s) never crossed the wall — the route sample is thin
+gym-big-split-boss4-kill / control-hold:
+  M1 < 70%   : PASS  (18%)
+  M2 < 15%   : PASS  (13%)
+  M3 6-10    : PASS  (7.25)
+  M4 <= 2    : PASS  (0.66)
+  M6 < 70%   : PASS  (x=7 50%)
+  ** 176 run(s) never crossed the wall — the route sample is thin
+gym-big-split-boss4-kill / charge:
+  M1 < 70%   : PASS  (28%)
+  M2 < 15%   : PASS  (14%)
+  M3 6-10    : FAIL  (4.45)
+  M4 <= 2    : PASS  (0.79)
+  M6 < 70%   : PASS  (x=3 40%)
+  ** 190 run(s) never crossed the wall — the route sample is thin
+gym-big-split-boss6 / corridor-hold:
+  M1 < 70%   : PASS  (18%)
+  M2 < 15%   : PASS  (13%)
+  M3 6-10    : PASS  (7.26)
+  M4 <= 2    : PASS  (0.67)
+  M6 < 70%   : PASS  (x=3 48%)
+  ** 175 run(s) never crossed the wall — the route sample is thin
+gym-big-split-boss6 / tpa-order:
+  M1 < 70%   : PASS  (18%)
+  M2 < 15%   : PASS  (12%)
+  M3 6-10    : PASS  (7.14)
+  M4 <= 2    : PASS  (0.68)
+  M6 < 70%   : PASS  (x=7 52%)
+  ** 177 run(s) never crossed the wall — the route sample is thin
+gym-big-split-boss6 / control-hold:
+  M1 < 70%   : PASS  (18%)
+  M2 < 15%   : PASS  (13%)
+  M3 6-10    : PASS  (7.26)
+  M4 <= 2    : PASS  (0.67)
+  M6 < 70%   : PASS  (x=3 48%)
+  ** 175 run(s) never crossed the wall — the route sample is thin
+gym-big-split-boss6 / charge:
+  M1 < 70%   : PASS  (28%)
+  M2 < 15%   : PASS  (14%)
+  M3 6-10    : FAIL  (4.45)
+  M4 <= 2    : PASS  (0.79)
+  M6 < 70%   : PASS  (x=3 40%)
+  ** 190 run(s) never crossed the wall — the route sample is thin
+gym-big-split-boss6-kill / corridor-hold:
+  M1 < 70%   : PASS  (18%)
+  M2 < 15%   : PASS  (13%)
+  M3 6-10    : PASS  (7.26)
+  M4 <= 2    : PASS  (0.67)
+  M6 < 70%   : PASS  (x=3 48%)
+  ** 175 run(s) never crossed the wall — the route sample is thin
+gym-big-split-boss6-kill / tpa-order:
+  M1 < 70%   : PASS  (18%)
+  M2 < 15%   : PASS  (12%)
+  M3 6-10    : PASS  (7.14)
+  M4 <= 2    : PASS  (0.68)
+  M6 < 70%   : PASS  (x=7 52%)
+  ** 177 run(s) never crossed the wall — the route sample is thin
+gym-big-split-boss6-kill / control-hold:
+  M1 < 70%   : PASS  (18%)
+  M2 < 15%   : PASS  (13%)
+  M3 6-10    : PASS  (7.26)
+  M4 <= 2    : PASS  (0.67)
+  M6 < 70%   : PASS  (x=3 48%)
+  ** 175 run(s) never crossed the wall — the route sample is thin
+gym-big-split-boss6-kill / charge:
+  M1 < 70%   : PASS  (28%)
+  M2 < 15%   : PASS  (14%)
+  M3 6-10    : FAIL  (4.45)
+  M4 <= 2    : PASS  (0.79)
+  M6 < 70%   : PASS  (x=3 40%)
+  ** 190 run(s) never crossed the wall — the route sample is thin
+gym-lanes / corridor-hold:
+  M1 < 70%   : PASS  (18%)
+  M2 < 15%   : FAIL  (15%)
+  M3 6-10    : FAIL  (13.77)
+  M4 <= 2    : PASS  (0.32)
+  M6 < 70%   : PASS  (x=12 29%)
+  ** 133 run(s) never crossed the wall — the route sample is thin
+gym-lanes / tpa-order:
+  M1 < 70%   : PASS  (18%)
+  M2 < 15%   : FAIL  (15%)
+  M3 6-10    : FAIL  (13.75)
+  M4 <= 2    : PASS  (0.32)
+  M6 < 70%   : PASS  (x=20 29%)
+  ** 133 run(s) never crossed the wall — the route sample is thin
+gym-lanes / control-hold:
+  M1 < 70%   : PASS  (18%)
+  M2 < 15%   : FAIL  (15%)
+  M3 6-10    : FAIL  (13.77)
+  M4 <= 2    : PASS  (0.32)
+  M6 < 70%   : PASS  (x=12 29%)
+  ** 133 run(s) never crossed the wall — the route sample is thin
+gym-lanes / charge:
+  M1 < 70%   : PASS  (25%)
+  M2 < 15%   : PASS  (14%)
+  M3 6-10    : PASS  (6.97)
+  M4 <= 2    : PASS  (0.48)
+  M6 < 70%   : FAIL  (x=11 90%)
+  ** 138 run(s) never crossed the wall — the route sample is thin
+gym-lanes-kill / corridor-hold:
+  M1 < 70%   : PASS  (18%)
+  M2 < 15%   : FAIL  (15%)
+  M3 6-10    : FAIL  (12.92)
+  M4 <= 2    : PASS  (0.34)
+  M6 < 70%   : PASS  (x=3 28%)
+  ** 141 run(s) never crossed the wall — the route sample is thin
+gym-lanes-kill / tpa-order:
+  M1 < 70%   : PASS  (18%)
+  M2 < 15%   : FAIL  (15%)
+  M3 6-10    : FAIL  (12.90)
+  M4 <= 2    : PASS  (0.33)
+  M6 < 70%   : PASS  (x=3 28%)
+  ** 141 run(s) never crossed the wall — the route sample is thin
+gym-lanes-kill / control-hold:
+  M1 < 70%   : PASS  (18%)
+  M2 < 15%   : FAIL  (15%)
+  M3 6-10    : FAIL  (12.92)
+  M4 <= 2    : PASS  (0.34)
+  M6 < 70%   : PASS  (x=3 28%)
+  ** 141 run(s) never crossed the wall — the route sample is thin
+gym-lanes-kill / charge:
+  M1 < 70%   : PASS  (25%)
+  M2 < 15%   : PASS  (14%)
+  M3 6-10    : PASS  (6.94)
+  M4 <= 2    : PASS  (0.48)
+  M6 < 70%   : FAIL  (x=11 90%)
+  ** 138 run(s) never crossed the wall — the route sample is thin
+gym-lanes-boss6 / corridor-hold:
+  M1 < 70%   : PASS  (17%)
+  M2 < 15%   : PASS  (14%)
+  M3 6-10    : FAIL  (14.10)
+  M4 <= 2    : PASS  (0.41)
+  M6 < 70%   : PASS  (x=3 30%)
+  ** 132 run(s) never crossed the wall — the route sample is thin
+gym-lanes-boss6 / tpa-order:
+  M1 < 70%   : PASS  (17%)
+  M2 < 15%   : PASS  (14%)
+  M3 6-10    : FAIL  (14.15)
+  M4 <= 2    : PASS  (0.40)
+  M6 < 70%   : PASS  (x=3 30%)
+  ** 131 run(s) never crossed the wall — the route sample is thin
+gym-lanes-boss6 / control-hold:
+  M1 < 70%   : PASS  (17%)
+  M2 < 15%   : PASS  (14%)
+  M3 6-10    : FAIL  (14.10)
+  M4 <= 2    : PASS  (0.41)
+  M6 < 70%   : PASS  (x=3 30%)
+  ** 132 run(s) never crossed the wall — the route sample is thin
+gym-lanes-boss6 / charge:
+  M1 < 70%   : PASS  (25%)
+  M2 < 15%   : PASS  (14%)
+  M3 6-10    : PASS  (7.05)
+  M4 <= 2    : PASS  (0.55)
+  M6 < 70%   : FAIL  (x=11 90%)
+  ** 138 run(s) never crossed the wall — the route sample is thin
+gym-lanes-boss6-kill / corridor-hold:
+  M1 < 70%   : PASS  (17%)
+  M2 < 15%   : PASS  (14%)
+  M3 6-10    : FAIL  (14.08)
+  M4 <= 2    : PASS  (0.41)
+  M6 < 70%   : PASS  (x=3 30%)
+  ** 132 run(s) never crossed the wall — the route sample is thin
+gym-lanes-boss6-kill / tpa-order:
+  M1 < 70%   : PASS  (17%)
+  M2 < 15%   : PASS  (14%)
+  M3 6-10    : FAIL  (14.13)
+  M4 <= 2    : PASS  (0.40)
+  M6 < 70%   : PASS  (x=3 30%)
+  ** 131 run(s) never crossed the wall — the route sample is thin
+gym-lanes-boss6-kill / control-hold:
+  M1 < 70%   : PASS  (17%)
+  M2 < 15%   : PASS  (14%)
+  M3 6-10    : FAIL  (14.08)
+  M4 <= 2    : PASS  (0.41)
+  M6 < 70%   : PASS  (x=3 30%)
+  ** 132 run(s) never crossed the wall — the route sample is thin
+gym-lanes-boss6-kill / charge:
+  M1 < 70%   : PASS  (25%)
+  M2 < 15%   : PASS  (14%)
+  M3 6-10    : PASS  (7.05)
+  M4 <= 2    : PASS  (0.55)
+  M6 < 70%   : FAIL  (x=11 90%)
+  ** 138 run(s) never crossed the wall — the route sample is thin
+
+M5 comparison (corridor-hold should beat charge, and the chokepoint map
+should beat the open control — otherwise the map taught nothing):
+  gym-opening / corridor-hold : 40%
+  gym-opening / tpa-order : 41%
+  gym-opening / control-hold : 25%
+  gym-opening / charge : 8%
+  gym-opening-noskill / corridor-hold : 44%
+  gym-opening-noskill / tpa-order : 48%
+  gym-opening-noskill / control-hold : 44%
+  gym-opening-noskill / charge : 6%
+  gym-opening-solo / corridor-hold : 0%
+  gym-opening-solo / tpa-order : 0%
+  gym-opening-solo / control-hold : 0%
+  gym-opening-solo / charge : 0%
+  gym-big-split / corridor-hold : 52%
+  gym-big-split / tpa-order : 52%
+  gym-big-split / control-hold : 52%
+  gym-big-split / charge : 3%
+  gym-big-split-kill / corridor-hold : 62%
+  gym-big-split-kill / tpa-order : 65%
+  gym-big-split-kill / control-hold : 62%
+  gym-big-split-kill / charge : 17%
+  gym-big-split-boss3 / corridor-hold : 14%
+  gym-big-split-boss3 / tpa-order : 15%
+  gym-big-split-boss3 / control-hold : 14%
+  gym-big-split-boss3 / charge : 0%
+  gym-big-split-boss3-kill / corridor-hold : 16%
+  gym-big-split-boss3-kill / tpa-order : 36%
+  gym-big-split-boss3-kill / control-hold : 16%
+  gym-big-split-boss3-kill / charge : 1%
+  gym-big-split-boss4 / corridor-hold : 9%
+  gym-big-split-boss4 / tpa-order : 9%
+  gym-big-split-boss4 / control-hold : 9%
+  gym-big-split-boss4 / charge : 0%
+  gym-big-split-boss4-kill / corridor-hold : 11%
+  gym-big-split-boss4-kill / tpa-order : 10%
+  gym-big-split-boss4-kill / control-hold : 11%
+  gym-big-split-boss4-kill / charge : 1%
+  gym-big-split-boss6 / corridor-hold : 1%
+  gym-big-split-boss6 / tpa-order : 1%
+  gym-big-split-boss6 / control-hold : 1%
+  gym-big-split-boss6 / charge : 0%
+  gym-big-split-boss6-kill / corridor-hold : 1%
+  gym-big-split-boss6-kill / tpa-order : 1%
+  gym-big-split-boss6-kill / control-hold : 1%
+  gym-big-split-boss6-kill / charge : 0%
+  gym-lanes / corridor-hold : 67%
+  gym-lanes / tpa-order : 67%
+  gym-lanes / control-hold : 67%
+  gym-lanes / charge : 44%
+  gym-lanes-kill / corridor-hold : 73%
+  gym-lanes-kill / tpa-order : 73%
+  gym-lanes-kill / control-hold : 73%
+  gym-lanes-kill / charge : 48%
+  gym-lanes-boss6 / corridor-hold : 6%
+  gym-lanes-boss6 / tpa-order : 7%
+  gym-lanes-boss6 / control-hold : 6%
+  gym-lanes-boss6 / charge : 0%
+  gym-lanes-boss6-kill / corridor-hold : 9%
+  gym-lanes-boss6-kill / tpa-order : 10%
+  gym-lanes-boss6-kill / control-hold : 9%
+  gym-lanes-boss6-kill / charge : 0%

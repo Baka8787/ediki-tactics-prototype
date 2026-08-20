@@ -1,0 +1,171 @@
+=== Ediki Stage 01 Prototype — Metrics ===
+runs per cell : 60
+base seed     : 1
+noise         : 15%  (sampling device, not a rule)
+round cap     : 60  (safety net, not a rule — R-WIN-04)
+
+=== gym-opening.encounter — encounter profile (derived) ===
+  profile: genjin   HP 220   attacks/turn 2   lethal exposure 2  <- two attackers is death; one mistake ends the battle
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    test_turret       1     2       130     65        0          1100
+    kohaku_3hit       2     2       130     65        0          1300
+    kohaku_bowfair    1     2       130     65        0          1200
+    kohaku            2     2       130     65        0           500
+    no target leaves a spare action — focus fire is the only play
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+  profile: zhengshou_taunt   HP 435   attacks/turn 2   lethal exposure 8
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    test_turret       1     7        60      8        1          1200
+    kohaku_3hit       2    10        60      6        0          1400
+    kohaku_bowfair    1     7        60      8        1          1300
+    kohaku            2     7        60      8        1           600
+    at least one target leaves a spare action — what to spend it on is a choice
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+  profile: momotaro_push   HP 300   attacks/turn 2   lethal exposure 3
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    test_turret       1     2       100     50        0          1100
+    kohaku_3hit       2     3       100     33        1          1400
+    kohaku_bowfair    1     2       100     50        0          1400
+    kohaku            2     2       100     50        0           600
+    at least one target leaves a spare action — what to spend it on is a choice
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+  profile: kagemaru   HP 195   attacks/turn 2   lethal exposure 2  <- two attackers is death; one mistake ends the battle
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    test_turret       1     4       140     35        0           800
+    kohaku_3hit       2     6       140     23        0          1100
+    kohaku_bowfair    1     4       140     35        0          1100
+    kohaku            2     4       140     35        0           300
+    no target leaves a spare action — focus fire is the only play
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+gym-opening.encounter / corridor-hold  (60 runs)
+  M5 win rate      : 33%  (20W / 40L / 0unresolved)
+  M1 top action mix: Guardx2+Waitx2  3% of player turns
+  M1 variety       : 401 distinct mixes, top-3 = 8%
+                     Guardx2+Waitx2 37   Movex2+Guardx2+Waitx2 30   Move+Guard+Wait 26   
+  M1b per unit     : 59 distinct, top 28%, top-3 = 52%   <- compare THIS across party sizes
+  M1b skill use    : 2% of unit-turns issued a skill
+  M2 AP waste      : 27%
+  M3 turns         : mean 19.25  min 12  max 21
+  M4 exposure      : mean 0.33   [0]2332 [1]654 [2]165 [3]25 [4]3 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 4.67   contact turns 23.10
+                     r2:119  r3:16  r4:89  r5:56  r6:16  r7:6  r8:1  r9:3  r10:2  r11:3  r12:7  r13:4  r14:4  r15:2  r16:6  r17:2  r18:3  r19:1  r20:1  never:19
+  M6 route use     : 55/60 runs crossed, top route x=12 29%
+                     x=2:15  x=7:9  x=8:10  x=12:16  x=13:5  never:5
+                     per unit: x=2:23  x=7:27  x=8:19  x=12:22  x=13:7  
+  final player HP  : mean 544
+
+gym-opening.encounter / charge  (60 runs)
+  M5 win rate      : 55%  (33W / 27L / 0unresolved)
+  M1 top action mix: Attackx2+Wait  8% of player turns
+  M1 variety       : 187 distinct mixes, top-3 = 15%
+                     Attackx2+Wait 56   Movex4+Attack+Waitx4 25   Move+Attackx2+Wait 20   
+  M1b per unit     : 46 distinct, top 28%, top-3 = 56%   <- compare THIS across party sizes
+  M1b skill use    : 2% of unit-turns issued a skill
+  M2 AP waste      : 24%
+  M3 turns         : mean 10.63  min 7  max 17
+  M4 exposure      : mean 0.83   [0]530 [1]839 [2]222 [3]20 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 3.75   contact turns 12.48
+                     r2:120  r3:77  r4:77  r5:19  r6:15  r7:10  r8:8  r9:6  r10:6  r11:3  r12:1  r13:3  never:15
+  M6 route use     : 51/60 runs crossed, top route x=12 39%
+                     x=2:2  x=7:8  x=8:18  x=12:20  x=13:3  never:9
+                     per unit: x=2:7  x=7:42  x=8:40  x=12:21  x=13:3  
+  final player HP  : mean 152
+
+=== gym-d1-routes.encounter — encounter profile (derived) ===
+  profile: momotaro   HP 300   attacks/turn 2   lethal exposure 8
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    kohaku_1hit       1     1        20     20        1          1300
+    kohaku_bow        2     2        40     20        0          1100
+    at least one target leaves a spare action — what to spend it on is a choice
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+  profile: kagemaru_plain   HP 195   attacks/turn 2   lethal exposure 3
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    kohaku_1hit       1     2        60     30        0          1200
+    kohaku_bow        2     3        80     26        1          1000
+    at least one target leaves a spare action — what to spend it on is a choice
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+gym-d1-routes.encounter / corridor-hold  (60 runs)
+  M5 win rate      : 100%  (60W / 0L / 0unresolved)
+  M1 top action mix: Movex2+Guard+Wait  17% of player turns
+  M1 variety       : 91 distinct mixes, top-3 = 35%
+                     Movex2+Guard+Wait 116   Move+Guard+Wait 63   Movex2+Guardx2+Waitx2 58   
+  M1b per unit     : 35 distinct, top 32%, top-3 = 58%   <- compare THIS across party sizes
+  M1b skill use    : 0% of unit-turns issued a skill
+  M2 AP waste      : 19%
+  M3 turns         : mean 11.11  min 5  max 26
+  M4 exposure      : mean 0.27   [0]789 [1]217 [2]34 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 3.67   contact turns 11.50
+                     r2:53  r3:19  r4:58  r5:33  r6:11  r7:2  r10:1  never:3
+  M6 route use     : 34/60 runs crossed, top route x=7 61%
+                     x=2:9  x=6:1  x=7:21  x=10:3  never:26
+                     per unit: x=2:9  x=5:4  x=6:1  x=7:23  x=10:3  
+  final player HP  : mean 325
+
+gym-d1-routes.encounter / charge  (60 runs)
+  M5 win rate      : 100%  (60W / 0L / 0unresolved)
+  M1 top action mix: Movex2+Waitx2  14% of player turns
+  M1 variety       : 54 distinct mixes, top-3 = 34%
+                     Movex2+Waitx2 38   Movex2+Attackx2+Waitx2 31   Attackx2+Waitx2 24   
+  M1b per unit     : 29 distinct, top 22%, top-3 = 50%   <- compare THIS across party sizes
+  M1b skill use    : 0% of unit-turns issued a skill
+  M2 AP waste      : 24%
+  M3 turns         : mean 4.50  min 4  max 7
+  M4 exposure      : mean 0.26   [0]396 [1]131 [2]6 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 2.98   contact turns 1.36
+                     r2:53  r3:76  r4:49  r5:1  never:1
+  M6 route use     : 53/60 runs crossed, top route x=2 96%
+                     x=2:51  x=7:1  x=10:1  never:7
+                     per unit: x=2:62  x=5:4  x=7:1  x=10:1  
+  final player HP  : mean 418
+
+=== threshold check (docs/06-validation/playtest-metrics.md) ===
+gym-opening.encounter / corridor-hold:
+  M1 < 70%   : PASS  (3%)
+  M2 < 15%   : FAIL  (27%)
+  M3 6-10    : FAIL  (19.25)
+  M4 <= 2    : PASS  (0.33)
+  M6 < 70%   : PASS  (x=12 29%)
+gym-opening.encounter / charge:
+  M1 < 70%   : PASS  (8%)
+  M2 < 15%   : FAIL  (24%)
+  M3 6-10    : FAIL  (10.63)
+  M4 <= 2    : PASS  (0.83)
+  M6 < 70%   : PASS  (x=12 39%)
+gym-d1-routes.encounter / corridor-hold:
+  M1 < 70%   : PASS  (17%)
+  M2 < 15%   : FAIL  (19%)
+  M3 6-10    : FAIL  (11.11)
+  M4 <= 2    : PASS  (0.27)
+  M6 < 70%   : PASS  (x=7 61%)
+gym-d1-routes.encounter / charge:
+  M1 < 70%   : PASS  (14%)
+  M2 < 15%   : FAIL  (24%)
+  M3 6-10    : FAIL  (4.50)
+  M4 <= 2    : PASS  (0.26)
+  M6 < 70%   : FAIL  (x=2 96%)
+
+M5 comparison (corridor-hold should beat charge, and the chokepoint map
+should beat the open control — otherwise the map taught nothing):
+  gym-opening.encounter / corridor-hold : 33%
+  gym-opening.encounter / charge : 55%
+  gym-d1-routes.encounter / corridor-hold : 100%
+  gym-d1-routes.encounter / charge : 100%
+
+=== anomalies (see SimResults/anomalies.json for the seeds) ===
+  20 of 240 battles flagged
+  TIMEOUT_UNRESOLVED            0
+  ABORTED_BY_REJECTED_COMMAND   0
+  DEFEAT_WITH_HIGH_REMAINING_HP 20
+  UNEXPECTED_SKILL_USAGE        0

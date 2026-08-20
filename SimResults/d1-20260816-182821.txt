@@ -1,0 +1,2065 @@
+=== Ediki Stage 01 Prototype — Metrics ===
+runs per cell : 200
+base seed     : 1
+noise         : 15%  (sampling device, not a rule)
+round cap     : 60  (safety net, not a rule — R-WIN-04)
+
+=== gym-e1-damage.encounter — encounter profile (derived) ===
+  profile: rv_momo_a   HP 300   attacks/turn 2   lethal exposure 8
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    kohaku_bow        2     2        40     20        0           600
+    no target leaves a spare action — focus fire is the only play
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+gym-e1-damage.encounter / attack-only  (200 runs)
+  M5 win rate      : 100%  (200W / 0L / 0unresolved)
+  M1 top action mix: Move+Wait  24% of player turns
+  M1 variety       : 32 distinct mixes, top-3 = 60%
+                     Move+Wait 180   Attackx2+Wait 132   Attackx2 126   
+  M1b per unit     : 32 distinct, top 24%, top-3 = 60%   <- compare THIS across party sizes
+  M1b skill use    : 0% of unit-turns issued a skill
+  M2 AP waste      : 17%
+  M3 turns         : mean 3.61  min 3  max 7
+  M4 exposure      : mean 1.05   [0]206 [1]272 [2]245 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 2.01   contact turns 1.91
+                     r2:393  r3:7  
+  final player HP  : mean 165
+  role metrics     : 200 battle(s), 723 player round(s)
+    player         : 800 attacks, 400 kills, 36000 damage dealt   skills: push 0 / slow 0 / taunt 0
+    taken          : 1405 enemy attacks, 27400 damage received
+    counter        : 0 fired of 0 opportunities  (n/a)   damage 0
+    AP spent       : attack 3200  move 1326  skill 0  guard 66  rest 64  counter 0
+    AP reserved    : 1915 carried into enemy phases  (mean 2.64 per round)   regen wasted 1007   rejected commands 0
+  Occupancy heatmap  12x7   unit-rounds standing here   total 1512  peak 490  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901
+    0  ############
+    1  #3********1#
+    2  #29******24#
+    3  #22*****45.#
+    4  #.2.*9*5623#
+    5  #1.11914.2.#
+    6  ############
+
+  Clash heatmap  12x7   damaging effects landed here   total 2205  peak 1048  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901
+    0  ############
+    1  #58******82#
+    2  #2*******13#
+    3  #44*****75.#
+    4  #.4.***5925#
+    5  #1..1834.2.#
+    6  ############
+
+gym-e1-damage.encounter / push-instrument  (200 runs)
+  M5 win rate      : 100%  (200W / 0L / 0unresolved)
+  M1 top action mix: Move+Wait  24% of player turns
+  M1 variety       : 32 distinct mixes, top-3 = 60%
+                     Move+Wait 180   Attackx2+Wait 132   Attackx2 126   
+  M1b per unit     : 32 distinct, top 24%, top-3 = 60%   <- compare THIS across party sizes
+  M1b skill use    : 0% of unit-turns issued a skill
+  M2 AP waste      : 17%
+  M3 turns         : mean 3.61  min 3  max 7
+  M4 exposure      : mean 1.05   [0]206 [1]272 [2]245 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 2.01   contact turns 1.91
+                     r2:393  r3:7  
+  final player HP  : mean 165
+  role metrics     : 200 battle(s), 723 player round(s)
+    player         : 800 attacks, 400 kills, 36000 damage dealt   skills: push 0 / slow 0 / taunt 0
+    taken          : 1405 enemy attacks, 27400 damage received
+    counter        : 0 fired of 0 opportunities  (n/a)   damage 0
+    AP spent       : attack 3200  move 1326  skill 0  guard 66  rest 64  counter 0
+    AP reserved    : 1915 carried into enemy phases  (mean 2.64 per round)   regen wasted 1007   rejected commands 0
+  Occupancy heatmap  12x7   unit-rounds standing here   total 1512  peak 490  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901
+    0  ############
+    1  #3********1#
+    2  #29******24#
+    3  #22*****45.#
+    4  #.2.*9*5623#
+    5  #1.11914.2.#
+    6  ############
+
+  Clash heatmap  12x7   damaging effects landed here   total 2205  peak 1048  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901
+    0  ############
+    1  #58******82#
+    2  #2*******13#
+    3  #44*****75.#
+    4  #.4.***5925#
+    5  #1..1834.2.#
+    6  ############
+
+gym-e1-damage.encounter / slow-instrument  (200 runs)
+  M5 win rate      : 100%  (200W / 0L / 0unresolved)
+  M1 top action mix: Move+Wait  24% of player turns
+  M1 variety       : 32 distinct mixes, top-3 = 60%
+                     Move+Wait 180   Attackx2+Wait 132   Attackx2 126   
+  M1b per unit     : 32 distinct, top 24%, top-3 = 60%   <- compare THIS across party sizes
+  M1b skill use    : 0% of unit-turns issued a skill
+  M2 AP waste      : 17%
+  M3 turns         : mean 3.61  min 3  max 7
+  M4 exposure      : mean 1.05   [0]206 [1]272 [2]245 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 2.01   contact turns 1.91
+                     r2:393  r3:7  
+  final player HP  : mean 165
+  role metrics     : 200 battle(s), 723 player round(s)
+    player         : 800 attacks, 400 kills, 36000 damage dealt   skills: push 0 / slow 0 / taunt 0
+    taken          : 1405 enemy attacks, 27400 damage received
+    counter        : 0 fired of 0 opportunities  (n/a)   damage 0
+    AP spent       : attack 3200  move 1326  skill 0  guard 66  rest 64  counter 0
+    AP reserved    : 1915 carried into enemy phases  (mean 2.64 per round)   regen wasted 1007   rejected commands 0
+  Occupancy heatmap  12x7   unit-rounds standing here   total 1512  peak 490  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901
+    0  ############
+    1  #3********1#
+    2  #29******24#
+    3  #22*****45.#
+    4  #.2.*9*5623#
+    5  #1.11914.2.#
+    6  ############
+
+  Clash heatmap  12x7   damaging effects landed here   total 2205  peak 1048  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901
+    0  ############
+    1  #58******82#
+    2  #2*******13#
+    3  #44*****75.#
+    4  #.4.***5925#
+    5  #1..1834.2.#
+    6  ############
+
+gym-e1-damage.encounter / taunt-instrument  (200 runs)
+  M5 win rate      : 100%  (200W / 0L / 0unresolved)
+  M1 top action mix: Move+Wait  24% of player turns
+  M1 variety       : 32 distinct mixes, top-3 = 60%
+                     Move+Wait 180   Attackx2+Wait 132   Attackx2 126   
+  M1b per unit     : 32 distinct, top 24%, top-3 = 60%   <- compare THIS across party sizes
+  M1b skill use    : 0% of unit-turns issued a skill
+  M2 AP waste      : 17%
+  M3 turns         : mean 3.61  min 3  max 7
+  M4 exposure      : mean 1.05   [0]206 [1]272 [2]245 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 2.01   contact turns 1.91
+                     r2:393  r3:7  
+  final player HP  : mean 165
+  role metrics     : 200 battle(s), 723 player round(s)
+    player         : 800 attacks, 400 kills, 36000 damage dealt   skills: push 0 / slow 0 / taunt 0
+    taken          : 1405 enemy attacks, 27400 damage received
+    counter        : 0 fired of 0 opportunities  (n/a)   damage 0
+    AP spent       : attack 3200  move 1326  skill 0  guard 66  rest 64  counter 0
+    AP reserved    : 1915 carried into enemy phases  (mean 2.64 per round)   regen wasted 1007   rejected commands 0
+  Occupancy heatmap  12x7   unit-rounds standing here   total 1512  peak 490  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901
+    0  ############
+    1  #3********1#
+    2  #29******24#
+    3  #22*****45.#
+    4  #.2.*9*5623#
+    5  #1.11914.2.#
+    6  ############
+
+  Clash heatmap  12x7   damaging effects landed here   total 2205  peak 1048  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901
+    0  ############
+    1  #58******82#
+    2  #2*******13#
+    3  #44*****75.#
+    4  #.4.***5925#
+    5  #1..1834.2.#
+    6  ############
+
+gym-e1-damage.encounter / counter-reserve  (200 runs)
+  M5 win rate      : 97%  (195W / 5L / 0unresolved)
+  M1 top action mix: Wait  40% of player turns
+  M1 variety       : 22 distinct mixes, top-3 = 72%
+                     Wait 384   Attackx2+Wait 153   Attackx2 149   
+  M1b per unit     : 22 distinct, top 40%, top-3 = 72%   <- compare THIS across party sizes
+  M1b skill use    : 0% of unit-turns issued a skill
+  M2 AP waste      : 48%
+  M3 turns         : mean 4.75  min 3  max 10
+  M4 exposure      : mean 0.86   [0]384 [1]310 [2]257 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 2.02   contact turns 4.04
+                     r2:392  r3:8  
+  final player HP  : mean 185
+  role metrics     : 200 battle(s), 951 player round(s)
+    player         : 789 attacks, 394 kills, 35505 damage dealt   skills: push 0 / slow 0 / taunt 0
+    taken          : 1186 enemy attacks, 23470 damage received
+    counter        : 0 fired of 0 opportunities  (n/a)   damage 0
+    AP spent       : attack 3156  move 521  skill 0  guard 39  rest 44  counter 0
+    AP reserved    : 5183 carried into enemy phases  (mean 5.45 per round)   regen wasted 3706   rejected commands 0
+  Occupancy heatmap  12x7   unit-rounds standing here   total 2168  peak 567  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901
+    0  ############
+    1  #.42**6682.#
+    2  #.4*****222#
+    3  #41*****363#
+    4  #87******71#
+    5  #*********.#
+    6  ############
+
+  Clash heatmap  12x7   damaging effects landed here   total 1975  peak 614  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901
+    0  ############
+    1  #..1798433.#
+    2  #.4*****523#
+    3  #.1*****661#
+    4  #********8.#
+    5  #*********.#
+    6  ############
+
+=== gym-e1-rv_momo_b.encounter — encounter profile (derived) ===
+  profile: rv_momo_b   HP 300   attacks/turn 1   lethal exposure 8
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    kohaku_bow        2     2        40     20        0           600
+    no target leaves a spare action — focus fire is the only play
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+gym-e1-rv_momo_b.encounter / attack-only  (200 runs)
+  M5 win rate      : 99%  (198W / 2L / 0unresolved)
+  M1 top action mix: Move+Wait  22% of player turns
+  M1 variety       : 28 distinct mixes, top-3 = 57%
+                     Move+Wait 195   Attackx2+Wait 168   Attack 142   
+  M1b per unit     : 28 distinct, top 22%, top-3 = 57%   <- compare THIS across party sizes
+  M1b skill use    : 1% of unit-turns issued a skill
+  M2 AP waste      : 17%
+  M3 turns         : mean 4.36  min 4  max 7
+  M4 exposure      : mean 1.05   [0]206 [1]412 [2]254 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 2.01   contact turns 2.70
+                     r2:393  r3:7  
+  final player HP  : mean 132
+  role metrics     : 200 battle(s), 872 player round(s)
+    player         : 797 attacks, 398 kills, 35865 damage dealt   skills: push 11 / slow 0 / taunt 0
+    taken          : 1729 enemy attacks, 33860 damage received
+    counter        : 0 fired of 0 opportunities  (n/a)   damage 0
+    AP spent       : attack 3985  move 1331  skill 33  guard 66  rest 52  counter 0
+    AP reserved    : 2118 carried into enemy phases  (mean 2.42 per round)   regen wasted 1191   rejected commands 0
+  Occupancy heatmap  12x7   unit-rounds standing here   total 1819  peak 601  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901
+    0  ############
+    1  #9*******7.#
+    2  #2*******22#
+    3  #12*****462#
+    4  #.668**1631#
+    5  #.132*42.2.#
+    6  ############
+
+  Clash heatmap  12x7   damaging effects landed here   total 2526  peak 1307  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901
+    0  ############
+    1  #********9.#
+    2  #1*******12#
+    3  #.4*****754#
+    4  #.*5*9*1651#
+    5  #..11*31.2.#
+    6  ############
+
+gym-e1-rv_momo_b.encounter / push-instrument  (200 runs)
+  M5 win rate      : 9%  (18W / 182L / 0unresolved)
+  M1 top action mix: Move+Wait  17% of player turns
+  M1 variety       : 49 distinct mixes, top-3 = 44%
+                     Move+Wait 197   Movex2+Wait+Pushx2 165   Attack+Wait+Push 126   
+  M1b per unit     : 49 distinct, top 17%, top-3 = 44%   <- compare THIS across party sizes
+  M1b skill use    : 63% of unit-turns issued a skill
+  M2 AP waste      : 12%
+  M3 turns         : mean 5.51  min 4  max 9
+  M4 exposure      : mean 1.67   [0]22 [1]318 [2]763 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 2.01   contact turns 6.18
+                     r2:393  r3:7  
+  final player HP  : mean 6
+  role metrics     : 200 battle(s), 1103 player round(s)
+    player         : 344 attacks, 133 kills, 15480 damage dealt   skills: push 1174 / slow 0 / taunt 0
+    taken          : 3064 enemy attacks, 59890 damage received
+    counter        : 0 fired of 0 opportunities  (n/a)   damage 0
+    AP spent       : attack 1720  move 2397  skill 3522  guard 138  rest 80  counter 0
+    AP reserved    : 2305 carried into enemy phases  (mean 2.08 per round)   regen wasted 1097   rejected commands 0
+  Occupancy heatmap  12x7   unit-rounds standing here   total 2832  peak 461  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901
+    0  ############
+    1  #**********#
+    2  #*********4#
+    3  #5******761#
+    4  #*779**9631#
+    5  #235.*5425.#
+    6  ############
+
+  Clash heatmap  12x7   damaging effects landed here   total 3408  peak 848  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901
+    0  ############
+    1  #*********5#
+    2  #*********9#
+    3  #*******231#
+    4  #8******811#
+    5  #.631*5334.#
+    6  ############
+
+gym-e1-rv_momo_b.encounter / slow-instrument  (200 runs)
+  M5 win rate      : 99%  (198W / 2L / 0unresolved)
+  M1 top action mix: Move+Wait  22% of player turns
+  M1 variety       : 28 distinct mixes, top-3 = 57%
+                     Move+Wait 195   Attackx2+Wait 168   Attack 142   
+  M1b per unit     : 28 distinct, top 22%, top-3 = 57%   <- compare THIS across party sizes
+  M1b skill use    : 1% of unit-turns issued a skill
+  M2 AP waste      : 17%
+  M3 turns         : mean 4.36  min 4  max 7
+  M4 exposure      : mean 1.05   [0]206 [1]412 [2]254 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 2.01   contact turns 2.70
+                     r2:393  r3:7  
+  final player HP  : mean 132
+  role metrics     : 200 battle(s), 872 player round(s)
+    player         : 797 attacks, 398 kills, 35865 damage dealt   skills: push 11 / slow 0 / taunt 0
+    taken          : 1729 enemy attacks, 33860 damage received
+    counter        : 0 fired of 0 opportunities  (n/a)   damage 0
+    AP spent       : attack 3985  move 1331  skill 33  guard 66  rest 52  counter 0
+    AP reserved    : 2118 carried into enemy phases  (mean 2.42 per round)   regen wasted 1191   rejected commands 0
+  Occupancy heatmap  12x7   unit-rounds standing here   total 1819  peak 601  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901
+    0  ############
+    1  #9*******7.#
+    2  #2*******22#
+    3  #12*****462#
+    4  #.668**1631#
+    5  #.132*42.2.#
+    6  ############
+
+  Clash heatmap  12x7   damaging effects landed here   total 2526  peak 1307  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901
+    0  ############
+    1  #********9.#
+    2  #1*******12#
+    3  #.4*****754#
+    4  #.*5*9*1651#
+    5  #..11*31.2.#
+    6  ############
+
+gym-e1-rv_momo_b.encounter / taunt-instrument  (200 runs)
+  M5 win rate      : 99%  (198W / 2L / 0unresolved)
+  M1 top action mix: Move+Wait  22% of player turns
+  M1 variety       : 28 distinct mixes, top-3 = 57%
+                     Move+Wait 195   Attackx2+Wait 168   Attack 142   
+  M1b per unit     : 28 distinct, top 22%, top-3 = 57%   <- compare THIS across party sizes
+  M1b skill use    : 1% of unit-turns issued a skill
+  M2 AP waste      : 17%
+  M3 turns         : mean 4.36  min 4  max 7
+  M4 exposure      : mean 1.05   [0]206 [1]412 [2]254 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 2.01   contact turns 2.70
+                     r2:393  r3:7  
+  final player HP  : mean 132
+  role metrics     : 200 battle(s), 872 player round(s)
+    player         : 797 attacks, 398 kills, 35865 damage dealt   skills: push 11 / slow 0 / taunt 0
+    taken          : 1729 enemy attacks, 33860 damage received
+    counter        : 0 fired of 0 opportunities  (n/a)   damage 0
+    AP spent       : attack 3985  move 1331  skill 33  guard 66  rest 52  counter 0
+    AP reserved    : 2118 carried into enemy phases  (mean 2.42 per round)   regen wasted 1191   rejected commands 0
+  Occupancy heatmap  12x7   unit-rounds standing here   total 1819  peak 601  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901
+    0  ############
+    1  #9*******7.#
+    2  #2*******22#
+    3  #12*****462#
+    4  #.668**1631#
+    5  #.132*42.2.#
+    6  ############
+
+  Clash heatmap  12x7   damaging effects landed here   total 2526  peak 1307  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901
+    0  ############
+    1  #********9.#
+    2  #1*******12#
+    3  #.4*****754#
+    4  #.*5*9*1651#
+    5  #..11*31.2.#
+    6  ############
+
+gym-e1-rv_momo_b.encounter / counter-reserve  (200 runs)
+  M5 win rate      : 95%  (190W / 10L / 0unresolved)
+  M1 top action mix: Wait  35% of player turns
+  M1 variety       : 18 distinct mixes, top-3 = 66%
+                     Wait 394   Attackx2+Wait 185   Attack 151   
+  M1b per unit     : 18 distinct, top 35%, top-3 = 66%   <- compare THIS across party sizes
+  M1b skill use    : 1% of unit-turns issued a skill
+  M2 AP waste      : 44%
+  M3 turns         : mean 5.50  min 4  max 9
+  M4 exposure      : mean 0.90   [0]378 [1]454 [2]268 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 2.02   contact turns 4.85
+                     r2:392  r3:8  
+  final player HP  : mean 149
+  role metrics     : 200 battle(s), 1100 player round(s)
+    player         : 783 attacks, 389 kills, 35235 damage dealt   skills: push 11 / slow 0 / taunt 0
+    taken          : 1525 enemy attacks, 30210 damage received
+    counter        : 0 fired of 0 opportunities  (n/a)   damage 0
+    AP spent       : attack 3915  move 517  skill 33  guard 42  rest 22  counter 0
+    AP reserved    : 5345 carried into enemy phases  (mean 4.85 per round)   regen wasted 3872   rejected commands 0
+  Occupancy heatmap  12x7   unit-rounds standing here   total 2479  peak 690  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901
+    0  ############
+    1  #14.9*4.71.#
+    2  #5******552#
+    3  #*9*****67.#
+    4  #*********.#
+    5  #*******7*.#
+    6  ############
+
+  Clash heatmap  12x7   damaging effects landed here   total 2308  peak 840  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901
+    0  ############
+    1  #2..464.22.#
+    2  #*****69941#
+    3  #7******95.#
+    4  #*********.#
+    5  #*********.#
+    6  ############
+
+=== gym-e2-push.encounter — encounter profile (derived) ===
+  profile: rv_momo_a   HP 300   attacks/turn 2   lethal exposure 8
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    rv_pushable       1     4        40     10        0           600
+    rv_anchor2        1     4        40     10        0           600
+    no target leaves a spare action — focus fire is the only play
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+gym-e2-push.encounter / attack-only  (200 runs)
+  M5 win rate      : 98%  (197W / 3L / 0unresolved)
+  M1 top action mix: Attackx2+Wait  28% of player turns
+  M1 variety       : 32 distinct mixes, top-3 = 59%
+                     Attackx2+Wait 359   Move+Wait 223   Move+Attackx2+Wait 163   
+  M1b per unit     : 32 distinct, top 28%, top-3 = 59%   <- compare THIS across party sizes
+  M1b skill use    : 0% of unit-turns issued a skill
+  M2 AP waste      : 12%
+  M3 turns         : mean 6.21  min 5  max 10
+  M4 exposure      : mean 0.94   [0]301 [1]715 [2]227 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 3.12   contact turns 3.70
+                     r2:193  r3:26  r4:125  r5:51  r6:3  r7:2  
+  final player HP  : mean 119
+  role metrics     : 200 battle(s), 1243 player round(s)
+    player         : 1595 attacks, 397 kills, 63800 damage dealt   skills: push 0 / slow 0 / taunt 0
+    taken          : 1889 enemy attacks, 37220 damage received
+    counter        : 0 fired of 0 opportunities  (n/a)   damage 0
+    AP spent       : attack 6380  move 2024  skill 0  guard 93  rest 96  counter 0
+    AP reserved    : 2756 carried into enemy phases  (mean 2.21 per round)   regen wasted 1254   rejected commands 0
+  Occupancy heatmap  13x9   unit-rounds standing here   total 2834  peak 574  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      0123456789012
+    0  #############
+    1  #23*8***682.#
+    2  #112.9**2.11#
+    3  ######*######
+    4  #56*********#
+    5  #47********3#
+    6  #355****48.1#
+    7  #.5138*6645.#
+    8  #############
+
+  Clash heatmap  13x9   damaging effects landed here   total 3484  peak 839  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      0123456789012
+    0  #############
+    1  #24*****8*..#
+    2  #..1.***2...#
+    3  ######*######
+    4  #87*********#
+    5  #59********4#
+    6  #166****54..#
+    7  #.4.56*694..#
+    8  #############
+
+gym-e2-push.encounter / push-instrument  (200 runs)
+  M5 win rate      : 98%  (197W / 3L / 0unresolved)
+  M1 top action mix: Attackx2+Wait  28% of player turns
+  M1 variety       : 32 distinct mixes, top-3 = 59%
+                     Attackx2+Wait 359   Move+Wait 223   Move+Attackx2+Wait 163   
+  M1b per unit     : 32 distinct, top 28%, top-3 = 59%   <- compare THIS across party sizes
+  M1b skill use    : 0% of unit-turns issued a skill
+  M2 AP waste      : 12%
+  M3 turns         : mean 6.21  min 5  max 10
+  M4 exposure      : mean 0.94   [0]301 [1]715 [2]227 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 3.12   contact turns 3.70
+                     r2:193  r3:26  r4:125  r5:51  r6:3  r7:2  
+  final player HP  : mean 119
+  role metrics     : 200 battle(s), 1243 player round(s)
+    player         : 1595 attacks, 397 kills, 63800 damage dealt   skills: push 0 / slow 0 / taunt 0
+    taken          : 1889 enemy attacks, 37220 damage received
+    counter        : 0 fired of 0 opportunities  (n/a)   damage 0
+    AP spent       : attack 6380  move 2024  skill 0  guard 93  rest 96  counter 0
+    AP reserved    : 2756 carried into enemy phases  (mean 2.21 per round)   regen wasted 1254   rejected commands 0
+  Occupancy heatmap  13x9   unit-rounds standing here   total 2834  peak 574  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      0123456789012
+    0  #############
+    1  #23*8***682.#
+    2  #112.9**2.11#
+    3  ######*######
+    4  #56*********#
+    5  #47********3#
+    6  #355****48.1#
+    7  #.5138*6645.#
+    8  #############
+
+  Clash heatmap  13x9   damaging effects landed here   total 3484  peak 839  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      0123456789012
+    0  #############
+    1  #24*****8*..#
+    2  #..1.***2...#
+    3  ######*######
+    4  #87*********#
+    5  #59********4#
+    6  #166****54..#
+    7  #.4.56*694..#
+    8  #############
+
+gym-e2-push.encounter / slow-instrument  (200 runs)
+  M5 win rate      : 98%  (197W / 3L / 0unresolved)
+  M1 top action mix: Attackx2+Wait  28% of player turns
+  M1 variety       : 32 distinct mixes, top-3 = 59%
+                     Attackx2+Wait 359   Move+Wait 223   Move+Attackx2+Wait 163   
+  M1b per unit     : 32 distinct, top 28%, top-3 = 59%   <- compare THIS across party sizes
+  M1b skill use    : 0% of unit-turns issued a skill
+  M2 AP waste      : 12%
+  M3 turns         : mean 6.21  min 5  max 10
+  M4 exposure      : mean 0.94   [0]301 [1]715 [2]227 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 3.12   contact turns 3.70
+                     r2:193  r3:26  r4:125  r5:51  r6:3  r7:2  
+  final player HP  : mean 119
+  role metrics     : 200 battle(s), 1243 player round(s)
+    player         : 1595 attacks, 397 kills, 63800 damage dealt   skills: push 0 / slow 0 / taunt 0
+    taken          : 1889 enemy attacks, 37220 damage received
+    counter        : 0 fired of 0 opportunities  (n/a)   damage 0
+    AP spent       : attack 6380  move 2024  skill 0  guard 93  rest 96  counter 0
+    AP reserved    : 2756 carried into enemy phases  (mean 2.21 per round)   regen wasted 1254   rejected commands 0
+  Occupancy heatmap  13x9   unit-rounds standing here   total 2834  peak 574  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      0123456789012
+    0  #############
+    1  #23*8***682.#
+    2  #112.9**2.11#
+    3  ######*######
+    4  #56*********#
+    5  #47********3#
+    6  #355****48.1#
+    7  #.5138*6645.#
+    8  #############
+
+  Clash heatmap  13x9   damaging effects landed here   total 3484  peak 839  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      0123456789012
+    0  #############
+    1  #24*****8*..#
+    2  #..1.***2...#
+    3  ######*######
+    4  #87*********#
+    5  #59********4#
+    6  #166****54..#
+    7  #.4.56*694..#
+    8  #############
+
+gym-e2-push.encounter / taunt-instrument  (200 runs)
+  M5 win rate      : 98%  (197W / 3L / 0unresolved)
+  M1 top action mix: Attackx2+Wait  28% of player turns
+  M1 variety       : 32 distinct mixes, top-3 = 59%
+                     Attackx2+Wait 359   Move+Wait 223   Move+Attackx2+Wait 163   
+  M1b per unit     : 32 distinct, top 28%, top-3 = 59%   <- compare THIS across party sizes
+  M1b skill use    : 0% of unit-turns issued a skill
+  M2 AP waste      : 12%
+  M3 turns         : mean 6.21  min 5  max 10
+  M4 exposure      : mean 0.94   [0]301 [1]715 [2]227 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 3.12   contact turns 3.70
+                     r2:193  r3:26  r4:125  r5:51  r6:3  r7:2  
+  final player HP  : mean 119
+  role metrics     : 200 battle(s), 1243 player round(s)
+    player         : 1595 attacks, 397 kills, 63800 damage dealt   skills: push 0 / slow 0 / taunt 0
+    taken          : 1889 enemy attacks, 37220 damage received
+    counter        : 0 fired of 0 opportunities  (n/a)   damage 0
+    AP spent       : attack 6380  move 2024  skill 0  guard 93  rest 96  counter 0
+    AP reserved    : 2756 carried into enemy phases  (mean 2.21 per round)   regen wasted 1254   rejected commands 0
+  Occupancy heatmap  13x9   unit-rounds standing here   total 2834  peak 574  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      0123456789012
+    0  #############
+    1  #23*8***682.#
+    2  #112.9**2.11#
+    3  ######*######
+    4  #56*********#
+    5  #47********3#
+    6  #355****48.1#
+    7  #.5138*6645.#
+    8  #############
+
+  Clash heatmap  13x9   damaging effects landed here   total 3484  peak 839  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      0123456789012
+    0  #############
+    1  #24*****8*..#
+    2  #..1.***2...#
+    3  ######*######
+    4  #87*********#
+    5  #59********4#
+    6  #166****54..#
+    7  #.4.56*694..#
+    8  #############
+
+gym-e2-push.encounter / counter-reserve  (200 runs)
+  M5 win rate      : 91%  (182W / 18L / 0unresolved)
+  M1 top action mix: Attackx2+Wait  33% of player turns
+  M1 variety       : 22 distinct mixes, top-3 = 71%
+                     Attackx2+Wait 490   Wait 404   Move+Wait 140   
+  M1b per unit     : 22 distinct, top 33%, top-3 = 71%   <- compare THIS across party sizes
+  M1b skill use    : 0% of unit-turns issued a skill
+  M2 AP waste      : 35%
+  M3 turns         : mean 7.26  min 6  max 12
+  M4 exposure      : mean 0.90   [0]448 [1]692 [2]312 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 2.59   contact turns 6.87
+                     r2:188  r3:189  r4:19  r5:4  
+  final player HP  : mean 85
+  role metrics     : 200 battle(s), 1452 player round(s)
+    player         : 1569 attacks, 381 kills, 62760 damage dealt   skills: push 0 / slow 0 / taunt 0
+    taken          : 2198 enemy attacks, 43500 damage received
+    counter        : 0 fired of 0 opportunities  (n/a)   damage 0
+    AP spent       : attack 6276  move 917  skill 0  guard 69  rest 54  counter 0
+    AP reserved    : 6390 carried into enemy phases  (mean 4.40 per round)   regen wasted 4127   rejected commands 0
+  Occupancy heatmap  13x9   unit-rounds standing here   total 3466  peak 685  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      0123456789012
+    0  #############
+    1  #.....53....#
+    2  #.....*4....#
+    3  ######*######
+    4  #29********5#
+    5  #37********5#
+    6  #8*********5#
+    7  #**********8#
+    8  #############
+
+  Clash heatmap  13x9   damaging effects landed here   total 3767  peak 847  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      0123456789012
+    0  #############
+    1  #.....53....#
+    2  #.....74....#
+    3  ######*######
+    4  #.6********7#
+    5  #3*********5#
+    6  #**********4#
+    7  #**********7#
+    8  #############
+
+=== gym-e2-rv_momo_b.encounter — encounter profile (derived) ===
+  profile: rv_momo_b   HP 300   attacks/turn 1   lethal exposure 8
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    rv_pushable       1     4        40     10        0           600
+    rv_anchor2        1     4        40     10        0           600
+    no target leaves a spare action — focus fire is the only play
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+gym-e2-rv_momo_b.encounter / attack-only  (200 runs)
+  M5 win rate      : 86%  (173W / 27L / 0unresolved)
+  M1 top action mix: Attackx2+Wait  24% of player turns
+  M1 variety       : 29 distinct mixes, top-3 = 58%
+                     Attackx2+Wait 365   Attack+Wait 292   Move+Wait 231   
+  M1b per unit     : 29 distinct, top 24%, top-3 = 58%   <- compare THIS across party sizes
+  M1b skill use    : 0% of unit-turns issued a skill
+  M2 AP waste      : 15%
+  M3 turns         : mean 7.60  min 6  max 10
+  M4 exposure      : mean 0.99   [0]269 [1]986 [2]265 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 3.41   contact turns 5.28
+                     r2:193  r3:26  r4:29  r5:129  r6:21  r7:2  
+  final player HP  : mean 52
+  role metrics     : 200 battle(s), 1520 player round(s)
+    player         : 1551 attacks, 370 kills, 62040 damage dealt   skills: push 3 / slow 0 / taunt 0
+    taken          : 2564 enemy attacks, 50510 damage received
+    counter        : 0 fired of 0 opportunities  (n/a)   damage 0
+    AP spent       : attack 7755  move 2075  skill 9  guard 120  rest 90  counter 0
+    AP reserved    : 3668 carried into enemy phases  (mean 2.41 per round)   regen wasted 1890   rejected commands 0
+  Occupancy heatmap  13x9   unit-rounds standing here   total 3544  peak 783  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      0123456789012
+    0  #############
+    1  #36*******6.#
+    2  #.25..*1.43.#
+    3  ######*######
+    4  #*9*********#
+    5  #9*********.#
+    6  #.5*****2752#
+    7  #1248**24294#
+    8  #############
+
+  Clash heatmap  13x9   damaging effects landed here   total 4115  peak 1084  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      0123456789012
+    0  #############
+    1  #36*******6.#
+    2  #..6..*..4..#
+    3  ######*######
+    4  #**********9#
+    5  #**********.#
+    6  #2******2351#
+    7  #..17**.4937#
+    8  #############
+
+gym-e2-rv_momo_b.encounter / push-instrument  (200 runs)
+  M5 win rate      : 65%  (130W / 70L / 0unresolved)
+  M1 top action mix: Attackx2+Wait  20% of player turns
+  M1 variety       : 40 distinct mixes, top-3 = 51%
+                     Attackx2+Wait 298   Move+Wait 230   Attack+Wait 223   
+  M1b per unit     : 40 distinct, top 20%, top-3 = 51%   <- compare THIS across party sizes
+  M1b skill use    : 12% of unit-turns issued a skill
+  M2 AP waste      : 15%
+  M3 turns         : mean 7.32  min 6  max 10
+  M4 exposure      : mean 1.12   [0]222 [1]835 [2]407 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 3.39   contact turns 5.48
+                     r2:193  r3:26  r4:35  r5:125  r6:18  r7:2  r8:1  
+  final player HP  : mean 39
+  role metrics     : 200 battle(s), 1464 player round(s)
+    player         : 1374 attacks, 278 kills, 54960 damage dealt   skills: push 198 / slow 0 / taunt 0
+    taken          : 2704 enemy attacks, 53310 damage received
+    counter        : 0 fired of 0 opportunities  (n/a)   damage 0
+    AP spent       : attack 6870  move 2081  skill 594  guard 114  rest 102  counter 0
+    AP reserved    : 3588 carried into enemy phases  (mean 2.45 per round)   regen wasted 1788   rejected commands 0
+  Occupancy heatmap  13x9   unit-rounds standing here   total 3572  peak 783  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      0123456789012
+    0  #############
+    1  #36*******6.#
+    2  #.25..*1.43.#
+    3  ######*######
+    4  #6*********3#
+    5  #6*********2#
+    6  #118****1993#
+    7  #.269**7815.#
+    8  #############
+
+  Clash heatmap  13x9   damaging effects landed here   total 4078  peak 1101  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      0123456789012
+    0  #############
+    1  #36*******6.#
+    2  #..6..*..4..#
+    3  ######*######
+    4  #*9********2#
+    5  #6*********2#
+    6  #.*2****4956#
+    7  #.196***.6..#
+    8  #############
+
+gym-e2-rv_momo_b.encounter / slow-instrument  (200 runs)
+  M5 win rate      : 86%  (173W / 27L / 0unresolved)
+  M1 top action mix: Attackx2+Wait  24% of player turns
+  M1 variety       : 29 distinct mixes, top-3 = 58%
+                     Attackx2+Wait 365   Attack+Wait 292   Move+Wait 231   
+  M1b per unit     : 29 distinct, top 24%, top-3 = 58%   <- compare THIS across party sizes
+  M1b skill use    : 0% of unit-turns issued a skill
+  M2 AP waste      : 15%
+  M3 turns         : mean 7.60  min 6  max 10
+  M4 exposure      : mean 0.99   [0]269 [1]986 [2]265 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 3.41   contact turns 5.28
+                     r2:193  r3:26  r4:29  r5:129  r6:21  r7:2  
+  final player HP  : mean 52
+  role metrics     : 200 battle(s), 1520 player round(s)
+    player         : 1551 attacks, 370 kills, 62040 damage dealt   skills: push 3 / slow 0 / taunt 0
+    taken          : 2564 enemy attacks, 50510 damage received
+    counter        : 0 fired of 0 opportunities  (n/a)   damage 0
+    AP spent       : attack 7755  move 2075  skill 9  guard 120  rest 90  counter 0
+    AP reserved    : 3668 carried into enemy phases  (mean 2.41 per round)   regen wasted 1890   rejected commands 0
+  Occupancy heatmap  13x9   unit-rounds standing here   total 3544  peak 783  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      0123456789012
+    0  #############
+    1  #36*******6.#
+    2  #.25..*1.43.#
+    3  ######*######
+    4  #*9*********#
+    5  #9*********.#
+    6  #.5*****2752#
+    7  #1248**24294#
+    8  #############
+
+  Clash heatmap  13x9   damaging effects landed here   total 4115  peak 1084  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      0123456789012
+    0  #############
+    1  #36*******6.#
+    2  #..6..*..4..#
+    3  ######*######
+    4  #**********9#
+    5  #**********.#
+    6  #2******2351#
+    7  #..17**.4937#
+    8  #############
+
+gym-e2-rv_momo_b.encounter / taunt-instrument  (200 runs)
+  M5 win rate      : 86%  (173W / 27L / 0unresolved)
+  M1 top action mix: Attackx2+Wait  24% of player turns
+  M1 variety       : 29 distinct mixes, top-3 = 58%
+                     Attackx2+Wait 365   Attack+Wait 292   Move+Wait 231   
+  M1b per unit     : 29 distinct, top 24%, top-3 = 58%   <- compare THIS across party sizes
+  M1b skill use    : 0% of unit-turns issued a skill
+  M2 AP waste      : 15%
+  M3 turns         : mean 7.60  min 6  max 10
+  M4 exposure      : mean 0.99   [0]269 [1]986 [2]265 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 3.41   contact turns 5.28
+                     r2:193  r3:26  r4:29  r5:129  r6:21  r7:2  
+  final player HP  : mean 52
+  role metrics     : 200 battle(s), 1520 player round(s)
+    player         : 1551 attacks, 370 kills, 62040 damage dealt   skills: push 3 / slow 0 / taunt 0
+    taken          : 2564 enemy attacks, 50510 damage received
+    counter        : 0 fired of 0 opportunities  (n/a)   damage 0
+    AP spent       : attack 7755  move 2075  skill 9  guard 120  rest 90  counter 0
+    AP reserved    : 3668 carried into enemy phases  (mean 2.41 per round)   regen wasted 1890   rejected commands 0
+  Occupancy heatmap  13x9   unit-rounds standing here   total 3544  peak 783  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      0123456789012
+    0  #############
+    1  #36*******6.#
+    2  #.25..*1.43.#
+    3  ######*######
+    4  #*9*********#
+    5  #9*********.#
+    6  #.5*****2752#
+    7  #1248**24294#
+    8  #############
+
+  Clash heatmap  13x9   damaging effects landed here   total 4115  peak 1084  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      0123456789012
+    0  #############
+    1  #36*******6.#
+    2  #..6..*..4..#
+    3  ######*######
+    4  #**********9#
+    5  #**********.#
+    6  #2******2351#
+    7  #..17**.4937#
+    8  #############
+
+gym-e2-rv_momo_b.encounter / counter-reserve  (200 runs)
+  M5 win rate      : 61%  (122W / 78L / 0unresolved)
+  M1 top action mix: Wait  25% of player turns
+  M1 variety       : 19 distinct mixes, top-3 = 71%
+                     Wait 404   Attackx2+Wait 389   Attack+Wait 313   
+  M1b per unit     : 19 distinct, top 25%, top-3 = 71%   <- compare THIS across party sizes
+  M1b skill use    : 0% of unit-turns issued a skill
+  M2 AP waste      : 34%
+  M3 turns         : mean 7.78  min 6  max 12
+  M4 exposure      : mean 1.05   [0]383 [1]712 [2]461 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 2.60   contact turns 8.11
+                     r2:188  r3:189  r4:18  r5:3  r6:2  
+  final player HP  : mean 26
+  role metrics     : 200 battle(s), 1556 player round(s)
+    player         : 1413 attacks, 314 kills, 56520 damage dealt   skills: push 4 / slow 0 / taunt 0
+    taken          : 2810 enemy attacks, 55560 damage received
+    counter        : 0 fired of 0 opportunities  (n/a)   damage 0
+    AP spent       : attack 7065  move 868  skill 12  guard 81  rest 58  counter 0
+    AP reserved    : 6406 carried into enemy phases  (mean 4.11 per round)   regen wasted 4320   rejected commands 0
+  Occupancy heatmap  13x9   unit-rounds standing here   total 3828  peak 807  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      0123456789012
+    0  #############
+    1  #.....23....#
+    2  #...31*11...#
+    3  ######*######
+    4  #*********52#
+    5  #57********6#
+    6  #5*********8#
+    7  #5*********9#
+    8  #############
+
+  Clash heatmap  13x9   damaging effects landed here   total 4223  peak 1300  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      0123456789012
+    0  #############
+    1  #.....33....#
+    2  #...21..1...#
+    3  ######9######
+    4  #**********2#
+    5  #3**********#
+    6  #78*********#
+    7  #***********#
+    8  #############
+
+=== gym-e3-slow.encounter — encounter profile (derived) ===
+  profile: rv_kage_a   HP 195   attacks/turn 1   lethal exposure 5
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    rv_sprinter       2     2        40     20        0           800
+    no target leaves a spare action — focus fire is the only play
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+gym-e3-slow.encounter / attack-only  (200 runs)
+  M5 win rate      : 100%  (200W / 0L / 0unresolved)
+  M1 top action mix: Move+Wait  31% of player turns
+  M1 variety       : 29 distinct mixes, top-3 = 61%
+                     Move+Wait 279   Attackx2+Wait 160   Attackx2 113   
+  M1b per unit     : 29 distinct, top 31%, top-3 = 61%   <- compare THIS across party sizes
+  M1b skill use    : 1% of unit-turns issued a skill
+  M2 AP waste      : 16%
+  M3 turns         : mean 4.47  min 4  max 7
+  M4 exposure      : mean 0.58   [0]378 [1]512 [2]5 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 2.52   contact turns 1.73
+                     r2:201  r3:190  r4:9  
+  final player HP  : mean 118
+  role metrics     : 200 battle(s), 895 player round(s)
+    player         : 800 attacks, 400 kills, 17600 damage dealt   skills: push 0 / slow 16 / taunt 0
+    taken          : 787 enemy attacks, 15460 damage received
+    counter        : 0 fired of 0 opportunities  (n/a)   damage 0
+    AP spent       : attack 4000  move 1861  skill 48  guard 72  rest 50  counter 0
+    AP reserved    : 2095 carried into enemy phases  (mean 2.34 per round)   regen wasted 1190   rejected commands 0
+  Occupancy heatmap  24x6   unit-rounds standing here   total 1850  peak 360  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901234567890123
+    0  ########################
+    1  #...66*********34.1*2..#
+    2  #..1157*7*7*35481......#
+    3  #..11.548474527.3...1..#
+    4  #....21*4***42.1*1.....#
+    5  ########################
+
+  Clash heatmap  24x6   damaging effects landed here   total 1587  peak 371  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901234567890123
+    0  ########################
+    1  #...49*********24.242..#
+    2  #..1267*5*6*383.2......#
+    3  #..1..348472513.1......#
+    4  #....1118***52.2*2.....#
+    5  ########################
+
+gym-e3-slow.encounter / push-instrument  (200 runs)
+  M5 win rate      : 100%  (200W / 0L / 0unresolved)
+  M1 top action mix: Move+Wait  31% of player turns
+  M1 variety       : 29 distinct mixes, top-3 = 61%
+                     Move+Wait 279   Attackx2+Wait 160   Attackx2 113   
+  M1b per unit     : 29 distinct, top 31%, top-3 = 61%   <- compare THIS across party sizes
+  M1b skill use    : 1% of unit-turns issued a skill
+  M2 AP waste      : 16%
+  M3 turns         : mean 4.47  min 4  max 7
+  M4 exposure      : mean 0.58   [0]378 [1]512 [2]5 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 2.52   contact turns 1.73
+                     r2:201  r3:190  r4:9  
+  final player HP  : mean 118
+  role metrics     : 200 battle(s), 895 player round(s)
+    player         : 800 attacks, 400 kills, 17600 damage dealt   skills: push 0 / slow 16 / taunt 0
+    taken          : 787 enemy attacks, 15460 damage received
+    counter        : 0 fired of 0 opportunities  (n/a)   damage 0
+    AP spent       : attack 4000  move 1861  skill 48  guard 72  rest 50  counter 0
+    AP reserved    : 2095 carried into enemy phases  (mean 2.34 per round)   regen wasted 1190   rejected commands 0
+  Occupancy heatmap  24x6   unit-rounds standing here   total 1850  peak 360  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901234567890123
+    0  ########################
+    1  #...66*********34.1*2..#
+    2  #..1157*7*7*35481......#
+    3  #..11.548474527.3...1..#
+    4  #....21*4***42.1*1.....#
+    5  ########################
+
+  Clash heatmap  24x6   damaging effects landed here   total 1587  peak 371  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901234567890123
+    0  ########################
+    1  #...49*********24.242..#
+    2  #..1267*5*6*383.2......#
+    3  #..1..348472513.1......#
+    4  #....1118***52.2*2.....#
+    5  ########################
+
+gym-e3-slow.encounter / slow-instrument  (200 runs)
+  M5 win rate      : 55%  (111W / 89L / 0unresolved)
+  M1 top action mix: Attack+Wait+Slow  26% of player turns
+  M1 variety       : 34 distinct mixes, top-3 = 54%
+                     Attack+Wait+Slow 284   Move+Wait 178   Wait+Slowx2 121   
+  M1b per unit     : 34 distinct, top 26%, top-3 = 54%   <- compare THIS across party sizes
+  M1b skill use    : 76% of unit-turns issued a skill
+  M2 AP waste      : 12%
+  M3 turns         : mean 5.37  min 4  max 7
+  M4 exposure      : mean 1.09   [0]133 [1]705 [2]236 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 2.52   contact turns 4.20
+                     r2:201  r3:190  r4:9  
+  final player HP  : mean 30
+  role metrics     : 200 battle(s), 1074 player round(s)
+    player         : 535 attacks, 230 kills, 11770 damage dealt   skills: push 0 / slow 984 / taunt 0
+    taken          : 1724 enemy attacks, 33990 damage received
+    counter        : 0 fired of 0 opportunities  (n/a)   damage 0
+    AP spent       : attack 2675  move 1776  skill 2952  guard 99  rest 80  counter 0
+    AP reserved    : 2460 carried into enemy phases  (mean 2.29 per round)   regen wasted 1080   rejected commands 0
+  Occupancy heatmap  24x6   unit-rounds standing here   total 2603  peak 438  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901234567890123
+    0  ########################
+    1  #24466********4...1*...#
+    2  #1638********45491534..#
+    3  #32*78******7322*1.542.#
+    4  #12453*****68472*2..21.#
+    5  ########################
+
+  Clash heatmap  24x6   damaging effects landed here   total 2259  peak 632  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901234567890123
+    0  ########################
+    1  #.623.*******5*...2....#
+    2  #2..**8***7*25..72.81..#
+    3  #198*8*4*2*2*.4.*...9..#
+    4  #5.*.74*7*2*.274*5...5.#
+    5  ########################
+
+gym-e3-slow.encounter / taunt-instrument  (200 runs)
+  M5 win rate      : 100%  (200W / 0L / 0unresolved)
+  M1 top action mix: Move+Wait  31% of player turns
+  M1 variety       : 29 distinct mixes, top-3 = 61%
+                     Move+Wait 279   Attackx2+Wait 160   Attackx2 113   
+  M1b per unit     : 29 distinct, top 31%, top-3 = 61%   <- compare THIS across party sizes
+  M1b skill use    : 1% of unit-turns issued a skill
+  M2 AP waste      : 16%
+  M3 turns         : mean 4.47  min 4  max 7
+  M4 exposure      : mean 0.58   [0]378 [1]512 [2]5 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 2.52   contact turns 1.73
+                     r2:201  r3:190  r4:9  
+  final player HP  : mean 118
+  role metrics     : 200 battle(s), 895 player round(s)
+    player         : 800 attacks, 400 kills, 17600 damage dealt   skills: push 0 / slow 16 / taunt 0
+    taken          : 787 enemy attacks, 15460 damage received
+    counter        : 0 fired of 0 opportunities  (n/a)   damage 0
+    AP spent       : attack 4000  move 1861  skill 48  guard 72  rest 50  counter 0
+    AP reserved    : 2095 carried into enemy phases  (mean 2.34 per round)   regen wasted 1190   rejected commands 0
+  Occupancy heatmap  24x6   unit-rounds standing here   total 1850  peak 360  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901234567890123
+    0  ########################
+    1  #...66*********34.1*2..#
+    2  #..1157*7*7*35481......#
+    3  #..11.548474527.3...1..#
+    4  #....21*4***42.1*1.....#
+    5  ########################
+
+  Clash heatmap  24x6   damaging effects landed here   total 1587  peak 371  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901234567890123
+    0  ########################
+    1  #...49*********24.242..#
+    2  #..1267*5*6*383.2......#
+    3  #..1..348472513.1......#
+    4  #....1118***52.2*2.....#
+    5  ########################
+
+gym-e3-slow.encounter / counter-reserve  (200 runs)
+  M5 win rate      : 97%  (195W / 5L / 0unresolved)
+  M1 top action mix: Wait  33% of player turns
+  M1 variety       : 20 distinct mixes, top-3 = 66%
+                     Wait 340   Attackx2+Wait 177   Attack 156   
+  M1b per unit     : 20 distinct, top 33%, top-3 = 66%   <- compare THIS across party sizes
+  M1b skill use    : 0% of unit-turns issued a skill
+  M2 AP waste      : 40%
+  M3 turns         : mean 5.09  min 4  max 8
+  M4 exposure      : mean 0.82   [0]399 [1]396 [2]223 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 2.04   contact turns 4.24
+                     r2:381  r3:19  
+  final player HP  : mean 74
+  role metrics     : 200 battle(s), 1018 player round(s)
+    player         : 794 attacks, 395 kills, 17468 damage dealt   skills: push 0 / slow 8 / taunt 0
+    taken          : 1224 enemy attacks, 24270 damage received
+    counter        : 0 fired of 0 opportunities  (n/a)   damage 0
+    AP spent       : attack 3970  move 475  skill 24  guard 30  rest 22  counter 0
+    AP reserved    : 4518 carried into enemy phases  (mean 4.43 per round)   regen wasted 3282   rejected commands 0
+  Occupancy heatmap  24x6   unit-rounds standing here   total 2285  peak 645  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901234567890123
+    0  ########################
+    1  #....42*******98...5...#
+    2  #......********7.......#
+    3  #....2.6*******2.......#
+    4  #....6312*****64*3.....#
+    5  ########################
+
+  Clash heatmap  24x6   damaging effects landed here   total 2018  peak 776  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901234567890123
+    0  ########################
+    1  #....23********4.......#
+    2  #......********2.......#
+    3  #....2.9*******2.......#
+    4  #....6413*****25*3.....#
+    5  ########################
+
+=== gym-e3-rv_kage_b.encounter — encounter profile (derived) ===
+  profile: rv_kage_b   HP 195   attacks/turn 2   lethal exposure 5
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    rv_sprinter       2     2        40     20        0          1000
+    no target leaves a spare action — focus fire is the only play
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+gym-e3-rv_kage_b.encounter / attack-only  (200 runs)
+  M5 win rate      : 99%  (198W / 2L / 0unresolved)
+  M1 top action mix: Move+Wait  23% of player turns
+  M1 variety       : 28 distinct mixes, top-3 = 54%
+                     Move+Wait 201   Move+Attackx2+Wait 137   Move+Attack+Wait 124   
+  M1b per unit     : 28 distinct, top 23%, top-3 = 54%   <- compare THIS across party sizes
+  M1b skill use    : 0% of unit-turns issued a skill
+  M2 AP waste      : 11%
+  M3 turns         : mean 4.24  min 4  max 8
+  M4 exposure      : mean 0.57   [0]366 [1]474 [2]8 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 2.57   contact turns 1.44
+                     r2:202  r3:169  r4:27  r5:2  
+  final player HP  : mean 125
+  role metrics     : 200 battle(s), 848 player round(s)
+    player         : 798 attacks, 398 kills, 17556 damage dealt   skills: push 0 / slow 0 / taunt 0
+    taken          : 716 enemy attacks, 14010 damage received
+    counter        : 0 fired of 0 opportunities  (n/a)   damage 0
+    AP spent       : attack 3192  move 2464  skill 0  guard 78  rest 50  counter 0
+    AP reserved    : 1578 carried into enemy phases  (mean 1.86 per round)   regen wasted 766   rejected commands 0
+  Occupancy heatmap  24x6   unit-rounds standing here   total 1765  peak 329  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901234567890123
+    0  ########################
+    1  #357************852*...#
+    2  #1.381**8499*318*......#
+    3  #1..5.342.1.632*.......#
+    4  #....1135485335.*12....#
+    5  ########################
+
+  Clash heatmap  24x6   damaging effects landed here   total 1514  peak 320  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901234567890123
+    0  ########################
+    1  #259*************332...#
+    2  #2.3827*7486*21*7......#
+    3  #...4.632.1.7112.......#
+    4  #....11.5644251.*2.....#
+    5  ########################
+
+gym-e3-rv_kage_b.encounter / push-instrument  (200 runs)
+  M5 win rate      : 99%  (198W / 2L / 0unresolved)
+  M1 top action mix: Move+Wait  23% of player turns
+  M1 variety       : 28 distinct mixes, top-3 = 54%
+                     Move+Wait 201   Move+Attackx2+Wait 137   Move+Attack+Wait 124   
+  M1b per unit     : 28 distinct, top 23%, top-3 = 54%   <- compare THIS across party sizes
+  M1b skill use    : 0% of unit-turns issued a skill
+  M2 AP waste      : 11%
+  M3 turns         : mean 4.24  min 4  max 8
+  M4 exposure      : mean 0.57   [0]366 [1]474 [2]8 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 2.57   contact turns 1.44
+                     r2:202  r3:169  r4:27  r5:2  
+  final player HP  : mean 125
+  role metrics     : 200 battle(s), 848 player round(s)
+    player         : 798 attacks, 398 kills, 17556 damage dealt   skills: push 0 / slow 0 / taunt 0
+    taken          : 716 enemy attacks, 14010 damage received
+    counter        : 0 fired of 0 opportunities  (n/a)   damage 0
+    AP spent       : attack 3192  move 2464  skill 0  guard 78  rest 50  counter 0
+    AP reserved    : 1578 carried into enemy phases  (mean 1.86 per round)   regen wasted 766   rejected commands 0
+  Occupancy heatmap  24x6   unit-rounds standing here   total 1765  peak 329  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901234567890123
+    0  ########################
+    1  #357************852*...#
+    2  #1.381**8499*318*......#
+    3  #1..5.342.1.632*.......#
+    4  #....1135485335.*12....#
+    5  ########################
+
+  Clash heatmap  24x6   damaging effects landed here   total 1514  peak 320  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901234567890123
+    0  ########################
+    1  #259*************332...#
+    2  #2.3827*7486*21*7......#
+    3  #...4.632.1.7112.......#
+    4  #....11.5644251.*2.....#
+    5  ########################
+
+gym-e3-rv_kage_b.encounter / slow-instrument  (200 runs)
+  M5 win rate      : 99%  (198W / 2L / 0unresolved)
+  M1 top action mix: Move+Wait  23% of player turns
+  M1 variety       : 28 distinct mixes, top-3 = 54%
+                     Move+Wait 201   Move+Attackx2+Wait 137   Move+Attack+Wait 124   
+  M1b per unit     : 28 distinct, top 23%, top-3 = 54%   <- compare THIS across party sizes
+  M1b skill use    : 0% of unit-turns issued a skill
+  M2 AP waste      : 11%
+  M3 turns         : mean 4.24  min 4  max 8
+  M4 exposure      : mean 0.57   [0]366 [1]474 [2]8 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 2.57   contact turns 1.44
+                     r2:202  r3:169  r4:27  r5:2  
+  final player HP  : mean 125
+  role metrics     : 200 battle(s), 848 player round(s)
+    player         : 798 attacks, 398 kills, 17556 damage dealt   skills: push 0 / slow 0 / taunt 0
+    taken          : 716 enemy attacks, 14010 damage received
+    counter        : 0 fired of 0 opportunities  (n/a)   damage 0
+    AP spent       : attack 3192  move 2464  skill 0  guard 78  rest 50  counter 0
+    AP reserved    : 1578 carried into enemy phases  (mean 1.86 per round)   regen wasted 766   rejected commands 0
+  Occupancy heatmap  24x6   unit-rounds standing here   total 1765  peak 329  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901234567890123
+    0  ########################
+    1  #357************852*...#
+    2  #1.381**8499*318*......#
+    3  #1..5.342.1.632*.......#
+    4  #....1135485335.*12....#
+    5  ########################
+
+  Clash heatmap  24x6   damaging effects landed here   total 1514  peak 320  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901234567890123
+    0  ########################
+    1  #259*************332...#
+    2  #2.3827*7486*21*7......#
+    3  #...4.632.1.7112.......#
+    4  #....11.5644251.*2.....#
+    5  ########################
+
+gym-e3-rv_kage_b.encounter / taunt-instrument  (200 runs)
+  M5 win rate      : 99%  (198W / 2L / 0unresolved)
+  M1 top action mix: Move+Wait  23% of player turns
+  M1 variety       : 28 distinct mixes, top-3 = 54%
+                     Move+Wait 201   Move+Attackx2+Wait 137   Move+Attack+Wait 124   
+  M1b per unit     : 28 distinct, top 23%, top-3 = 54%   <- compare THIS across party sizes
+  M1b skill use    : 0% of unit-turns issued a skill
+  M2 AP waste      : 11%
+  M3 turns         : mean 4.24  min 4  max 8
+  M4 exposure      : mean 0.57   [0]366 [1]474 [2]8 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 2.57   contact turns 1.44
+                     r2:202  r3:169  r4:27  r5:2  
+  final player HP  : mean 125
+  role metrics     : 200 battle(s), 848 player round(s)
+    player         : 798 attacks, 398 kills, 17556 damage dealt   skills: push 0 / slow 0 / taunt 0
+    taken          : 716 enemy attacks, 14010 damage received
+    counter        : 0 fired of 0 opportunities  (n/a)   damage 0
+    AP spent       : attack 3192  move 2464  skill 0  guard 78  rest 50  counter 0
+    AP reserved    : 1578 carried into enemy phases  (mean 1.86 per round)   regen wasted 766   rejected commands 0
+  Occupancy heatmap  24x6   unit-rounds standing here   total 1765  peak 329  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901234567890123
+    0  ########################
+    1  #357************852*...#
+    2  #1.381**8499*318*......#
+    3  #1..5.342.1.632*.......#
+    4  #....1135485335.*12....#
+    5  ########################
+
+  Clash heatmap  24x6   damaging effects landed here   total 1514  peak 320  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901234567890123
+    0  ########################
+    1  #259*************332...#
+    2  #2.3827*7486*21*7......#
+    3  #...4.632.1.7112.......#
+    4  #....11.5644251.*2.....#
+    5  ########################
+
+gym-e3-rv_kage_b.encounter / counter-reserve  (200 runs)
+  M5 win rate      : 97%  (195W / 5L / 0unresolved)
+  M1 top action mix: Wait  37% of player turns
+  M1 variety       : 18 distinct mixes, top-3 = 69%
+                     Wait 344   Attackx2+Wait 154   Attackx2 146   
+  M1b per unit     : 18 distinct, top 37%, top-3 = 69%   <- compare THIS across party sizes
+  M1b skill use    : 0% of unit-turns issued a skill
+  M2 AP waste      : 45%
+  M3 turns         : mean 4.60  min 4  max 7
+  M4 exposure      : mean 0.82   [0]392 [1]296 [2]233 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 2.05   contact turns 3.83
+                     r2:381  r3:18  r4:1  
+  final player HP  : mean 98
+  role metrics     : 200 battle(s), 921 player round(s)
+    player         : 790 attacks, 394 kills, 17380 damage dealt   skills: push 0 / slow 0 / taunt 0
+    taken          : 986 enemy attacks, 19700 damage received
+    counter        : 0 fired of 0 opportunities  (n/a)   damage 0
+    AP spent       : attack 3160  move 667  skill 0  guard 9  rest 36  counter 0
+    AP reserved    : 4738 carried into enemy phases  (mean 5.14 per round)   regen wasted 3360   rejected commands 0
+  Occupancy heatmap  24x6   unit-rounds standing here   total 2108  peak 505  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901234567890123
+    0  ########################
+    1  #231225********94115...#
+    2  #..142**********5331.1.#
+    3  #..3318**7*****73172.2.#
+    4  #...21159*****52*3523..#
+    5  ########################
+
+  Clash heatmap  24x6   damaging effects landed here   total 1776  peak 528  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901234567890123
+    0  ########################
+    1  #2417356********4.2....#
+    2  #..112**********6261.1.#
+    3  #..32.***4*****81171.1.#
+    4  #....3.4******7463523..#
+    5  ########################
+
+=== gym-e4-protect.encounter — encounter profile (derived) ===
+  profile: rv_masa_a   HP 435   attacks/turn 2   lethal exposure 8
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    kohaku            3     7        60      8        1           200
+    at least one target leaves a spare action — what to spend it on is a choice
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+  profile: rv_backline   HP 120   attacks/turn 2   lethal exposure 1  <- two attackers is death; one mistake ends the battle
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    kohaku            3     4       160     40        0           200
+    no target leaves a spare action — focus fire is the only play
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+gym-e4-protect.encounter / attack-only  (200 runs)
+  M5 win rate      : 1%  (2W / 198L / 0unresolved)
+  M1 top action mix: Attackx2+Wait  47% of player turns
+  M1 variety       : 67 distinct mixes, top-3 = 60%
+                     Attackx2+Wait 508   Movex2+Attackx4+Waitx2 80   Attackx4+Waitx2 61   
+  M1b per unit     : 29 distinct, top 49%, top-3 = 75%   <- compare THIS across party sizes
+  M1b skill use    : 1% of unit-turns issued a skill
+  M2 AP waste      : 7%
+  M3 turns         : mean 5.38  min 4  max 9
+  M4 exposure      : mean 1.98   [0]35 [1]335 [2]674 [3]387 
+  M7 contact       : round-1 reach 1.00 enemies   mean release round 1.70   contact turns 9.17
+                     r1:200  r2:376  r3:9  r4:4  r5:2  r6:1  never:8
+  final player HP  : mean 0
+  role metrics     : 200 battle(s), 1077 player round(s)
+    player         : 2243 attacks, 222 kills, 32554 damage dealt   skills: push 0 / slow 0 / taunt 18
+    taken          : 3455 enemy attacks, 121680 damage received
+    counter        : 0 fired of 0 opportunities  (n/a)   damage 0
+    AP spent       : attack 8972  move 1574  skill 54  guard 156  rest 50  counter 0
+    AP reserved    : 2338 carried into enemy phases  (mean 2.17 per round)   regen wasted 826   rejected commands 0
+  Occupancy heatmap  12x7   unit-rounds standing here   total 3697  peak 604  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901
+    0  ############
+    1  #5*******62#
+    2  #7*******72#
+    3  #********31#
+    4  #8*******53#
+    5  #45*****921#
+    6  ############
+
+  Clash heatmap  12x7   damaging effects landed here   total 5698  peak 1582  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901
+    0  ############
+    1  #1*******51#
+    2  #*********8#
+    3  #********3.#
+    4  #********62#
+    5  #1******123#
+    6  ############
+
+gym-e4-protect.encounter / push-instrument  (200 runs)
+  M5 win rate      : 1%  (2W / 198L / 0unresolved)
+  M1 top action mix: Attackx2+Wait  47% of player turns
+  M1 variety       : 67 distinct mixes, top-3 = 60%
+                     Attackx2+Wait 508   Movex2+Attackx4+Waitx2 80   Attackx4+Waitx2 61   
+  M1b per unit     : 29 distinct, top 49%, top-3 = 75%   <- compare THIS across party sizes
+  M1b skill use    : 1% of unit-turns issued a skill
+  M2 AP waste      : 7%
+  M3 turns         : mean 5.38  min 4  max 9
+  M4 exposure      : mean 1.98   [0]35 [1]335 [2]674 [3]387 
+  M7 contact       : round-1 reach 1.00 enemies   mean release round 1.70   contact turns 9.17
+                     r1:200  r2:376  r3:9  r4:4  r5:2  r6:1  never:8
+  final player HP  : mean 0
+  role metrics     : 200 battle(s), 1077 player round(s)
+    player         : 2243 attacks, 222 kills, 32554 damage dealt   skills: push 0 / slow 0 / taunt 18
+    taken          : 3455 enemy attacks, 121680 damage received
+    counter        : 0 fired of 0 opportunities  (n/a)   damage 0
+    AP spent       : attack 8972  move 1574  skill 54  guard 156  rest 50  counter 0
+    AP reserved    : 2338 carried into enemy phases  (mean 2.17 per round)   regen wasted 826   rejected commands 0
+  Occupancy heatmap  12x7   unit-rounds standing here   total 3697  peak 604  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901
+    0  ############
+    1  #5*******62#
+    2  #7*******72#
+    3  #********31#
+    4  #8*******53#
+    5  #45*****921#
+    6  ############
+
+  Clash heatmap  12x7   damaging effects landed here   total 5698  peak 1582  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901
+    0  ############
+    1  #1*******51#
+    2  #*********8#
+    3  #********3.#
+    4  #********62#
+    5  #1******123#
+    6  ############
+
+gym-e4-protect.encounter / slow-instrument  (200 runs)
+  M5 win rate      : 1%  (2W / 198L / 0unresolved)
+  M1 top action mix: Attackx2+Wait  47% of player turns
+  M1 variety       : 67 distinct mixes, top-3 = 60%
+                     Attackx2+Wait 508   Movex2+Attackx4+Waitx2 80   Attackx4+Waitx2 61   
+  M1b per unit     : 29 distinct, top 49%, top-3 = 75%   <- compare THIS across party sizes
+  M1b skill use    : 1% of unit-turns issued a skill
+  M2 AP waste      : 7%
+  M3 turns         : mean 5.38  min 4  max 9
+  M4 exposure      : mean 1.98   [0]35 [1]335 [2]674 [3]387 
+  M7 contact       : round-1 reach 1.00 enemies   mean release round 1.70   contact turns 9.17
+                     r1:200  r2:376  r3:9  r4:4  r5:2  r6:1  never:8
+  final player HP  : mean 0
+  role metrics     : 200 battle(s), 1077 player round(s)
+    player         : 2243 attacks, 222 kills, 32554 damage dealt   skills: push 0 / slow 0 / taunt 18
+    taken          : 3455 enemy attacks, 121680 damage received
+    counter        : 0 fired of 0 opportunities  (n/a)   damage 0
+    AP spent       : attack 8972  move 1574  skill 54  guard 156  rest 50  counter 0
+    AP reserved    : 2338 carried into enemy phases  (mean 2.17 per round)   regen wasted 826   rejected commands 0
+  Occupancy heatmap  12x7   unit-rounds standing here   total 3697  peak 604  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901
+    0  ############
+    1  #5*******62#
+    2  #7*******72#
+    3  #********31#
+    4  #8*******53#
+    5  #45*****921#
+    6  ############
+
+  Clash heatmap  12x7   damaging effects landed here   total 5698  peak 1582  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901
+    0  ############
+    1  #1*******51#
+    2  #*********8#
+    3  #********3.#
+    4  #********62#
+    5  #1******123#
+    6  ############
+
+gym-e4-protect.encounter / taunt-instrument  (200 runs)
+  M5 win rate      : 20%  (41W / 159L / 0unresolved)
+  M1 top action mix: Attackx3+Waitx2+Taunt  15% of player turns
+  M1 variety       : 84 distinct mixes, top-3 = 35%
+                     Attackx3+Waitx2+Taunt 160   Attack+Wait+Taunt 122   Movex2+Attackx3+Waitx2+Taunt 91   
+  M1b per unit     : 38 distinct, top 27%, top-3 = 53%   <- compare THIS across party sizes
+  M1b skill use    : 50% of unit-turns issued a skill
+  M2 AP waste      : 7%
+  M3 turns         : mean 5.24  min 4  max 10
+  M4 exposure      : mean 1.77   [0]98 [1]553 [2]795 [3]350 
+  M7 contact       : round-1 reach 1.00 enemies   mean release round 1.71   contact turns 8.46
+                     r1:200  r2:378  r3:15  r4:6  never:1
+  final player HP  : mean 25
+  role metrics     : 200 battle(s), 1049 player round(s)
+    player         : 1981 attacks, 271 kills, 34559 damage dealt   skills: push 0 / slow 0 / taunt 912
+    taken          : 3360 enemy attacks, 115335 damage received
+    counter        : 0 fired of 0 opportunities  (n/a)   damage 0
+    AP spent       : attack 7924  move 2162  skill 2736  guard 243  rest 68  counter 0
+    AP reserved    : 3613 carried into enemy phases  (mean 3.44 per round)   regen wasted 1083   rejected commands 0
+  Occupancy heatmap  12x7   unit-rounds standing here   total 3907  peak 524  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901
+    0  ############
+    1  #8********.#
+    2  #********62#
+    3  #********61#
+    4  #********53#
+    5  #4*******4.#
+    6  ############
+
+  Clash heatmap  12x7   damaging effects landed here   total 5341  peak 1692  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901
+    0  ############
+    1  #1********.#
+    2  #*********1#
+    3  #********17#
+    4  #********8.#
+    5  #.*******1.#
+    6  ############
+
+gym-e4-protect.encounter / counter-reserve  (200 runs)
+  M5 win rate      : 0%  (1W / 199L / 0unresolved)
+  M1 top action mix: Attackx2+Wait  41% of player turns
+  M1 variety       : 53 distinct mixes, top-3 = 61%
+                     Attackx2+Wait 452   Waitx2 151   Attackx4+Waitx2 71   
+  M1b per unit     : 25 distinct, top 46%, top-3 = 80%   <- compare THIS across party sizes
+  M1b skill use    : 1% of unit-turns issued a skill
+  M2 AP waste      : 32%
+  M3 turns         : mean 5.48  min 4  max 11
+  M4 exposure      : mean 1.97   [0]179 [1]275 [2]463 [3]600 
+  M7 contact       : round-1 reach 1.00 enemies   mean release round 1.69   contact turns 10.81
+                     r1:200  r2:390  r3:6  r4:3  r5:1  
+  final player HP  : mean 0
+  role metrics     : 200 battle(s), 1096 player round(s)
+    player         : 1794 attacks, 55 kills, 25961 damage dealt   skills: push 0 / slow 0 / taunt 22
+    taken          : 3475 enemy attacks, 122440 damage received
+    counter        : 0 fired of 0 opportunities  (n/a)   damage 0
+    AP spent       : attack 7176  move 726  skill 66  guard 126  rest 74  counter 0
+    AP reserved    : 6686 carried into enemy phases  (mean 6.10 per round)   regen wasted 3907   rejected commands 0
+  Occupancy heatmap  12x7   unit-rounds standing here   total 4241  peak 575  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901
+    0  ############
+    1  #.7*****82.#
+    2  #56******43#
+    3  #*********8#
+    4  #********74#
+    5  #********95#
+    6  ############
+
+  Clash heatmap  12x7   damaging effects landed here   total 5269  peak 1275  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901
+    0  ############
+    1  #.******4..#
+    2  #425*****12#
+    3  #**********#
+    4  #**********#
+    5  #*********2#
+    6  ############
+
+=== gym-e4-rv_masa_b.encounter — encounter profile (derived) ===
+  profile: rv_masa_b   HP 435   attacks/turn 2   lethal exposure 4
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    kohaku            3     7       110     15        1           200
+    at least one target leaves a spare action — what to spend it on is a choice
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+  profile: rv_backline   HP 120   attacks/turn 2   lethal exposure 1  <- two attackers is death; one mistake ends the battle
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    kohaku            3     4       160     40        0           200
+    no target leaves a spare action — focus fire is the only play
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+gym-e4-rv_masa_b.encounter / attack-only  (200 runs)
+  M5 win rate      : 0%  (0W / 200L / 0unresolved)
+  M1 top action mix: Attackx2+Wait  32% of player turns
+  M1 variety       : 59 distinct mixes, top-3 = 53%
+                     Attackx2+Wait 222   Movex2+Attackx4+Waitx2 84   Attackx4+Waitx2 68   
+  M1b per unit     : 24 distinct, top 40%, top-3 = 76%   <- compare THIS across party sizes
+  M1b skill use    : 0% of unit-turns issued a skill
+  M2 AP waste      : 5%
+  M3 turns         : mean 3.46  min 2  max 5
+  M4 exposure      : mean 2.05   [0]32 [1]168 [2]557 [3]289 
+  M7 contact       : round-1 reach 1.00 enemies   mean release round 1.69   contact turns 5.06
+                     r1:200  r2:374  r3:12  r4:5  never:9
+  final player HP  : mean 0
+  role metrics     : 200 battle(s), 693 player round(s)
+    player         : 1599 attacks, 102 kills, 25008 damage dealt   skills: push 0 / slow 0 / taunt 0
+    taken          : 2045 enemy attacks, 120079 damage received
+    counter        : 63 fired of 1523 opportunities  (4%)   damage 819
+    AP spent       : attack 6396  move 1380  skill 0  guard 126  rest 62  counter 189
+    AP reserved    : 1663 carried into enemy phases  (mean 2.39 per round)   regen wasted 476   rejected commands 0
+  Occupancy heatmap  12x7   unit-rounds standing here   total 2591  peak 356  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901
+    0  ############
+    1  #5*******51#
+    2  #1******954#
+    3  #.*******3.#
+    4  #.6*****672#
+    5  #14*****54.#
+    6  ############
+
+  Clash heatmap  12x7   damaging effects landed here   total 3707  peak 978  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901
+    0  ############
+    1  #.*******65#
+    2  #1********.#
+    3  #1*******3.#
+    4  #.*******8.#
+    5  #.7****475.#
+    6  ############
+
+gym-e4-rv_masa_b.encounter / push-instrument  (200 runs)
+  M5 win rate      : 0%  (0W / 200L / 0unresolved)
+  M1 top action mix: Attackx2+Wait  32% of player turns
+  M1 variety       : 59 distinct mixes, top-3 = 53%
+                     Attackx2+Wait 222   Movex2+Attackx4+Waitx2 84   Attackx4+Waitx2 68   
+  M1b per unit     : 24 distinct, top 40%, top-3 = 76%   <- compare THIS across party sizes
+  M1b skill use    : 0% of unit-turns issued a skill
+  M2 AP waste      : 5%
+  M3 turns         : mean 3.46  min 2  max 5
+  M4 exposure      : mean 2.05   [0]32 [1]168 [2]557 [3]289 
+  M7 contact       : round-1 reach 1.00 enemies   mean release round 1.69   contact turns 5.06
+                     r1:200  r2:374  r3:12  r4:5  never:9
+  final player HP  : mean 0
+  role metrics     : 200 battle(s), 693 player round(s)
+    player         : 1599 attacks, 102 kills, 25008 damage dealt   skills: push 0 / slow 0 / taunt 0
+    taken          : 2045 enemy attacks, 120079 damage received
+    counter        : 63 fired of 1523 opportunities  (4%)   damage 819
+    AP spent       : attack 6396  move 1380  skill 0  guard 126  rest 62  counter 189
+    AP reserved    : 1663 carried into enemy phases  (mean 2.39 per round)   regen wasted 476   rejected commands 0
+  Occupancy heatmap  12x7   unit-rounds standing here   total 2591  peak 356  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901
+    0  ############
+    1  #5*******51#
+    2  #1******954#
+    3  #.*******3.#
+    4  #.6*****672#
+    5  #14*****54.#
+    6  ############
+
+  Clash heatmap  12x7   damaging effects landed here   total 3707  peak 978  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901
+    0  ############
+    1  #.*******65#
+    2  #1********.#
+    3  #1*******3.#
+    4  #.*******8.#
+    5  #.7****475.#
+    6  ############
+
+gym-e4-rv_masa_b.encounter / slow-instrument  (200 runs)
+  M5 win rate      : 0%  (0W / 200L / 0unresolved)
+  M1 top action mix: Attackx2+Wait  32% of player turns
+  M1 variety       : 59 distinct mixes, top-3 = 53%
+                     Attackx2+Wait 222   Movex2+Attackx4+Waitx2 84   Attackx4+Waitx2 68   
+  M1b per unit     : 24 distinct, top 40%, top-3 = 76%   <- compare THIS across party sizes
+  M1b skill use    : 0% of unit-turns issued a skill
+  M2 AP waste      : 5%
+  M3 turns         : mean 3.46  min 2  max 5
+  M4 exposure      : mean 2.05   [0]32 [1]168 [2]557 [3]289 
+  M7 contact       : round-1 reach 1.00 enemies   mean release round 1.69   contact turns 5.06
+                     r1:200  r2:374  r3:12  r4:5  never:9
+  final player HP  : mean 0
+  role metrics     : 200 battle(s), 693 player round(s)
+    player         : 1599 attacks, 102 kills, 25008 damage dealt   skills: push 0 / slow 0 / taunt 0
+    taken          : 2045 enemy attacks, 120079 damage received
+    counter        : 63 fired of 1523 opportunities  (4%)   damage 819
+    AP spent       : attack 6396  move 1380  skill 0  guard 126  rest 62  counter 189
+    AP reserved    : 1663 carried into enemy phases  (mean 2.39 per round)   regen wasted 476   rejected commands 0
+  Occupancy heatmap  12x7   unit-rounds standing here   total 2591  peak 356  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901
+    0  ############
+    1  #5*******51#
+    2  #1******954#
+    3  #.*******3.#
+    4  #.6*****672#
+    5  #14*****54.#
+    6  ############
+
+  Clash heatmap  12x7   damaging effects landed here   total 3707  peak 978  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901
+    0  ############
+    1  #.*******65#
+    2  #1********.#
+    3  #1*******3.#
+    4  #.*******8.#
+    5  #.7****475.#
+    6  ############
+
+gym-e4-rv_masa_b.encounter / taunt-instrument  (200 runs)
+  M5 win rate      : 0%  (0W / 200L / 0unresolved)
+  M1 top action mix: Attackx2+Wait  32% of player turns
+  M1 variety       : 59 distinct mixes, top-3 = 53%
+                     Attackx2+Wait 222   Movex2+Attackx4+Waitx2 84   Attackx4+Waitx2 68   
+  M1b per unit     : 24 distinct, top 40%, top-3 = 76%   <- compare THIS across party sizes
+  M1b skill use    : 0% of unit-turns issued a skill
+  M2 AP waste      : 5%
+  M3 turns         : mean 3.46  min 2  max 5
+  M4 exposure      : mean 2.05   [0]32 [1]168 [2]557 [3]289 
+  M7 contact       : round-1 reach 1.00 enemies   mean release round 1.69   contact turns 5.06
+                     r1:200  r2:374  r3:12  r4:5  never:9
+  final player HP  : mean 0
+  role metrics     : 200 battle(s), 693 player round(s)
+    player         : 1599 attacks, 102 kills, 25008 damage dealt   skills: push 0 / slow 0 / taunt 0
+    taken          : 2045 enemy attacks, 120079 damage received
+    counter        : 63 fired of 1523 opportunities  (4%)   damage 819
+    AP spent       : attack 6396  move 1380  skill 0  guard 126  rest 62  counter 189
+    AP reserved    : 1663 carried into enemy phases  (mean 2.39 per round)   regen wasted 476   rejected commands 0
+  Occupancy heatmap  12x7   unit-rounds standing here   total 2591  peak 356  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901
+    0  ############
+    1  #5*******51#
+    2  #1******954#
+    3  #.*******3.#
+    4  #.6*****672#
+    5  #14*****54.#
+    6  ############
+
+  Clash heatmap  12x7   damaging effects landed here   total 3707  peak 978  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901
+    0  ############
+    1  #.*******65#
+    2  #1********.#
+    3  #1*******3.#
+    4  #.*******8.#
+    5  #.7****475.#
+    6  ############
+
+gym-e4-rv_masa_b.encounter / counter-reserve  (200 runs)
+  M5 win rate      : 0%  (0W / 200L / 0unresolved)
+  M1 top action mix: Attack+Wait  35% of player turns
+  M1 variety       : 44 distinct mixes, top-3 = 64%
+                     Attack+Wait 285   Waitx2 153   Attackx3+Waitx2 73   
+  M1b per unit     : 19 distinct, top 34%, top-3 = 79%   <- compare THIS across party sizes
+  M1b skill use    : 0% of unit-turns issued a skill
+  M2 AP waste      : 39%
+  M3 turns         : mean 3.98  min 3  max 6
+  M4 exposure      : mean 1.86   [0]185 [1]245 [2]337 [3]448 
+  M7 contact       : round-1 reach 1.00 enemies   mean release round 1.69   contact turns 6.77
+                     r1:200  r2:388  r3:7  r4:4  never:1
+  final player HP  : mean 0
+  role metrics     : 200 battle(s), 796 player round(s)
+    player         : 863 attacks, 19 kills, 19444 damage dealt   skills: push 0 / slow 0 / taunt 0
+    taken          : 2032 enemy attacks, 120180 damage received
+    counter        : 441 fired of 592 opportunities  (74%)   damage 5733
+    AP spent       : attack 3452  move 523  skill 0  guard 75  rest 20  counter 1323
+    AP reserved    : 8007 carried into enemy phases  (mean 10.05 per round)   regen wasted 3799   rejected commands 0
+  Occupancy heatmap  12x7   unit-rounds standing here   total 3167  peak 521  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901
+    0  ############
+    1  #.2*6**545.#
+    2  #.2******2.#
+    3  #2******84.#
+    4  #2*******41#
+    5  #1*******62#
+    6  ############
+
+  Clash heatmap  12x7   damaging effects landed here   total 3336  peak 971  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901
+    0  ############
+    1  #...1*6282.#
+    2  #..****6*6.#
+    3  #1******4..#
+    4  #3********.#
+    5  #1********1#
+    6  ############
+
+=== threshold check (docs/06-validation/playtest-metrics.md) ===
+gym-e1-damage.encounter / attack-only:
+  M1 < 70%   : PASS  (24%)
+  M2 < 15%   : FAIL  (17%)
+  M3 6-10    : FAIL  (3.61)
+  M4 <= 2    : PASS  (1.05)
+gym-e1-damage.encounter / push-instrument:
+  M1 < 70%   : PASS  (24%)
+  M2 < 15%   : FAIL  (17%)
+  M3 6-10    : FAIL  (3.61)
+  M4 <= 2    : PASS  (1.05)
+gym-e1-damage.encounter / slow-instrument:
+  M1 < 70%   : PASS  (24%)
+  M2 < 15%   : FAIL  (17%)
+  M3 6-10    : FAIL  (3.61)
+  M4 <= 2    : PASS  (1.05)
+gym-e1-damage.encounter / taunt-instrument:
+  M1 < 70%   : PASS  (24%)
+  M2 < 15%   : FAIL  (17%)
+  M3 6-10    : FAIL  (3.61)
+  M4 <= 2    : PASS  (1.05)
+gym-e1-damage.encounter / counter-reserve:
+  M1 < 70%   : PASS  (40%)
+  M2 < 15%   : FAIL  (48%)
+  M3 6-10    : FAIL  (4.75)
+  M4 <= 2    : PASS  (0.86)
+gym-e1-rv_momo_b.encounter / attack-only:
+  M1 < 70%   : PASS  (22%)
+  M2 < 15%   : FAIL  (17%)
+  M3 6-10    : FAIL  (4.36)
+  M4 <= 2    : PASS  (1.05)
+gym-e1-rv_momo_b.encounter / push-instrument:
+  M1 < 70%   : PASS  (17%)
+  M2 < 15%   : PASS  (12%)
+  M3 6-10    : FAIL  (5.51)
+  M4 <= 2    : PASS  (1.67)
+gym-e1-rv_momo_b.encounter / slow-instrument:
+  M1 < 70%   : PASS  (22%)
+  M2 < 15%   : FAIL  (17%)
+  M3 6-10    : FAIL  (4.36)
+  M4 <= 2    : PASS  (1.05)
+gym-e1-rv_momo_b.encounter / taunt-instrument:
+  M1 < 70%   : PASS  (22%)
+  M2 < 15%   : FAIL  (17%)
+  M3 6-10    : FAIL  (4.36)
+  M4 <= 2    : PASS  (1.05)
+gym-e1-rv_momo_b.encounter / counter-reserve:
+  M1 < 70%   : PASS  (35%)
+  M2 < 15%   : FAIL  (44%)
+  M3 6-10    : FAIL  (5.50)
+  M4 <= 2    : PASS  (0.90)
+gym-e2-push.encounter / attack-only:
+  M1 < 70%   : PASS  (28%)
+  M2 < 15%   : PASS  (12%)
+  M3 6-10    : PASS  (6.21)
+  M4 <= 2    : PASS  (0.94)
+gym-e2-push.encounter / push-instrument:
+  M1 < 70%   : PASS  (28%)
+  M2 < 15%   : PASS  (12%)
+  M3 6-10    : PASS  (6.21)
+  M4 <= 2    : PASS  (0.94)
+gym-e2-push.encounter / slow-instrument:
+  M1 < 70%   : PASS  (28%)
+  M2 < 15%   : PASS  (12%)
+  M3 6-10    : PASS  (6.21)
+  M4 <= 2    : PASS  (0.94)
+gym-e2-push.encounter / taunt-instrument:
+  M1 < 70%   : PASS  (28%)
+  M2 < 15%   : PASS  (12%)
+  M3 6-10    : PASS  (6.21)
+  M4 <= 2    : PASS  (0.94)
+gym-e2-push.encounter / counter-reserve:
+  M1 < 70%   : PASS  (33%)
+  M2 < 15%   : FAIL  (35%)
+  M3 6-10    : PASS  (7.26)
+  M4 <= 2    : PASS  (0.90)
+gym-e2-rv_momo_b.encounter / attack-only:
+  M1 < 70%   : PASS  (24%)
+  M2 < 15%   : FAIL  (15%)
+  M3 6-10    : PASS  (7.60)
+  M4 <= 2    : PASS  (0.99)
+gym-e2-rv_momo_b.encounter / push-instrument:
+  M1 < 70%   : PASS  (20%)
+  M2 < 15%   : FAIL  (15%)
+  M3 6-10    : PASS  (7.32)
+  M4 <= 2    : PASS  (1.12)
+gym-e2-rv_momo_b.encounter / slow-instrument:
+  M1 < 70%   : PASS  (24%)
+  M2 < 15%   : FAIL  (15%)
+  M3 6-10    : PASS  (7.60)
+  M4 <= 2    : PASS  (0.99)
+gym-e2-rv_momo_b.encounter / taunt-instrument:
+  M1 < 70%   : PASS  (24%)
+  M2 < 15%   : FAIL  (15%)
+  M3 6-10    : PASS  (7.60)
+  M4 <= 2    : PASS  (0.99)
+gym-e2-rv_momo_b.encounter / counter-reserve:
+  M1 < 70%   : PASS  (25%)
+  M2 < 15%   : FAIL  (34%)
+  M3 6-10    : PASS  (7.78)
+  M4 <= 2    : PASS  (1.05)
+gym-e3-slow.encounter / attack-only:
+  M1 < 70%   : PASS  (31%)
+  M2 < 15%   : FAIL  (16%)
+  M3 6-10    : FAIL  (4.47)
+  M4 <= 2    : PASS  (0.58)
+gym-e3-slow.encounter / push-instrument:
+  M1 < 70%   : PASS  (31%)
+  M2 < 15%   : FAIL  (16%)
+  M3 6-10    : FAIL  (4.47)
+  M4 <= 2    : PASS  (0.58)
+gym-e3-slow.encounter / slow-instrument:
+  M1 < 70%   : PASS  (26%)
+  M2 < 15%   : PASS  (12%)
+  M3 6-10    : FAIL  (5.37)
+  M4 <= 2    : PASS  (1.09)
+gym-e3-slow.encounter / taunt-instrument:
+  M1 < 70%   : PASS  (31%)
+  M2 < 15%   : FAIL  (16%)
+  M3 6-10    : FAIL  (4.47)
+  M4 <= 2    : PASS  (0.58)
+gym-e3-slow.encounter / counter-reserve:
+  M1 < 70%   : PASS  (33%)
+  M2 < 15%   : FAIL  (40%)
+  M3 6-10    : FAIL  (5.09)
+  M4 <= 2    : PASS  (0.82)
+gym-e3-rv_kage_b.encounter / attack-only:
+  M1 < 70%   : PASS  (23%)
+  M2 < 15%   : PASS  (11%)
+  M3 6-10    : FAIL  (4.24)
+  M4 <= 2    : PASS  (0.57)
+gym-e3-rv_kage_b.encounter / push-instrument:
+  M1 < 70%   : PASS  (23%)
+  M2 < 15%   : PASS  (11%)
+  M3 6-10    : FAIL  (4.24)
+  M4 <= 2    : PASS  (0.57)
+gym-e3-rv_kage_b.encounter / slow-instrument:
+  M1 < 70%   : PASS  (23%)
+  M2 < 15%   : PASS  (11%)
+  M3 6-10    : FAIL  (4.24)
+  M4 <= 2    : PASS  (0.57)
+gym-e3-rv_kage_b.encounter / taunt-instrument:
+  M1 < 70%   : PASS  (23%)
+  M2 < 15%   : PASS  (11%)
+  M3 6-10    : FAIL  (4.24)
+  M4 <= 2    : PASS  (0.57)
+gym-e3-rv_kage_b.encounter / counter-reserve:
+  M1 < 70%   : PASS  (37%)
+  M2 < 15%   : FAIL  (45%)
+  M3 6-10    : FAIL  (4.60)
+  M4 <= 2    : PASS  (0.82)
+gym-e4-protect.encounter / attack-only:
+  M1 < 70%   : PASS  (47%)
+  M2 < 15%   : PASS  (7%)
+  M3 6-10    : FAIL  (5.38)
+  M4 <= 2    : PASS  (1.98)
+gym-e4-protect.encounter / push-instrument:
+  M1 < 70%   : PASS  (47%)
+  M2 < 15%   : PASS  (7%)
+  M3 6-10    : FAIL  (5.38)
+  M4 <= 2    : PASS  (1.98)
+gym-e4-protect.encounter / slow-instrument:
+  M1 < 70%   : PASS  (47%)
+  M2 < 15%   : PASS  (7%)
+  M3 6-10    : FAIL  (5.38)
+  M4 <= 2    : PASS  (1.98)
+gym-e4-protect.encounter / taunt-instrument:
+  M1 < 70%   : PASS  (15%)
+  M2 < 15%   : PASS  (7%)
+  M3 6-10    : FAIL  (5.24)
+  M4 <= 2    : PASS  (1.77)
+gym-e4-protect.encounter / counter-reserve:
+  M1 < 70%   : PASS  (41%)
+  M2 < 15%   : FAIL  (32%)
+  M3 6-10    : FAIL  (5.48)
+  M4 <= 2    : PASS  (1.97)
+gym-e4-rv_masa_b.encounter / attack-only:
+  M1 < 70%   : PASS  (32%)
+  M2 < 15%   : PASS  (5%)
+  M3 6-10    : FAIL  (3.46)
+  M4 <= 2    : FAIL  (2.05)
+gym-e4-rv_masa_b.encounter / push-instrument:
+  M1 < 70%   : PASS  (32%)
+  M2 < 15%   : PASS  (5%)
+  M3 6-10    : FAIL  (3.46)
+  M4 <= 2    : FAIL  (2.05)
+gym-e4-rv_masa_b.encounter / slow-instrument:
+  M1 < 70%   : PASS  (32%)
+  M2 < 15%   : PASS  (5%)
+  M3 6-10    : FAIL  (3.46)
+  M4 <= 2    : FAIL  (2.05)
+gym-e4-rv_masa_b.encounter / taunt-instrument:
+  M1 < 70%   : PASS  (32%)
+  M2 < 15%   : PASS  (5%)
+  M3 6-10    : FAIL  (3.46)
+  M4 <= 2    : FAIL  (2.05)
+gym-e4-rv_masa_b.encounter / counter-reserve:
+  M1 < 70%   : PASS  (35%)
+  M2 < 15%   : FAIL  (39%)
+  M3 6-10    : FAIL  (3.98)
+  M4 <= 2    : PASS  (1.86)
+
+M5 comparison (corridor-hold should beat charge, and the chokepoint map
+should beat the open control — otherwise the map taught nothing):
+  gym-e1-damage.encounter / attack-only : 100%
+  gym-e1-damage.encounter / push-instrument : 100%
+  gym-e1-damage.encounter / slow-instrument : 100%
+  gym-e1-damage.encounter / taunt-instrument : 100%
+  gym-e1-damage.encounter / counter-reserve : 97%
+  gym-e1-rv_momo_b.encounter / attack-only : 99%
+  gym-e1-rv_momo_b.encounter / push-instrument : 9%
+  gym-e1-rv_momo_b.encounter / slow-instrument : 99%
+  gym-e1-rv_momo_b.encounter / taunt-instrument : 99%
+  gym-e1-rv_momo_b.encounter / counter-reserve : 95%
+  gym-e2-push.encounter / attack-only : 98%
+  gym-e2-push.encounter / push-instrument : 98%
+  gym-e2-push.encounter / slow-instrument : 98%
+  gym-e2-push.encounter / taunt-instrument : 98%
+  gym-e2-push.encounter / counter-reserve : 91%
+  gym-e2-rv_momo_b.encounter / attack-only : 86%
+  gym-e2-rv_momo_b.encounter / push-instrument : 65%
+  gym-e2-rv_momo_b.encounter / slow-instrument : 86%
+  gym-e2-rv_momo_b.encounter / taunt-instrument : 86%
+  gym-e2-rv_momo_b.encounter / counter-reserve : 61%
+  gym-e3-slow.encounter / attack-only : 100%
+  gym-e3-slow.encounter / push-instrument : 100%
+  gym-e3-slow.encounter / slow-instrument : 55%
+  gym-e3-slow.encounter / taunt-instrument : 100%
+  gym-e3-slow.encounter / counter-reserve : 97%
+  gym-e3-rv_kage_b.encounter / attack-only : 99%
+  gym-e3-rv_kage_b.encounter / push-instrument : 99%
+  gym-e3-rv_kage_b.encounter / slow-instrument : 99%
+  gym-e3-rv_kage_b.encounter / taunt-instrument : 99%
+  gym-e3-rv_kage_b.encounter / counter-reserve : 97%
+  gym-e4-protect.encounter / attack-only : 1%
+  gym-e4-protect.encounter / push-instrument : 1%
+  gym-e4-protect.encounter / slow-instrument : 1%
+  gym-e4-protect.encounter / taunt-instrument : 20%
+  gym-e4-protect.encounter / counter-reserve : 0%
+  gym-e4-rv_masa_b.encounter / attack-only : 0%
+  gym-e4-rv_masa_b.encounter / push-instrument : 0%
+  gym-e4-rv_masa_b.encounter / slow-instrument : 0%
+  gym-e4-rv_masa_b.encounter / taunt-instrument : 0%
+  gym-e4-rv_masa_b.encounter / counter-reserve : 0%
+
+=== anomalies (see SimResults/anomalies.json for the seeds) ===
+  0 of 8000 battles flagged
+  TIMEOUT_UNRESOLVED            0
+  ABORTED_BY_REJECTED_COMMAND   0
+  DEFEAT_WITH_HIGH_REMAINING_HP 0
+  UNEXPECTED_SKILL_USAGE        0
+
+=== Strategy Persona Matrix ===
+  gym-e1-damage.encounter
+    Strategy            N    Win%   AvgRounds   AvgHP%   Timeout%   SkillActs(strategy/noise)
+    attack-only        200    100%        3.61    55.2%         0%            0/0
+    push-instrument    200    100%        3.61    55.2%         0%            0/0
+    slow-instrument    200    100%        3.61    55.2%         0%            0/0
+    taunt-instrument   200    100%        3.61    55.2%         0%            0/0
+    counter-reserve    200     97%        4.75    61.7%         0%            0/0
+
+  gym-e1-rv_momo_b.encounter
+    Strategy            N    Win%   AvgRounds   AvgHP%   Timeout%   SkillActs(strategy/noise)
+    attack-only        200     99%        4.36    44.1%         0%           0/11
+    push-instrument    200      9%        5.51     2.0%         0%        1158/16
+    slow-instrument    200     99%        4.36    44.1%         0%           0/11
+    taunt-instrument   200     99%        4.36    44.1%         0%           0/11
+    counter-reserve    200     95%        5.50    49.9%         0%           0/11
+
+  gym-e2-push.encounter
+    Strategy            N    Win%   AvgRounds   AvgHP%   Timeout%   SkillActs(strategy/noise)
+    attack-only        200     98%        6.21    39.6%         0%            0/0
+    push-instrument    200     98%        6.21    39.6%         0%            0/0
+    slow-instrument    200     98%        6.21    39.6%         0%            0/0
+    taunt-instrument   200     98%        6.21    39.6%         0%            0/0
+    counter-reserve    200     91%        7.26    28.6%         0%            0/0
+
+  gym-e2-rv_momo_b.encounter
+    Strategy            N    Win%   AvgRounds   AvgHP%   Timeout%   SkillActs(strategy/noise)
+    attack-only        200     86%        7.60    17.4%         0%            0/3
+    push-instrument    200     65%        7.32    13.3%         0%          196/2
+    slow-instrument    200     86%        7.60    17.4%         0%            0/3
+    taunt-instrument   200     86%        7.60    17.4%         0%            0/3
+    counter-reserve    200     61%        7.78     8.8%         0%            0/4
+
+  gym-e3-slow.encounter
+    Strategy            N    Win%   AvgRounds   AvgHP%   Timeout%   SkillActs(strategy/noise)
+    attack-only        200    100%        4.47    60.9%         0%           0/16
+    push-instrument    200    100%        4.47    60.9%         0%           0/16
+    slow-instrument    200     55%        5.37    15.5%         0%         970/14
+    taunt-instrument   200    100%        4.47    60.9%         0%           0/16
+    counter-reserve    200     97%        5.09    38.1%         0%            0/8
+
+  gym-e3-rv_kage_b.encounter
+    Strategy            N    Win%   AvgRounds   AvgHP%   Timeout%   SkillActs(strategy/noise)
+    attack-only        200     99%        4.24    64.5%         0%            0/0
+    push-instrument    200     99%        4.24    64.5%         0%            0/0
+    slow-instrument    200     99%        4.24    64.5%         0%            0/0
+    taunt-instrument   200     99%        4.24    64.5%         0%            0/0
+    counter-reserve    200     97%        4.60    50.2%         0%            0/0
+
+  gym-e4-protect.encounter
+    Strategy            N    Win%   AvgRounds   AvgHP%   Timeout%   SkillActs(strategy/noise)
+    attack-only        200      1%        5.38     0.0%         0%           0/18
+    push-instrument    200      1%        5.38     0.0%         0%           0/18
+    slow-instrument    200      1%        5.38     0.0%         0%           0/18
+    taunt-instrument   200     20%        5.24     4.6%         0%          908/4
+    counter-reserve    200      0%        5.48     0.0%         0%           0/22
+
+  gym-e4-rv_masa_b.encounter
+    Strategy            N    Win%   AvgRounds   AvgHP%   Timeout%   SkillActs(strategy/noise)
+    attack-only        200      0%        3.46     0.0%         0%            0/0
+    push-instrument    200      0%        3.46     0.0%         0%            0/0
+    slow-instrument    200      0%        3.46     0.0%         0%            0/0
+    taunt-instrument   200      0%        3.46     0.0%         0%            0/0
+    counter-reserve    200      0%        3.98     0.0%         0%            0/0
+
+=== Pairwise comparison (screening heuristic) ===
+  comparison unavailable — the configured pair is not present on any encounter

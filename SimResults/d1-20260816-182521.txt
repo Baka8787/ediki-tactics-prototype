@@ -1,0 +1,141 @@
+=== Ediki Stage 01 Prototype — Metrics ===
+runs per cell : 50
+base seed     : 1
+noise         : 15%  (sampling device, not a rule)
+round cap     : 60  (safety net, not a rule — R-WIN-04)
+
+=== gym-e2-push.encounter — encounter profile (derived) ===
+  profile: rv_momo_a   HP 300   attacks/turn 2   lethal exposure 3
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    kohaku_3hit       2     3       100     33        1           500
+    rv_anchor         1     3       100     33        1           300
+    at least one target leaves a spare action — what to spend it on is a choice
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+gym-e2-push.encounter / attack-only  (50 runs)
+  M5 win rate      : 0%  (0W / 50L / 0unresolved)
+  M1 top action mix: Move+Attack+Wait  35% of player turns
+  M1 variety       : 16 distinct mixes, top-3 = 61%
+                     Move+Attack+Wait 32   Attackx2+Wait 14   Movex2+Attack+Wait 9   
+  M1b per unit     : 16 distinct, top 35%, top-3 = 61%   <- compare THIS across party sizes
+  M1b skill use    : 0% of unit-turns issued a skill
+  M2 AP waste      : 7%
+  M3 turns         : mean 1.78  min 1  max 5
+  M4 exposure      : mean 2.15   [0]5 [1]22 [2]16 [3]46 
+  M7 contact       : round-1 reach 1.00 enemies   mean release round 1.47   contact turns 1.14
+                     r1:50  r2:22  r3:4  r4:1  r5:1  never:72
+  final player HP  : mean 0
+  role metrics     : 50 battle(s), 89 player round(s)
+    player         : 98 attacks, 13 kills, 3920 damage dealt   skills: push 0 / slow 0 / taunt 0
+    taken          : 313 enemy attacks, 15100 damage received
+    counter        : 0 fired of 0 opportunities  (n/a)   damage 0
+    AP spent       : attack 392  move 210  skill 0  guard 18  rest 12  counter 0
+    AP reserved    : 240 carried into enemy phases  (mean 2.69 per round)   regen wasted 54   rejected commands 0
+  Occupancy heatmap  13x7   unit-rounds standing here   total 289  peak 75  over 50 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      0123456789012
+    0  #############
+    1  #....4*7....#
+    2  #....***....#
+    3  ######*######
+    4  #..3258433.1#
+    5  #..21.1..21.#
+    6  #############
+
+  Clash heatmap  13x7   damaging effects landed here   total 411  peak 260  over 50 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      0123456789012
+    0  #############
+    1  #....3*.....#
+    2  #....***....#
+    3  ######*######
+    4  #..738*426..#
+    5  #...........#
+    6  #############
+
+=== gym-e2-rv_momo_b.encounter — encounter profile (derived) ===
+  profile: rv_momo_b   HP 300   attacks/turn 1   lethal exposure 3
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    kohaku_3hit       2     3       100     33        0           500
+    rv_anchor         1     3       100     33        0           300
+    no target leaves a spare action — focus fire is the only play
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+gym-e2-rv_momo_b.encounter / attack-only  (50 runs)
+  M5 win rate      : 0%  (0W / 50L / 0unresolved)
+  M1 top action mix: Move+Attack+Wait  45% of player turns
+  M1 variety       : 12 distinct mixes, top-3 = 70%
+                     Move+Attack+Wait 40   Attack+Wait 12   Movex2+Attack+Wait 10   
+  M1b per unit     : 12 distinct, top 45%, top-3 = 70%   <- compare THIS across party sizes
+  M1b skill use    : 0% of unit-turns issued a skill
+  M2 AP waste      : 7%
+  M3 turns         : mean 1.76  min 1  max 4
+  M4 exposure      : mean 2.15   [0]4 [1]23 [2]16 [3]45 
+  M7 contact       : round-1 reach 1.00 enemies   mean release round 1.54   contact turns 1.04
+                     r1:50  r2:20  r3:4  r4:5  never:71
+  final player HP  : mean 0
+  role metrics     : 50 battle(s), 88 player round(s)
+    player         : 81 attacks, 10 kills, 3240 damage dealt   skills: push 0 / slow 0 / taunt 0
+    taken          : 307 enemy attacks, 15125 damage received
+    counter        : 0 fired of 0 opportunities  (n/a)   damage 0
+    AP spent       : attack 405  move 201  skill 0  guard 9  rest 8  counter 0
+    AP reserved    : 228 carried into enemy phases  (mean 2.59 per round)   regen wasted 52   rejected commands 0
+  Occupancy heatmap  13x7   unit-rounds standing here   total 287  peak 82  over 50 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      0123456789012
+    0  #############
+    1  #....8*2....#
+    2  #....***....#
+    3  ######*######
+    4  #..11453.1..#
+    5  #...3.1...1.#
+    6  #############
+
+  Clash heatmap  13x7   damaging effects landed here   total 388  peak 248  over 50 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      0123456789012
+    0  #############
+    1  #....4*.....#
+    2  #....**7....#
+    3  ######*######
+    4  #...6194....#
+    5  #...........#
+    6  #############
+
+=== threshold check (docs/06-validation/playtest-metrics.md) ===
+gym-e2-push.encounter / attack-only:
+  M1 < 70%   : PASS  (35%)
+  M2 < 15%   : PASS  (7%)
+  M3 6-10    : FAIL  (1.78)
+  M4 <= 2    : FAIL  (2.15)
+gym-e2-rv_momo_b.encounter / attack-only:
+  M1 < 70%   : PASS  (45%)
+  M2 < 15%   : PASS  (7%)
+  M3 6-10    : FAIL  (1.76)
+  M4 <= 2    : FAIL  (2.15)
+
+M5 comparison (corridor-hold should beat charge, and the chokepoint map
+should beat the open control — otherwise the map taught nothing):
+  gym-e2-push.encounter / attack-only : 0%
+  gym-e2-rv_momo_b.encounter / attack-only : 0%
+
+=== anomalies (see SimResults/anomalies.json for the seeds) ===
+  0 of 100 battles flagged
+  TIMEOUT_UNRESOLVED            0
+  ABORTED_BY_REJECTED_COMMAND   0
+  DEFEAT_WITH_HIGH_REMAINING_HP 0
+  UNEXPECTED_SKILL_USAGE        0
+
+=== Strategy Persona Matrix ===
+  gym-e2-push.encounter
+    Strategy            N    Win%   AvgRounds   AvgHP%   Timeout%   SkillActs(strategy/noise)
+    attack-only         50      0%        1.78     0.0%         0%            0/0
+
+  gym-e2-rv_momo_b.encounter
+    Strategy            N    Win%   AvgRounds   AvgHP%   Timeout%   SkillActs(strategy/noise)
+    attack-only         50      0%        1.76     0.0%         0%            0/0
+
+=== Pairwise comparison (screening heuristic) ===
+  comparison unavailable — the configured pair is not present on any encounter

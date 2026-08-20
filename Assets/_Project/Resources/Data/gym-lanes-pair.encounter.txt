@@ -1,0 +1,49 @@
+# GYM. gym-lanes with ONE thing changed: a second player unit (正守).
+#
+# Task A of the 2026-08-14 handoff. No code was needed — the runner already
+# loops every player unit and the win check is "all combatants down".
+#
+# What to watch, beyond the usual M1-M5:
+#   - M6 per unit. The battle-level number only records whoever crossed first,
+#     so the "per unit" line is the one that says whether the two units split
+#     up or queued behind each other in the same gap.
+#   - The west route is 1 CELL WIDE. Two units cannot pass each other in it.
+#     That is a real cost of the safest route, not a bug.
+#   - Zhengshou takes 30 a hit from kohaku where Momotaro takes 50. Who stands
+#     in front is the first genuine two-unit decision in the prototype.
+#
+# Same map and same enemies as gym-lanes.encounter.txt.
+
+encounter id=gym-lanes-pair name=LANES-pair
+objective type=rout
+
+map
+########################
+#......................#
+#.....#.........#......#
+###.###.........###ff###
+###.###.........###ff###
+###.###.........###ff###
+###.###.........###ff###
+###.###.........###ff###
+###.#######..#######.###
+#......................#
+#..ff....######...ff...#
+#........######........#
+#........######........#
+#......................#
+#..ff.........ff.......#
+########################
+endmap
+
+spawn faction=player unit=momotaro  x=11 y=13
+# 2026-08-18: 正守 由 zhengshou 換成 Masamori_A（專案負責人裁決）。
+# HP 435 / ATK 33 / DEF 70 / MOVE 3 逐欄不變，所以本檔關於 DEF 70 的推論仍然成立。
+# 新增的是【嘲諷】3 AP、免疫擊退、每回合技能 1 次 —— 這會移動本圖的量測基線，
+# 換手之前跑出來的數字不能與之後的直接比較。
+spawn faction=player unit=Masamori_A x=12 y=13
+
+spawn faction=enemy unit=kohaku x=3  y=1  ai=rusher
+spawn faction=enemy unit=kohaku x=20 y=1  ai=rusher
+spawn faction=enemy unit=kohaku x=2  y=13 ai=cautious
+spawn faction=enemy unit=kohaku x=21 y=10 ai=hunter

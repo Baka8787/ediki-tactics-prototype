@@ -1,0 +1,47 @@
+# GYM E4 — PROTECTION / TAUNT FORCED-REDIRECT TEST.
+#
+# HYPOTHESIS
+#   Taunt overrides enemy target selection, so a party with a taunting tank
+#   should move damage off the fragile member and onto the tank.
+#
+# PRIMARY PRESSURE   enemy target SELECTION (hunter = lowest HP)
+# SECONDARY          raw damage, which is survivable only for a while
+#
+# ⚠️ THIS IS NOT ZOC TANKING, AND MUST NOT BE DESCRIBED AS SUCH. There is no
+# zone of control in this rule layer and nothing physically blocks a path, so a
+# tank cannot body-block. The hunter profile picks the LOWEST HP target — a
+# stat, not a position — so "getting past the tank" is not a behaviour anyone
+# has. Taunt is the ONLY thing that redirects anyone here, by overriding
+# SelectTarget outright. This encounter tests exactly that and nothing more.
+#
+# PARTY  a 正守 variant + e4_backline (120 HP). The backline is always the
+#   lowest-HP member, so every hunter prefers it unless something overrides
+#   that. Its damage taken and final HP ARE the protection measurement.
+#
+# ENEMIES  3x kohaku on ai=hunter. At ATK 100 they kill the 120 HP backline in
+#   two hits, so a failure to redirect is immediately visible.
+#
+# ALTERNATIVE SOLUTION  kill them first; three 80 HP enemies are killable, and a
+#   party that simply out-damages them never needs to redirect anything.
+#
+#   #  Blocking   .  Road(1)      Coordinates are (x, y), y = 0 at the TOP.
+
+encounter id=gym-e4-protection-Masamori_B name=E4-protection
+objective type=rout
+
+map
+############
+#..........#
+#..........#
+#..........#
+#..........#
+#..........#
+############
+endmap
+
+spawn faction=player unit=Masamori_B  x=5 y=4
+spawn faction=player unit=e4_backline x=5 y=5
+
+spawn faction=enemy unit=kohaku x=2 y=1 ai=hunter
+spawn faction=enemy unit=kohaku x=5 y=1 ai=hunter
+spawn faction=enemy unit=kohaku x=9 y=1 ai=hunter

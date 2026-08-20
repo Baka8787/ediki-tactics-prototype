@@ -1,0 +1,90 @@
+=== Ediki Stage 01 Prototype — Metrics ===
+runs per cell : 50
+base seed     : 1
+noise         : 15%  (sampling device, not a rule)
+round cap     : 60  (safety net, not a rule — R-WIN-04)
+
+=== gym-e4-protection.encounter — encounter profile (derived) ===
+  profile: Masamori_A   HP 435   attacks/turn 2   lethal exposure 8
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    kohaku            3     7        60      8        1           200
+    at least one target leaves a spare action — what to spend it on is a choice
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+  profile: e4_backline   HP 120   attacks/turn 2   lethal exposure 1  <- two attackers is death; one mistake ends the battle
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    kohaku            3     4       160     40        0           200
+    no target leaves a spare action — focus fire is the only play
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+gym-e4-protection.encounter / taunt-instrument  (50 runs)
+  M5 win rate      : 20%  (10W / 40L / 0unresolved)
+  M1 top action mix: Attackx3+Waitx2+Taunt  14% of player turns
+  M1 variety       : 47 distinct mixes, top-3 = 35%
+                     Attackx3+Waitx2+Taunt 38   Attack+Wait+Taunt 35   Move+Attackx3+Waitx2+Taunt 21   
+  M1b per unit     : 28 distinct, top 29%, top-3 = 55%   <- compare THIS across party sizes
+  M1b skill use    : 50% of unit-turns issued a skill
+  M2 AP waste      : 8%
+  M3 turns         : mean 5.24  min 4  max 10
+  M4 exposure      : mean 1.76   [0]28 [1]141 [2]185 [3]93 
+  M7 contact       : round-1 reach 1.00 enemies   mean release round 1.70   contact turns 8.38
+                     r1:50  r2:95  r3:5  
+  final player HP  : mean 33
+  role metrics     : 50 battle(s), 262 player round(s)
+    player         : 491 attacks, 66 kills, 8553 damage dealt   skills: push 0 / slow 0 / taunt 225
+    taken          : 828 enemy attacks, 28435 damage received
+    counter        : 0 fired of 0 opportunities  (n/a)   damage 0
+    AP spent       : attack 1964  move 540  skill 675  guard 54  rest 14  counter 0
+    AP reserved    : 955 carried into enemy phases  (mean 3.64 per round)   regen wasted 299   rejected commands 0
+    per player unit:
+      Masamori-A      dmg   22035  share 77%   attacks taken 748   mean final HP 9/435  (2%)
+      Backline        dmg    6400  share 22%   attacks taken 80   mean final HP 24/120  (20%)
+  Occupancy heatmap  12x7   unit-rounds standing here   total 970  peak 132  over 50 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901
+    0  ############
+    1  #49******7.#
+    2  #57******1.#
+    3  #158*****1.#
+    4  #.27497*93.#
+    5  #..342667..#
+    6  ############
+
+  Clash heatmap  12x7   damaging effects landed here   total 1319  peak 451  over 50 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901
+    0  ############
+    1  #15*******.#
+    2  #*67****82.#
+    3  #14*****4..#
+    4  #.2331***..#
+    5  #..52.1*...#
+    6  ############
+
+=== threshold check (docs/06-validation/playtest-metrics.md) ===
+gym-e4-protection.encounter / taunt-instrument:
+  M1 < 70%   : PASS  (14%)
+  M2 < 15%   : PASS  (8%)
+  M3 6-10    : FAIL  (5.24)
+  M4 <= 2    : PASS  (1.76)
+
+M5 comparison (corridor-hold should beat charge, and the chokepoint map
+should beat the open control — otherwise the map taught nothing):
+  gym-e4-protection.encounter / taunt-instrument : 20%
+
+=== anomalies (see SimResults/anomalies.json for the seeds) ===
+  0 of 50 battles flagged
+  TIMEOUT_UNRESOLVED            0
+  ABORTED_BY_REJECTED_COMMAND   0
+  DEFEAT_WITH_HIGH_REMAINING_HP 0
+  UNEXPECTED_SKILL_USAGE        0
+
+=== Strategy Persona Matrix ===
+  gym-e4-protection.encounter
+    Strategy            N    Win%   AvgRounds   AvgHP%   Timeout%   SkillActs(strategy/noise)
+    taunt-instrument    50     20%        5.24     6.0%         0%          224/1
+
+=== Pairwise comparison (screening heuristic) ===
+  comparison unavailable — the configured pair is not present on any encounter

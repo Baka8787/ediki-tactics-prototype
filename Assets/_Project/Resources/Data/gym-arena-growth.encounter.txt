@@ -1,0 +1,35 @@
+# GYM — the enemy that gets worse while you ignore it.
+#
+# kohaku_growth starts at ATK 20 (10 damage a hit against Momotaro, the weakest
+# thing on the field) and gains 20 ATK every completed round. By round 5 it is
+# hitting for 70, by round 9 for 150.
+#
+# It is placed at the far end so reaching it costs turns, and it needs three
+# hits to kill, so committing to it is a real commitment. Two ordinary kohaku
+# sit in the way and demand attention now.
+#
+# This is the only enemy shape in the project where the right answer CHANGES
+# during the battle: early on the growth type is the lowest-value target by
+# every measure the metrics compute, and later it is the only one that matters.
+# Threat per action cannot express that, because it has no time in it.
+
+encounter id=gym-arena-growth name=ARENA-growth
+objective type=rout
+
+map
+################
+#..............#
+#..............#
+#..............#
+#..............#
+#..............#
+#..............#
+#..............#
+################
+endmap
+
+spawn faction=player unit=momotaro x=2 y=4
+
+spawn faction=enemy unit=kohaku        x=5  y=3 ai=rusher
+spawn faction=enemy unit=kohaku        x=5  y=5 ai=rusher
+spawn faction=enemy unit=kohaku_growth x=13 y=4 ai=cautious

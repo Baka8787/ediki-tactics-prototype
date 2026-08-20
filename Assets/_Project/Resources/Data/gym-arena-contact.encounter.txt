@@ -1,0 +1,42 @@
+# GYM ARENA — the baseline the three sibling arenas are measured against.
+#
+# 16x9, completely open. No walls, no terrain, no chokepoints. That is the
+# point: the two research notes model a battle with no spatial layer at all,
+# and this is that battle, built so their predictions can actually be checked
+# against the running game.
+#
+# All four enemies start inside their own threat range of the player spawn, so
+# every one of them is "released" on round 1. Per the Metrics Framework §14.1
+# layer 1, an encounter where every enemy is immediately in reach has no
+# spatial decisions left and degenerates into an ordering problem.
+#
+# PREDICTION (to be falsified, not confirmed):
+#   M7 round-1 reach = 4.0        (by construction)
+#   M5 corridor-hold vs charge    the gap should COLLAPSE — there is nowhere
+#                                 for careful positioning to buy anything
+#   M4 exposure                   high, and it should not fall over the battle
+#
+# If the hold/charge gap survives here, then the gap on the lane maps was not
+# coming from geometry and the whole spatial claim needs re-examining.
+
+encounter id=gym-arena-contact name=ARENA-contact
+objective type=rout
+
+map
+################
+#..............#
+#..............#
+#..............#
+#..............#
+#..............#
+#..............#
+#..............#
+################
+endmap
+
+spawn faction=player unit=momotaro x=2 y=4
+
+spawn faction=enemy unit=kohaku x=4 y=2 ai=rusher
+spawn faction=enemy unit=kohaku x=5 y=4 ai=rusher
+spawn faction=enemy unit=kohaku x=4 y=6 ai=cautious
+spawn faction=enemy unit=kohaku x=2 y=2 ai=hunter

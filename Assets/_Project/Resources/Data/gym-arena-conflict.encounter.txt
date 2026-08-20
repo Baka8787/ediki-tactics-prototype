@@ -1,0 +1,46 @@
+# GYM — where the heuristic is WRONG.
+#
+# Threat per action ranks these enemies:
+#
+#   kohaku        100 damage a turn / 2 hits  ->  TPA 50
+#   kohaku_growth   2 damage a turn / 3 hits  ->  TPA  0    (round 1)
+#
+# So every ordering heuristic in the project says "kill the kohaku, ignore the
+# growth one" — and it is right, for about four rounds. The growth unit gains
+# 20 ATK a round, so it passes the kohaku in damage around round 5 and is
+# hitting for 150 by round 9.
+#
+# The growth unit is placed CLOSE and the two kohaku further back on purpose.
+# That splits the strategies:
+#
+#   tpa-order / residue-aware   ignore the near enemy, chase threat per action
+#   charge                      walks at whatever is nearest, so it happens to
+#                               kill the growth unit early — for the wrong reason
+#
+# If charge beats the threat-ordering strategies here, the finding is not "charge
+# is good". It is that a heuristic with no time in it loses to one that is not
+# even trying, whenever the deciding threat is the one that is small right now.
+#
+# This is Experiment 09 from the design notes: local optimum against global
+# optimum, built so the conflict is unavoidable rather than incidental.
+
+encounter id=gym-arena-conflict name=ARENA-conflict
+objective type=rout
+
+map
+################
+#..............#
+#..............#
+#..............#
+#..............#
+#..............#
+#..............#
+#..............#
+################
+endmap
+
+spawn faction=player unit=momotaro x=2 y=4
+
+spawn faction=enemy unit=kohaku_growth x=5  y=4 ai=rusher
+spawn faction=enemy unit=kohaku        x=11 y=2 ai=rusher
+spawn faction=enemy unit=kohaku        x=11 y=6 ai=cautious

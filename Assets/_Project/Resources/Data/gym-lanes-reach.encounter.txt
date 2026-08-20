@@ -1,0 +1,47 @@
+# GYM. gym-lanes with ONE thing changed: the objective.
+#
+# Why this variant exists. Under OD-16 every enemy closes in from turn 1, so
+# with a rout objective the fight walks to the player and the player never has
+# to travel. M6 measured exactly that: on gym-lanes/rout, 133 of 200 battles
+# never touched the wall row. Three well-built routes cannot be a decision in a
+# battle where nobody goes anywhere.
+#
+# So this file holds the map and the spawns FIXED and changes only the
+# objective, to separate "the routes are bad" from "nothing made the player
+# use them".
+#
+# The target sits at the top of the MID lane on purpose: mid is the shortest
+# way there and also the most exposed (a 9x6 open field, exposure 4), while
+# west is a 1-wide corridor and east is forest. Fast-and-dangerous against
+# slow-and-safe is the trade the routes are supposed to offer.
+#
+# NOT a decision about what Stage 01 becomes. Objective choice is OD-19.
+
+encounter id=gym-lanes-reach name=LANES-reach
+objective type=reach x=12 y=1 turns=10
+
+map
+########################
+#......................#
+#.....#.........#......#
+###.###.........###ff###
+###.###.........###ff###
+###.###.........###ff###
+###.###.........###ff###
+###.###.........###ff###
+###.#######..#######.###
+#......................#
+#..ff....######...ff...#
+#........######........#
+#........######........#
+#......................#
+#..ff.........ff.......#
+########################
+endmap
+
+spawn faction=player unit=momotaro x=11 y=13
+
+spawn faction=enemy unit=kohaku x=3  y=1  ai=rusher
+spawn faction=enemy unit=kohaku x=20 y=1  ai=rusher
+spawn faction=enemy unit=kohaku x=2  y=13 ai=cautious
+spawn faction=enemy unit=kohaku x=21 y=10 ai=hunter

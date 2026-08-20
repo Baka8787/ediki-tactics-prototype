@@ -1,0 +1,43 @@
+# GYM. gym-lanes with ONE thing changed: two of the four enemies shoot.
+#
+# Task B of the 2026-08-14 handoff — the replacement for the contaminated
+# terrain idea (OD-25), chosen because a ranged enemy needs no new rules.
+#
+# kohaku_bowfair is kohaku with range=2 and EVERY other number identical, so
+# the only variable is reach. The earlier kohaku_bow was also weaker, which is
+# what made "enemy variety" look like it rewarded charging — a stats artefact.
+#
+# The question: does reach 2 defeat the point of holding a gap? A defender
+# standing in a 1-wide corridor can only be reached by one melee enemy at a
+# time, but two archers can shoot it from cells that are not adjacent to it.
+#
+# One shooter north, one south, so both halves of the map ask the question.
+
+encounter id=gym-lanes-bow name=LANES-bow
+objective type=rout
+
+map
+########################
+#......................#
+#.....#.........#......#
+###.###.........###ff###
+###.###.........###ff###
+###.###.........###ff###
+###.###.........###ff###
+###.###.........###ff###
+###.#######..#######.###
+#......................#
+#..ff....######...ff...#
+#........######........#
+#........######........#
+#......................#
+#..ff.........ff.......#
+########################
+endmap
+
+spawn faction=player unit=momotaro x=11 y=13
+
+spawn faction=enemy unit=kohaku         x=3  y=1  ai=rusher
+spawn faction=enemy unit=kohaku_bowfair x=20 y=1  ai=rusher
+spawn faction=enemy unit=kohaku         x=2  y=13 ai=cautious
+spawn faction=enemy unit=kohaku_bowfair x=21 y=10 ai=hunter

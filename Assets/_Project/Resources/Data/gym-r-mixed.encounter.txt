@@ -1,0 +1,22 @@
+# GYM. Reach variant mixed. Same map/spawns as gym-big-split; only ranges differ.
+encounter id=gym-r-mixed name=R-mixed
+objective type=rout
+map
+##################
+#................#
+#.ff..####..ff...#
+#.ff..#..#..ff...#
+#.....#..#.......#
+###.###..###.#####
+#................#
+#..oo..####..oo..#
+#..oo..#..#..oo..#
+#......#..#......#
+#................#
+##################
+endmap
+spawn faction=player unit=momotaro x=8 y=9
+spawn faction=enemy unit=kohaku x=3  y=1 ai=rusher
+spawn faction=enemy unit=kohaku_bow x=14 y=1 ai=rusher
+spawn faction=enemy unit=kohaku_fast x=2  y=10 ai=cautious
+spawn faction=enemy unit=kohaku x=15 y=7 ai=hunter

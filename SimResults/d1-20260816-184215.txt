@@ -1,0 +1,327 @@
+=== Ediki Stage 01 Prototype — Metrics ===
+runs per cell : 50
+base seed     : 1
+noise         : 15%  (sampling device, not a rule)
+round cap     : 60  (safety net, not a rule — R-WIN-04)
+
+=== gym-e1-damagerace.encounter — encounter profile (derived) ===
+  profile: Momotaro_A   HP 300   attacks/turn 2   lethal exposure 8
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    e1_shooter        2     2        40     20        0           600
+    no target leaves a spare action — focus fire is the only play
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+gym-e1-damagerace.encounter / attack-only  (50 runs)
+  M5 win rate      : 100%  (50W / 0L / 0unresolved)
+  M1 top action mix: Move+Wait  25% of player turns
+  M1 variety       : 23 distinct mixes, top-3 = 58%
+                     Move+Wait 49   Attackx2+Wait 32   Attackx2 29   
+  M1b per unit     : 23 distinct, top 25%, top-3 = 58%   <- compare THIS across party sizes
+  M1b skill use    : 0% of unit-turns issued a skill
+  M2 AP waste      : 17%
+  M3 turns         : mean 3.78  min 3  max 7
+  M4 exposure      : mean 1.08   [0]51 [1]71 [2]67 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 2.02   contact turns 2.20
+                     r2:98  r3:2  
+  final player HP  : mean 156
+  role metrics     : 50 battle(s), 189 player round(s)
+    player         : 200 attacks, 100 kills, 9000 damage dealt   skills: push 0 / slow 0 / taunt 0
+    taken          : 370 enemy attacks, 7220 damage received
+    counter        : 0 fired of 0 opportunities  (n/a)   damage 0
+    AP spent       : attack 800  move 370  skill 0  guard 18  rest 10  counter 0
+    AP reserved    : 516 carried into enemy phases  (mean 2.73 per round)   regen wasted 272   rejected commands 0
+    per player unit:
+      Momotaro-A      dmg    7220  share 100%   attacks taken 370   mean final HP 156/300  (52%)
+  Occupancy heatmap  12x7   unit-rounds standing here   total 401  peak 119  over 50 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901
+    0  ############
+    1  #.67***932.#
+    2  #299*385511#
+    3  #226921211.#
+    4  #.2.741.322#
+    5  #1.1.312...#
+    6  ############
+
+  Clash heatmap  12x7   damaging effects landed here   total 570  peak 260  over 50 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901
+    0  ############
+    1  #.48****5..#
+    2  #2*874*261.#
+    3  #44991.411.#
+    4  #.4.*42.324#
+    5  #1...233...#
+    6  ############
+
+=== gym-e1-damagerace-Momotaro_B.encounter — encounter profile (derived) ===
+  profile: Momotaro_B   HP 300   attacks/turn 1   lethal exposure 8
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    e1_shooter        2     2        40     20        0           600
+    no target leaves a spare action — focus fire is the only play
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+gym-e1-damagerace-Momotaro_B.encounter / attack-only  (50 runs)
+  M5 win rate      : 96%  (48W / 2L / 0unresolved)
+  M1 top action mix: Move+Wait  21% of player turns
+  M1 variety       : 19 distinct mixes, top-3 = 58%
+                     Move+Wait 47   Attackx2+Wait 42   Attack 36   
+  M1b per unit     : 19 distinct, top 21%, top-3 = 58%   <- compare THIS across party sizes
+  M1b skill use    : 1% of unit-turns issued a skill
+  M2 AP waste      : 17%
+  M3 turns         : mean 4.30  min 4  max 6
+  M4 exposure      : mean 1.11   [0]50 [1]91 [2]74 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 2.02   contact turns 2.82
+                     r2:98  r3:2  
+  final player HP  : mean 126
+  role metrics     : 50 battle(s), 215 player round(s)
+    player         : 197 attacks, 98 kills, 8865 damage dealt   skills: push 3 / slow 0 / taunt 0
+    taken          : 449 enemy attacks, 8730 damage received
+    counter        : 0 fired of 0 opportunities  (n/a)   damage 0
+    AP spent       : attack 985  move 323  skill 9  guard 21  rest 8  counter 0
+    AP reserved    : 533 carried into enemy phases  (mean 2.47 per round)   regen wasted 303   rejected commands 0
+    push           : 3 pushes, 3 cells of displacement (1 per push by rule)
+    per player unit:
+      Momotaro-B      dmg    8730  share 100%   attacks taken 449   mean final HP 126/300  (42%)
+  Occupancy heatmap  12x7   unit-rounds standing here   total 458  peak 152  over 50 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901
+    0  ############
+    1  #27****3...#
+    2  #.7723951..#
+    3  #12*24651..#
+    4  #.65.29....#
+    5  #.11.41....#
+    6  ############
+
+  Clash heatmap  12x7   damaging effects landed here   total 646  peak 336  over 50 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901
+    0  ############
+    1  #37*****...#
+    2  #.99.3*3...#
+    3  #.4*327*1..#
+    4  #.*4.53....#
+    5  #....*.....#
+    6  ############
+
+=== gym-e1-damagerace-Genjin_A.encounter — encounter profile (derived) ===
+  profile: Genjin_A   HP 220   attacks/turn 1   lethal exposure 4
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    e1_shooter        2     1        70     70        0           600
+    no target leaves a spare action — focus fire is the only play
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+gym-e1-damagerace-Genjin_A.encounter / attack-only  (50 runs)
+  M5 win rate      : 96%  (48W / 2L / 0unresolved)
+  M1 top action mix: Move+Wait  36% of player turns
+  M1 variety       : 14 distinct mixes, top-3 = 74%
+                     Move+Wait 44   Attackx2 34   Attack 13   
+  M1b per unit     : 14 distinct, top 36%, top-3 = 74%   <- compare THIS across party sizes
+  M1b skill use    : 0% of unit-turns issued a skill
+  M2 AP waste      : 29%
+  M3 turns         : mean 2.44  min 2  max 4
+  M4 exposure      : mean 1.03   [0]49 [1]20 [2]53 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 2.00   contact turns 0.60
+                     r2:100  
+  final player HP  : mean 119
+  role metrics     : 50 battle(s), 122 player round(s)
+    player         : 97 attacks, 97 kills, 7275 damage dealt   skills: push 0 / slow 0 / taunt 0
+    taken          : 150 enemy attacks, 5142 damage received
+    counter        : 0 fired of 0 opportunities  (n/a)   damage 0
+    AP spent       : attack 485  move 202  skill 0  guard 9  rest 12  counter 0
+    AP reserved    : 444 carried into enemy phases  (mean 3.63 per round)   regen wasted 291   rejected commands 0
+    per player unit:
+      Genjin-A        dmg    5142  share 100%   attacks taken 150   mean final HP 119/220  (54%)
+  Occupancy heatmap  12x7   unit-rounds standing here   total 253  peak 94  over 50 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901
+    0  ############
+    1  #.139*31...#
+    2  #.247**....#
+    3  #..12.21...#
+    4  #..1.321...#
+    5  #....31....#
+    6  ############
+
+  Clash heatmap  12x7   damaging effects landed here   total 247  peak 109  over 50 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901
+    0  ############
+    1  #.365*32...#
+    2  #.25***....#
+    3  #...2.21...#
+    4  #..1.321...#
+    5  #....3.....#
+    6  ############
+
+=== gym-e1-damagerace-Kagemaru_A.encounter — encounter profile (derived) ===
+  profile: Kagemaru_A   HP 195   attacks/turn 1   lethal exposure 3
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    e1_shooter        2     3        80     26        0           400
+    no target leaves a spare action — focus fire is the only play
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+gym-e1-damagerace-Kagemaru_A.encounter / attack-only  (50 runs)
+  M5 win rate      : 0%  (0W / 50L / 0unresolved)
+  M1 top action mix: Move+Attack+Wait  40% of player turns
+  M1 variety       : 10 distinct mixes, top-3 = 85%
+                     Move+Attack+Wait 41   Attack+Wait 35   Movex2+Attack+Wait 11   
+  M1b per unit     : 10 distinct, top 40%, top-3 = 85%   <- compare THIS across party sizes
+  M1b skill use    : 1% of unit-turns issued a skill
+  M2 AP waste      : 1%
+  M3 turns         : mean 2.04  min 2  max 3
+  M4 exposure      : mean 1.92   [1]8 [2]94 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 2.02   contact turns 0.04
+                     r2:98  r3:2  
+  final player HP  : mean 0
+  role metrics     : 50 battle(s), 102 player round(s)
+    player         : 102 attacks, 2 kills, 2754 damage dealt   skills: push 0 / slow 2 / taunt 0
+    taken          : 252 enemy attacks, 10080 damage received
+    counter        : 0 fired of 0 opportunities  (n/a)   damage 0
+    AP spent       : attack 510  move 226  skill 6  guard 0  rest 8  counter 0
+    AP reserved    : 225 carried into enemy phases  (mean 2.20 per round)   regen wasted 15   rejected commands 0
+    per player unit:
+      Kagemaru-A      dmg   10080  share 100%   attacks taken 252   mean final HP 0/195  (0%)
+  Occupancy heatmap  12x7   unit-rounds standing here   total 254  peak 92  over 50 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901
+    0  ############
+    1  #.2.***....#
+    2  #..2.322...#
+    3  #.612.11...#
+    4  #.4........#
+    5  #..........#
+    6  ############
+
+  Clash heatmap  12x7   damaging effects landed here   total 354  peak 217  over 50 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901
+    0  ############
+    1  #.*1**123..#
+    2  #..1..91...#
+    3  #.45.2.5...#
+    4  #.*.1......#
+    5  #..........#
+    6  ############
+
+=== gym-e1-damagerace-Kagemaru_B.encounter — encounter profile (derived) ===
+  profile: Kagemaru_B   HP 195   attacks/turn 2   lethal exposure 3
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    e1_shooter        2     3        80     26        1           600
+    at least one target leaves a spare action — what to spend it on is a choice
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+gym-e1-damagerace-Kagemaru_B.encounter / attack-only  (50 runs)
+  M5 win rate      : 0%  (0W / 50L / 0unresolved)
+  M1 top action mix: Move+Wait  44% of player turns
+  M1 variety       : 13 distinct mixes, top-3 = 80%
+                     Move+Wait 48   Attackx2+Wait 31   Movex2+Wait 8   
+  M1b per unit     : 13 distinct, top 44%, top-3 = 80%   <- compare THIS across party sizes
+  M1b skill use    : 0% of unit-turns issued a skill
+  M2 AP waste      : 18%
+  M3 turns         : mean 2.16  min 2  max 4
+  M4 exposure      : mean 1.83   [0]2 [1]14 [2]92 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 2.00   contact turns 0.32
+                     r2:100  
+  final player HP  : mean 0
+  role metrics     : 50 battle(s), 108 player round(s)
+    player         : 88 attacks, 3 kills, 2376 damage dealt   skills: push 0 / slow 0 / taunt 0
+    taken          : 255 enemy attacks, 10060 damage received
+    counter        : 0 fired of 0 opportunities  (n/a)   damage 0
+    AP spent       : attack 352  move 333  skill 0  guard 6  rest 10  counter 0
+    AP reserved    : 377 carried into enemy phases  (mean 3.49 per round)   regen wasted 161   rejected commands 0
+    per player unit:
+      Kagemaru-B      dmg   10060  share 100%   attacks taken 255   mean final HP 0/195  (0%)
+  Occupancy heatmap  12x7   unit-rounds standing here   total 271  peak 93  over 50 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901
+    0  ############
+    1  #..***26...#
+    2  #..525412..#
+    3  #..12222...#
+    4  #..3.12..1.#
+    5  #..1.4.....#
+    6  ############
+
+  Clash heatmap  12x7   damaging effects landed here   total 343  peak 199  over 50 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901
+    0  ############
+    1  #2.**79*...#
+    2  #..8.72522.#
+    3  #..24.2....#
+    4  #..4..2....#
+    5  #..2..2....#
+    6  ############
+
+=== threshold check (docs/06-validation/playtest-metrics.md) ===
+gym-e1-damagerace.encounter / attack-only:
+  M1 < 70%   : PASS  (25%)
+  M2 < 15%   : FAIL  (17%)
+  M3 6-10    : FAIL  (3.78)
+  M4 <= 2    : PASS  (1.08)
+gym-e1-damagerace-Momotaro_B.encounter / attack-only:
+  M1 < 70%   : PASS  (21%)
+  M2 < 15%   : FAIL  (17%)
+  M3 6-10    : FAIL  (4.30)
+  M4 <= 2    : PASS  (1.11)
+gym-e1-damagerace-Genjin_A.encounter / attack-only:
+  M1 < 70%   : PASS  (36%)
+  M2 < 15%   : FAIL  (29%)
+  M3 6-10    : FAIL  (2.44)
+  M4 <= 2    : PASS  (1.03)
+gym-e1-damagerace-Kagemaru_A.encounter / attack-only:
+  M1 < 70%   : PASS  (40%)
+  M2 < 15%   : PASS  (1%)
+  M3 6-10    : FAIL  (2.04)
+  M4 <= 2    : PASS  (1.92)
+gym-e1-damagerace-Kagemaru_B.encounter / attack-only:
+  M1 < 70%   : PASS  (44%)
+  M2 < 15%   : FAIL  (18%)
+  M3 6-10    : FAIL  (2.16)
+  M4 <= 2    : PASS  (1.83)
+
+M5 comparison (corridor-hold should beat charge, and the chokepoint map
+should beat the open control — otherwise the map taught nothing):
+  gym-e1-damagerace.encounter / attack-only : 100%
+  gym-e1-damagerace-Momotaro_B.encounter / attack-only : 96%
+  gym-e1-damagerace-Genjin_A.encounter / attack-only : 96%
+  gym-e1-damagerace-Kagemaru_A.encounter / attack-only : 0%
+  gym-e1-damagerace-Kagemaru_B.encounter / attack-only : 0%
+
+=== anomalies (see SimResults/anomalies.json for the seeds) ===
+  0 of 250 battles flagged
+  TIMEOUT_UNRESOLVED            0
+  ABORTED_BY_REJECTED_COMMAND   0
+  DEFEAT_WITH_HIGH_REMAINING_HP 0
+  UNEXPECTED_SKILL_USAGE        0
+
+=== Strategy Persona Matrix ===
+  gym-e1-damagerace.encounter
+    Strategy            N    Win%   AvgRounds   AvgHP%   Timeout%   SkillActs(strategy/noise)
+    attack-only         50    100%        3.78    52.2%         0%            0/0
+
+  gym-e1-damagerace-Momotaro_B.encounter
+    Strategy            N    Win%   AvgRounds   AvgHP%   Timeout%   SkillActs(strategy/noise)
+    attack-only         50     96%        4.30    42.0%         0%            0/3
+
+  gym-e1-damagerace-Genjin_A.encounter
+    Strategy            N    Win%   AvgRounds   AvgHP%   Timeout%   SkillActs(strategy/noise)
+    attack-only         50     96%        2.44    54.3%         0%            0/0
+
+  gym-e1-damagerace-Kagemaru_A.encounter
+    Strategy            N    Win%   AvgRounds   AvgHP%   Timeout%   SkillActs(strategy/noise)
+    attack-only         50      0%        2.04     0.0%         0%            0/2
+
+  gym-e1-damagerace-Kagemaru_B.encounter
+    Strategy            N    Win%   AvgRounds   AvgHP%   Timeout%   SkillActs(strategy/noise)
+    attack-only         50      0%        2.16     0.0%         0%            0/0
+
+=== Pairwise comparison (screening heuristic) ===
+  comparison unavailable — the configured pair is not present on any encounter

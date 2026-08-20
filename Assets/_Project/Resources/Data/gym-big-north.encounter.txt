@@ -1,0 +1,27 @@
+# GYM. Bigger map, THREE routes between the halves:
+#   west  x=3   1-wide chokepoint
+#   mid   x=7,8 2-wide
+#   east  x=12  1-wide chokepoint
+# All enemies north. Question: does "which route" become a real decision when the
+# base mechanics are the only thing on the table?
+encounter id=gym-big-north name=BIG-north
+objective type=rout
+map
+##################
+#................#
+#.ff..####..ff...#
+#.ff..#..#..ff...#
+#.....#..#.......#
+###.###..###.#####
+#................#
+#..oo..####..oo..#
+#..oo..#..#..oo..#
+#......#..#......#
+#................#
+##################
+endmap
+spawn faction=player unit=momotaro x=8 y=9
+spawn faction=enemy unit=kohaku x=3  y=1 ai=rusher
+spawn faction=enemy unit=kohaku x=8  y=1 ai=rusher
+spawn faction=enemy unit=kohaku x=14 y=1 ai=cautious
+spawn faction=enemy unit=kohaku x=2  y=3 ai=hunter

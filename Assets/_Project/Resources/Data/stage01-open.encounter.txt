@@ -1,0 +1,36 @@
+# Ediki - Stage 01 CONTROL map (open field)
+#
+# This is the control group for M5. Same size, same spawns, same enemies as
+# stage01.encounter.txt — the ONLY difference is that the chokepoint is gone.
+#
+# It is deliberately the GDD's reading of Stage 01: "no shrine, no village,
+# purely forest and road" (see CONFLICTS.md#conflict-02). Without a control map
+# there is no way to separate "the map taught nothing" from "the rules taught
+# nothing" — see docs/DOCUMENT-MAP.md ODD-03.
+#
+# Expectation under the Exposure hypothesis: the corridor-hold strategy should
+# do markedly worse here than on stage01, because there is no cell where only
+# one enemy can reach you. If the two maps score the same, the hypothesis is in
+# trouble — which is exactly what we want the numbers to be able to say.
+
+encounter id=stage01-open name=Stage01-Open-Control
+
+map
+############
+#..........#
+#.ff....ff.#
+#.f......f.#
+#..........#
+#..f...f...#
+#.ff...ff..#
+#..........#
+#..........#
+############
+endmap
+
+spawn faction=player unit=momotaro x=3 y=8
+
+spawn faction=enemy unit=kohaku x=4  y=1 ai=rusher   group=north
+spawn faction=enemy unit=kohaku x=7  y=1 ai=rusher   group=north
+spawn faction=enemy unit=kohaku x=10 y=2 ai=cautious group=east
+spawn faction=enemy unit=kohaku x=10 y=3 ai=hunter   group=east

@@ -1,0 +1,21 @@
+# GYM. Threat-surface variant 2: HALF the enemies start on the player's side.
+# The chokepoint no longer separates the two sides, so holding it protects nothing.
+encounter id=gym-s2-split name=S2-split-sides
+objective type=rout
+map
+############
+#..........#
+#.ff....ff.#
+#.f......f.#
+#####.######
+#..f#.#f...#
+#.ff...ff..#
+#....^.....#
+#..........#
+############
+endmap
+spawn faction=player unit=momotaro x=3 y=8
+spawn faction=enemy unit=kohaku x=4  y=1 ai=rusher
+spawn faction=enemy unit=kohaku x=7  y=1 ai=rusher
+spawn faction=enemy unit=kohaku x=10 y=6 ai=cautious
+spawn faction=enemy unit=kohaku x=9  y=8 ai=hunter

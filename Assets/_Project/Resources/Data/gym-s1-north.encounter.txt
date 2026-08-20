@@ -1,0 +1,21 @@
+# GYM. Threat-surface variant 1: all enemies NORTH of the chokepoint (current layout).
+# Everything must funnel through (5,4). Camping is maximally rewarded.
+encounter id=gym-s1-north name=S1-all-north
+objective type=rout
+map
+############
+#..........#
+#.ff....ff.#
+#.f......f.#
+#####.######
+#..f#.#f...#
+#.ff...ff..#
+#....^.....#
+#..........#
+############
+endmap
+spawn faction=player unit=momotaro x=3 y=8
+spawn faction=enemy unit=kohaku x=4  y=1 ai=rusher
+spawn faction=enemy unit=kohaku x=7  y=1 ai=rusher
+spawn faction=enemy unit=kohaku x=10 y=2 ai=cautious
+spawn faction=enemy unit=kohaku x=10 y=3 ai=hunter

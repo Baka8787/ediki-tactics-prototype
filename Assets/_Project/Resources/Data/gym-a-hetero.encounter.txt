@@ -1,0 +1,22 @@
+# GYM LEVEL - not the narrative Stage 01.
+# Lever: enemy heterogeneity only. Objective stays rout.
+# Question: does threat ordering alone break the monotony?
+encounter id=gym-a-hetero name=A-hetero-rout
+objective type=rout
+map
+############
+#..........#
+#.ff....ff.#
+#.f......f.#
+#####.######
+#..f#.#f...#
+#.ff...ff..#
+#....^.....#
+#..........#
+############
+endmap
+spawn faction=player unit=momotaro x=3 y=8
+spawn faction=enemy unit=kohaku      x=4  y=1 ai=rusher
+spawn faction=enemy unit=kohaku      x=7  y=1 ai=rusher
+spawn faction=enemy unit=kohaku_bow  x=10 y=2 ai=cautious
+spawn faction=enemy unit=kohaku_fast x=10 y=3 ai=hunter

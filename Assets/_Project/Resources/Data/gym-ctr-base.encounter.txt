@@ -1,0 +1,55 @@
+# GYM. 正守 counter experiment — BASELINE (attack 4 AP).
+#
+# THE ONE QUESTION
+#   Does raising the main action from 4 AP to 5 put the counter-attack into a
+#   real decision space? This file is the "before".
+#
+# WHY THE COUNTER HAS NEVER FIRED
+#   ResolveCounterAttack needs the defender to still hold counterCost AP when it
+#   is attacked. AP resets only for the INCOMING faction, so a player's unspent
+#   AP genuinely survives into the enemy phase — the mechanic is reachable. The
+#   problem is that nothing leaves any: at 4 AP a unit spends 4 + 4 of its 8 and
+#   ends the turn on zero. Measured as "a mechanic with no user" since the
+#   objectives round.
+#
+# WHY 正守 IS ALONE
+#   Every enemy attack is then unambiguously an attack on 正守, and every
+#   counter opportunity is unambiguously its own. With allies present, "enemy
+#   attacks against Masamori" and "damage received" would both need splitting,
+#   and the AP question would be tangled up with target selection.
+#
+# WHY THESE ENEMIES
+#   MELEE ONLY, on purpose: a counter requires the attacker to be inside the
+#   DEFENDER's range, so a range-2 enemy generates zero opportunities and would
+#   silently dilute the rate. kohaku_1hit (ATK 60, HP 40, M3, R1) is the only
+#   melee unit weak enough that 正守 survives long enough to accumulate a
+#   sample — against ATK 100 at DEF 45 it dies in two rounds and measures
+#   nothing.
+#
+#   Two of them: 4 attacks a round against a cap of ONE counter per round
+#   (HasCounteredThisRound resets at the unit's own phase start), so the
+#   opportunity count is comfortably above the ceiling and the rate is not
+#   limited by the supply of attacks.
+#
+# ⚠️ NOT A BALANCE PROPOSAL. Neither side is meant to be good. The pair exists
+# to answer one economy question, and 正守's shipped stat block is untouched.
+#
+#   #  Blocking   .  Road(1)   o  Open(1)   f  Forest(2)
+#   Coordinates are (x, y), y = 0 at the TOP.
+
+encounter id=gym-ctr-base name=CTR-baseline-4ap
+objective type=rout
+
+map
+##########
+#........#
+#........#
+#........#
+#........#
+##########
+endmap
+
+spawn faction=player unit=zhengshou_ctr4 x=4 y=3
+
+spawn faction=enemy unit=kohaku_1hit x=2 y=1 ai=rusher
+spawn faction=enemy unit=kohaku_1hit x=7 y=1 ai=rusher

@@ -1,0 +1,59 @@
+# GYM. D1 control — the same map with the three routes made IDENTICAL.
+#
+# Control group of the D1 pair. Read it beside gym-d1-routes or not at all.
+# Plan: docs/06-validation/strategy-depth-plan.md §3.3.
+#
+# WHAT IT IS FOR. M6 can only ever FALSIFY: a fixed strategy has a fixed
+# preference, so the same map gives corridor-hold 26/43/29 and charge 3/96/0
+# (playtest-metrics §9.5). A route histogram on its own therefore cannot say
+# how much of the distribution came from the MAP. This map is the missing
+# comparison — three gaps in the same places, same block, same spawns, same
+# enemies, and nothing to tell the routes apart:
+#
+#   west x=2    mid x=6    east x=10    all 1 wide, all road, all exposure 2
+#
+# F3 reads it: if gym-d1-routes' M6 differs from this by less than 10 points,
+# the distribution is strategy preference and the geometry bought nothing.
+# It is also the comparison OD-26 has been missing since it was opened.
+#
+# THE ONE VARIABLE. Against gym-d1-routes exactly three things changed, and
+# they are the three the plan names as one bundle ("同寬、同地形、同暴露"):
+#   - the mid lane narrows from 3 cells to 1
+#   - the two forest cells in the east lane become road
+#   - the west lane is untouched
+#
+# Sealing each lane and measuring the path gives 9 / 11 / 9 AP here against
+# 9 / 10 / 10 on the experiment map. The mid lane costing one more is a
+# property of a block sitting under it, and widening mid is what paid that
+# cost back on the experiment map — a CONSEQUENCE of the variable, not a
+# second one. Stated here rather than left for someone to find in the numbers.
+#
+# ⚠️ EXPERIMENT FILE, NOT STAGE 01.
+#
+#   #  Blocking   .  Road(1)   o  Open(1)   f  Forest(2)
+#   Coordinates are (x, y), y = 0 at the TOP.
+
+encounter id=gym-d1-flat name=D1-flat
+objective type=rout
+
+map
+#############
+#...........#
+##.###.###.##
+##.###.###.##
+##.###.###.##
+##.###.###.##
+#...........#
+#...#####...#
+#...#####...#
+#...........#
+#...........#
+#############
+endmap
+
+spawn faction=player unit=momotaro       x=6 y=9
+spawn faction=player unit=kagemaru_plain x=6 y=10
+
+spawn faction=enemy unit=kohaku_1hit x=6  y=1 ai=rusher
+spawn faction=enemy unit=kohaku_bow  x=2  y=1 ai=rusher
+spawn faction=enemy unit=kohaku_bow  x=10 y=1 ai=cautious

@@ -1,0 +1,159 @@
+=== Ediki Stage 01 Prototype — Metrics ===
+runs per cell : 50
+base seed     : 1
+noise         : 15%  (sampling device, not a rule)
+round cap     : 60  (safety net, not a rule — R-WIN-04)
+
+=== gym-e4-protection.encounter — encounter profile (derived) ===
+  profile: Masamori_A   HP 435   attacks/turn 2   lethal exposure 8
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    kohaku            3     7        60      8        1           200
+    at least one target leaves a spare action — what to spend it on is a choice
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+  profile: e4_backline   HP 120   attacks/turn 2   lethal exposure 1  <- two attackers is death; one mistake ends the battle
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    kohaku            3     4       160     40        0           200
+    no target leaves a spare action — focus fire is the only play
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+gym-e4-protection.encounter / attack-only  (50 runs)
+  M5 win rate      : 2%  (1W / 49L / 0unresolved)
+  M1 top action mix: Attackx2+Wait  50% of player turns
+  M1 variety       : 38 distinct mixes, top-3 = 62%
+                     Attackx2+Wait 136   Movex2+Attackx4+Waitx2 17   Attackx4+Waitx2 15   
+  M1b per unit     : 20 distinct, top 52%, top-3 = 77%   <- compare THIS across party sizes
+  M1b skill use    : 0% of unit-turns issued a skill
+  M2 AP waste      : 6%
+  M3 turns         : mean 5.36  min 4  max 9
+  M4 exposure      : mean 1.97   [0]11 [1]82 [2]167 [3]95 
+  M7 contact       : round-1 reach 1.00 enemies   mean release round 1.67   contact turns 8.94
+                     r1:50  r2:93  r3:3  never:4
+  final player HP  : mean 0
+  role metrics     : 50 battle(s), 268 player round(s)
+    player         : 562 attacks, 50 kills, 8139 damage dealt   skills: push 0 / slow 0 / taunt 3
+    taken          : 857 enemy attacks, 30350 damage received
+    counter        : 0 fired of 0 opportunities  (n/a)   damage 0
+    AP spent       : attack 2248  move 384  skill 9  guard 39  rest 16  counter 0
+    AP reserved    : 580 carried into enemy phases  (mean 2.16 per round)   regen wasted 185   rejected commands 0
+    per player unit:
+      Backline        dmg    7880  share 25%   attacks taken 102   mean final HP 0/120  (0%)
+      Masamori-A      dmg   22470  share 74%   attacks taken 755   mean final HP 0/435  (0%)
+  Occupancy heatmap  12x7   unit-rounds standing here   total 918  peak 167  over 50 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901
+    0  ############
+    1  #.3****77..#
+    2  #.6*****51.#
+    3  #338***4*1.#
+    4  #.229**5533#
+    5  #2149*66421#
+    6  ############
+
+  Clash heatmap  12x7   damaging effects landed here   total 1419  peak 433  over 50 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901
+    0  ############
+    1  #.4****51..#
+    2  #.6****7*..#
+    3  #49*****92.#
+    4  #..2***8*62#
+    5  #.71*773.23#
+    6  ############
+
+=== gym-e4-protection-Masamori_B.encounter — encounter profile (derived) ===
+  profile: Masamori_B   HP 435   attacks/turn 2   lethal exposure 4
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    kohaku            3     7       110     15        1           200
+    at least one target leaves a spare action — what to spend it on is a choice
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+  profile: e4_backline   HP 120   attacks/turn 2   lethal exposure 1  <- two attackers is death; one mistake ends the battle
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    kohaku            3     4       160     40        0           200
+    no target leaves a spare action — focus fire is the only play
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+gym-e4-protection-Masamori_B.encounter / attack-only  (50 runs)
+  M5 win rate      : 0%  (0W / 50L / 0unresolved)
+  M1 top action mix: Attackx2+Wait  32% of player turns
+  M1 variety       : 31 distinct mixes, top-3 = 52%
+                     Attackx2+Wait 56   Attackx4+Waitx2 19   Movex2+Attackx4+Waitx2 16   
+  M1b per unit     : 15 distinct, top 42%, top-3 = 75%   <- compare THIS across party sizes
+  M1b skill use    : 0% of unit-turns issued a skill
+  M2 AP waste      : 5%
+  M3 turns         : mean 3.44  min 3  max 5
+  M4 exposure      : mean 2.06   [0]10 [1]38 [2]136 [3]74 
+  M7 contact       : round-1 reach 1.00 enemies   mean release round 1.69   contact turns 4.90
+                     r1:50  r2:93  r3:3  r4:1  never:3
+  final player HP  : mean 0
+  role metrics     : 50 battle(s), 172 player round(s)
+    player         : 394 attacks, 24 kills, 6137 damage dealt   skills: push 0 / slow 0 / taunt 0
+    taken          : 510 enemy attacks, 29877 damage received
+    counter        : 14 fired of 381 opportunities  (3%)   damage 182
+    AP spent       : attack 1576  move 336  skill 0  guard 33  rest 14  counter 42
+    AP reserved    : 430 carried into enemy phases  (mean 2.50 per round)   regen wasted 109   rejected commands 0
+    per player unit:
+      Backline        dmg    7800  share 26%   attacks taken 103   mean final HP 0/120  (0%)
+      Masamori-B      dmg   22077  share 73%   attacks taken 407   mean final HP 0/435  (0%)
+  Occupancy heatmap  12x7   unit-rounds standing here   total 638  peak 91  over 50 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901
+    0  ############
+    1  #16****51..#
+    2  #.4*****.1.#
+    3  #.25***641.#
+    4  #.214*42132#
+    5  #..1.212.1.#
+    6  ############
+
+  Clash heatmap  12x7   damaging effects landed here   total 918  peak 261  over 50 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      012345678901
+    0  ############
+    1  #.44**6*1..#
+    2  #1******...#
+    3  #.2*****.3.#
+    4  #..22*72.5.#
+    5  #........1.#
+    6  ############
+
+=== threshold check (docs/06-validation/playtest-metrics.md) ===
+gym-e4-protection.encounter / attack-only:
+  M1 < 70%   : PASS  (50%)
+  M2 < 15%   : PASS  (6%)
+  M3 6-10    : FAIL  (5.36)
+  M4 <= 2    : PASS  (1.97)
+gym-e4-protection-Masamori_B.encounter / attack-only:
+  M1 < 70%   : PASS  (32%)
+  M2 < 15%   : PASS  (5%)
+  M3 6-10    : FAIL  (3.44)
+  M4 <= 2    : FAIL  (2.06)
+
+M5 comparison (corridor-hold should beat charge, and the chokepoint map
+should beat the open control — otherwise the map taught nothing):
+  gym-e4-protection.encounter / attack-only : 2%
+  gym-e4-protection-Masamori_B.encounter / attack-only : 0%
+
+=== anomalies (see SimResults/anomalies.json for the seeds) ===
+  0 of 100 battles flagged
+  TIMEOUT_UNRESOLVED            0
+  ABORTED_BY_REJECTED_COMMAND   0
+  DEFEAT_WITH_HIGH_REMAINING_HP 0
+  UNEXPECTED_SKILL_USAGE        0
+
+=== Strategy Persona Matrix ===
+  gym-e4-protection.encounter
+    Strategy            N    Win%   AvgRounds   AvgHP%   Timeout%   SkillActs(strategy/noise)
+    attack-only         50      2%        5.36     0.1%         0%            0/3
+
+  gym-e4-protection-Masamori_B.encounter
+    Strategy            N    Win%   AvgRounds   AvgHP%   Timeout%   SkillActs(strategy/noise)
+    attack-only         50      0%        3.44     0.0%         0%            0/0
+
+=== Pairwise comparison (screening heuristic) ===
+  comparison unavailable — the configured pair is not present on any encounter

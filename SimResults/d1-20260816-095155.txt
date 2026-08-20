@@ -1,0 +1,432 @@
+=== Ediki Stage 01 Prototype — Metrics ===
+runs per cell : 200
+base seed     : 1
+noise         : 15%  (sampling device, not a rule)
+round cap     : 60  (safety net, not a rule — R-WIN-04)
+
+[ALERT] DOMINANT_STRATEGY_HEURISTIC:
+Charge currently dominates deliberate positioning under the configured heuristic.
+  Encounter / Map        : gym-d1-routes.encounter
+  charge             N          : 200
+  corridor-hold      N          : 200
+  Win Rate               : Pass        100% >= 99%
+  Avg Rounds             : Pass        4.58 < 11.03
+  Remaining HP           : Pass        82.2% >= 64.5%
+  (screening heuristic over batch averages, not a game-theoretic result)
+
+[ALERT] DOMINANT_STRATEGY_HEURISTIC:
+Charge currently dominates deliberate positioning under the configured heuristic.
+  Encounter / Map        : gym-d1-flat.encounter
+  charge             N          : 200
+  corridor-hold      N          : 200
+  Win Rate               : Pass        100% >= 100%
+  Avg Rounds             : Pass        4.50 < 11.45
+  Remaining HP           : Pass        83.6% >= 65.2%
+  (screening heuristic over batch averages, not a game-theoretic result)
+
+=== gym-d1-routes.encounter — encounter profile (derived) ===
+  profile: momotaro   HP 300   attacks/turn 2   lethal exposure 8
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    kohaku_1hit       1     1        20     20        1          1300
+    kohaku_bow        2     2        40     20        0          1100
+    at least one target leaves a spare action — what to spend it on is a choice
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+  profile: kagemaru_plain   HP 195   attacks/turn 2   lethal exposure 3
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    kohaku_1hit       1     2        60     30        0          1200
+    kohaku_bow        2     3        80     26        1          1000
+    at least one target leaves a spare action — what to spend it on is a choice
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+gym-d1-routes.encounter / charge  (200 runs)
+  M5 win rate      : 100%  (200W / 0L / 0unresolved)
+  M1 top action mix: Movex2+Waitx2  14% of player turns
+  M1 variety       : 92 distinct mixes, top-3 = 32%
+                     Movex2+Waitx2 134   Movex2+Attackx2+Waitx2 104   Attackx2+Waitx2 64   
+  M1b per unit     : 35 distinct, top 23%, top-3 = 50%   <- compare THIS across party sizes
+  M1b skill use    : 0% of unit-turns issued a skill
+  M2 AP waste      : 24%
+  M3 turns         : mean 4.58  min 4  max 7
+  M4 exposure      : mean 0.30   [0]1289 [1]491 [2]28 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 2.97   contact turns 1.69
+                     r2:184  r3:244  r4:167  r5:2  never:3
+  M6 route use     : 181/200 runs crossed, top route x=2 92%
+                     x=2:167  x=5:6  x=6:1  x=7:2  x=10:5  never:19
+                     per unit: x=2:201  x=5:25  x=6:1  x=7:2  x=10:5  
+  final player HP  : mean 407
+  Occupancy heatmap  13x12   unit-rounds standing here   total 3315  peak 425  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      0123456789012
+    0  #############
+    1  #.*8*..*....#
+    2  ##*##*..##.##
+    3  ##*##*2*##.##
+    4  ##*##*32##*##
+    5  ##*##*61##*##
+    6  #**********.#
+    7  #***#####*22#
+    8  #4**#####7.3#
+    9  #75**5526*..#
+   10  #3541.51234.#
+   11  #############
+
+  Clash heatmap  13x12   damaging effects landed here   total 1964  peak 386  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      0123456789012
+    0  #############
+    1  #.**........#
+    2  ##*##2..##.##
+    3  ##*##*2.##.##
+    4  ##*##*2.##*##
+    5  ##*##*4.##*##
+    6  #**********.#
+    7  #645#####*22#
+    8  #146#####3.3#
+    9  #.12.....3..#
+   10  #...........#
+   11  #############
+
+gym-d1-routes.encounter / corridor-hold  (200 runs)
+  M5 win rate      : 99%  (198W / 2L / 0unresolved)
+  M1 top action mix: Movex2+Guard+Wait  19% of player turns
+  M1 variety       : 136 distinct mixes, top-3 = 36%
+                     Movex2+Guard+Wait 422   Movex2+Guardx2+Waitx2 215   Move+Guard+Wait 176   
+  M1b per unit     : 41 distinct, top 31%, top-3 = 58%   <- compare THIS across party sizes
+  M1b skill use    : 0% of unit-turns issued a skill
+  M2 AP waste      : 19%
+  M3 turns         : mean 11.03  min 5  max 39
+  M4 exposure      : mean 0.29   [0]2548 [1]776 [2]116 [3]4 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 3.69   contact turns 11.70
+                     r2:184  r3:60  r4:171  r5:121  r6:46  r7:5  r8:3  r10:1  never:9
+  M6 route use     : 99/200 runs crossed, top route x=7 59%
+                     x=2:24  x=5:6  x=6:1  x=7:59  x=10:9  never:101
+                     per unit: x=2:25  x=5:10  x=6:1  x=7:62  x=10:9  
+  final player HP  : mean 319
+  Occupancy heatmap  13x12   unit-rounds standing here   total 7299  peak 547  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      0123456789012
+    0  #############
+    1  #**********8#
+    2  ##*##*7*##*##
+    3  ##*##*8*##*##
+    4  ##*##*5*##*##
+    5  ##*##***##*##
+    6  #***********#
+    7  #***#####***#
+    8  #***#####***#
+    9  #***********#
+   10  #***********#
+   11  #############
+
+  Clash heatmap  13x12   damaging effects landed here   total 2900  peak 245  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      0123456789012
+    0  #############
+    1  #****66****3#
+    2  ##*##43*##5##
+    3  ##*##*3*##1##
+    4  ##*##*1*##8##
+    5  ##*##*72##6##
+    6  #*****55**94#
+    7  #***#####**9#
+    8  #***#####**6#
+    9  #***********#
+   10  #******7*92*#
+   11  #############
+
+gym-d1-routes.encounter / tpa-order  (200 runs)
+  M5 win rate      : 99%  (198W / 2L / 0unresolved)
+  M1 top action mix: Movex2+Guard+Wait  18% of player turns
+  M1 variety       : 136 distinct mixes, top-3 = 36%
+                     Movex2+Guard+Wait 414   Movex2+Guardx2+Waitx2 214   Move+Guard+Wait 182   
+  M1b per unit     : 42 distinct, top 32%, top-3 = 58%   <- compare THIS across party sizes
+  M1b skill use    : 0% of unit-turns issued a skill
+  M2 AP waste      : 19%
+  M3 turns         : mean 10.99  min 5  max 39
+  M4 exposure      : mean 0.29   [0]2547 [1]774 [2]113 [3]4 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 3.69   contact turns 11.64
+                     r2:184  r3:60  r4:172  r5:120  r6:46  r7:5  r8:3  r10:1  never:9
+  M6 route use     : 98/200 runs crossed, top route x=7 57%
+                     x=2:26  x=5:6  x=6:1  x=7:56  x=10:9  never:102
+                     per unit: x=2:27  x=5:10  x=6:1  x=7:59  x=10:9  
+  final player HP  : mean 319
+  Occupancy heatmap  13x12   unit-rounds standing here   total 7279  peak 542  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      0123456789012
+    0  #############
+    1  #**********8#
+    2  ##*##*7*##*##
+    3  ##*##*6*##*##
+    4  ##*##*4*##*##
+    5  ##*##***##*##
+    6  #***********#
+    7  #***#####***#
+    8  #***#####***#
+    9  #***********#
+   10  #***********#
+   11  #############
+
+  Clash heatmap  13x12   damaging effects landed here   total 2902  peak 228  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      0123456789012
+    0  #############
+    1  #****66****3#
+    2  ##*##53*##3##
+    3  ##*##*1*##1##
+    4  ##*##*1*##6##
+    5  ##*##*73##6##
+    6  #*****54**94#
+    7  #***#####**9#
+    8  #***#####**6#
+    9  #***********#
+   10  #******7*92*#
+   11  #############
+
+=== gym-d1-flat.encounter — encounter profile (derived) ===
+  profile: momotaro   HP 300   attacks/turn 2   lethal exposure 8
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    kohaku_1hit       1     1        20     20        1          1300
+    kohaku_bow        2     2        40     20        0          1100
+    at least one target leaves a spare action — what to spend it on is a choice
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+  profile: kagemaru_plain   HP 195   attacks/turn 2   lethal exposure 3
+    enemy             n   hits  dmg/turn    TPA  residue   approach AP
+    kohaku_1hit       1     2        60     30        0          1200
+    kohaku_bow        2     3        80     26        1          1000
+    at least one target leaves a spare action — what to spend it on is a choice
+    TPA excludes approach on purpose: under OD-16 the enemy closes in,
+    so approach is a release time, not a cost. M7 measures it for real.
+
+gym-d1-flat.encounter / charge  (200 runs)
+  M5 win rate      : 100%  (200W / 0L / 0unresolved)
+  M1 top action mix: Movex2+Waitx2  14% of player turns
+  M1 variety       : 90 distinct mixes, top-3 = 33%
+                     Movex2+Waitx2 134   Movex2+Attackx2+Waitx2 102   Attackx2+Waitx2 63   
+  M1b per unit     : 34 distinct, top 22%, top-3 = 49%   <- compare THIS across party sizes
+  M1b skill use    : 0% of unit-turns issued a skill
+  M2 AP waste      : 24%
+  M3 turns         : mean 4.50  min 4  max 7
+  M4 exposure      : mean 0.28   [0]1290 [1]465 [2]25 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 2.97   contact turns 1.61
+                     r2:184  r3:249  r4:161  r5:3  never:3
+  M6 route use     : 175/200 runs crossed, top route x=2 96%
+                     x=2:169  x=6:1  x=10:5  never:25
+                     per unit: x=2:205  x=6:1  x=10:5  
+  final player HP  : mean 413
+  Occupancy heatmap  13x12   unit-rounds standing here   total 3271  peak 432  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      0123456789012
+    0  #############
+    1  #.*6*..*....#
+    2  ##*###.###.##
+    3  ##*###*###.##
+    4  ##*###*###*##
+    5  ##*###2###*##
+    6  #**********2#
+    7  #***#####*23#
+    8  #6**#####*12#
+    9  #54*85526*22#
+   10  #4431.51234.#
+   11  #############
+
+  Clash heatmap  13x12   damaging effects landed here   total 1916  peak 394  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      0123456789012
+    0  #############
+    1  #.**........#
+    2  ##*###.###.##
+    3  ##*###1###.##
+    4  ##*###2###*##
+    5  ##*###1###*##
+    6  #**********2#
+    7  #86*#####*23#
+    8  #124#####612#
+    9  #........311#
+   10  #...........#
+   11  #############
+
+gym-d1-flat.encounter / corridor-hold  (200 runs)
+  M5 win rate      : 100%  (200W / 0L / 0unresolved)
+  M1 top action mix: Movex2+Guard+Wait  19% of player turns
+  M1 variety       : 139 distinct mixes, top-3 = 36%
+                     Movex2+Guard+Wait 437   Movex2+Guardx2+Waitx2 214   Move+Guard+Wait 179   
+  M1b per unit     : 42 distinct, top 30%, top-3 = 58%   <- compare THIS across party sizes
+  M1b skill use    : 0% of unit-turns issued a skill
+  M2 AP waste      : 20%
+  M3 turns         : mean 11.45  min 4  max 42
+  M4 exposure      : mean 0.28   [0]2644 [1]786 [2]115 [3]4 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 3.67   contact turns 12.16
+                     r2:184  r3:72  r4:157  r5:130  r6:40  r7:5  r8:3  r16:1  never:8
+  M6 route use     : 100/200 runs crossed, top route x=6 50%
+                     x=2:20  x=6:50  x=10:30  never:100
+                     per unit: x=2:23  x=6:56  x=10:30  
+  final player HP  : mean 322
+  Occupancy heatmap  13x12   unit-rounds standing here   total 7488  peak 552  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      0123456789012
+    0  #############
+    1  #**********7#
+    2  ##*###*###*##
+    3  ##*###*###*##
+    4  ##*###*###*##
+    5  ##*###*###*##
+    6  #***********#
+    7  #***#####***#
+    8  #***#####***#
+    9  #***********#
+   10  #***********#
+   11  #############
+
+  Clash heatmap  13x12   damaging effects landed here   total 2890  peak 231  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      0123456789012
+    0  #############
+    1  #******4***1#
+    2  ##*###*###*##
+    3  ##*###*###*##
+    4  ##*###*###6##
+    5  ##*###*###*##
+    6  #******8***4#
+    7  #***#####*58#
+    8  #***#####*97#
+    9  #***********#
+   10  #*****77**5*#
+   11  #############
+
+gym-d1-flat.encounter / tpa-order  (200 runs)
+  M5 win rate      : 100%  (200W / 0L / 0unresolved)
+  M1 top action mix: Movex2+Guard+Wait  19% of player turns
+  M1 variety       : 136 distinct mixes, top-3 = 36%
+                     Movex2+Guard+Wait 435   Movex2+Guardx2+Waitx2 214   Move+Guard+Wait 180   
+  M1b per unit     : 42 distinct, top 31%, top-3 = 58%   <- compare THIS across party sizes
+  M1b skill use    : 0% of unit-turns issued a skill
+  M2 AP waste      : 20%
+  M3 turns         : mean 11.35  min 4  max 42
+  M4 exposure      : mean 0.28   [0]2641 [1]770 [2]113 [3]4 
+  M7 contact       : round-1 reach 0.00 enemies   mean release round 3.67   contact turns 12.08
+                     r2:184  r3:72  r4:160  r5:127  r6:40  r7:5  r8:3  r16:1  never:8
+  M6 route use     : 100/200 runs crossed, top route x=6 49%
+                     x=2:23  x=6:49  x=10:28  never:100
+                     per unit: x=2:26  x=6:54  x=10:28  
+  final player HP  : mean 323
+  Occupancy heatmap  13x12   unit-rounds standing here   total 7446  peak 549  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      0123456789012
+    0  #############
+    1  #**********6#
+    2  ##*###*###*##
+    3  ##*###*###*##
+    4  ##*###*###*##
+    5  ##*###*###*##
+    6  #***********#
+    7  #***#####***#
+    8  #***#####***#
+    9  #***********#
+   10  #***********#
+   11  #############
+
+  Clash heatmap  13x12   damaging effects landed here   total 2884  peak 216  over 200 battle(s)
+    . = 0   1-9 = that many   * = 10 or more   # = blocked   (row 0 is the TOP row, as in the encounter file)
+      0123456789012
+    0  #############
+    1  #******4***1#
+    2  ##*###*###*##
+    3  ##9###*###7##
+    4  ##*###9###3##
+    5  ##*###*###9##
+    6  #******6***4#
+    7  #***#####*68#
+    8  #***#####*95#
+    9  #***********#
+   10  #*****96**5*#
+   11  #############
+
+=== threshold check (docs/06-validation/playtest-metrics.md) ===
+gym-d1-routes.encounter / charge:
+  M1 < 70%   : PASS  (14%)
+  M2 < 15%   : FAIL  (24%)
+  M3 6-10    : FAIL  (4.58)
+  M4 <= 2    : PASS  (0.30)
+  M6 < 70%   : FAIL  (x=2 92%)
+gym-d1-routes.encounter / corridor-hold:
+  M1 < 70%   : PASS  (19%)
+  M2 < 15%   : FAIL  (19%)
+  M3 6-10    : FAIL  (11.03)
+  M4 <= 2    : PASS  (0.29)
+  M6 < 70%   : PASS  (x=7 59%)
+  ** 101 run(s) never crossed the wall — the route sample is thin
+gym-d1-routes.encounter / tpa-order:
+  M1 < 70%   : PASS  (18%)
+  M2 < 15%   : FAIL  (19%)
+  M3 6-10    : FAIL  (10.99)
+  M4 <= 2    : PASS  (0.29)
+  M6 < 70%   : PASS  (x=7 57%)
+  ** 102 run(s) never crossed the wall — the route sample is thin
+gym-d1-flat.encounter / charge:
+  M1 < 70%   : PASS  (14%)
+  M2 < 15%   : FAIL  (24%)
+  M3 6-10    : FAIL  (4.50)
+  M4 <= 2    : PASS  (0.28)
+  M6 < 70%   : FAIL  (x=2 96%)
+gym-d1-flat.encounter / corridor-hold:
+  M1 < 70%   : PASS  (19%)
+  M2 < 15%   : FAIL  (20%)
+  M3 6-10    : FAIL  (11.45)
+  M4 <= 2    : PASS  (0.28)
+  M6 < 70%   : PASS  (x=6 50%)
+  ** 100 run(s) never crossed the wall — the route sample is thin
+gym-d1-flat.encounter / tpa-order:
+  M1 < 70%   : PASS  (19%)
+  M2 < 15%   : FAIL  (20%)
+  M3 6-10    : FAIL  (11.35)
+  M4 <= 2    : PASS  (0.28)
+  M6 < 70%   : PASS  (x=6 49%)
+  ** 100 run(s) never crossed the wall — the route sample is thin
+
+M5 comparison (corridor-hold should beat charge, and the chokepoint map
+should beat the open control — otherwise the map taught nothing):
+  gym-d1-routes.encounter / charge : 100%
+  gym-d1-routes.encounter / corridor-hold : 99%
+  gym-d1-routes.encounter / tpa-order : 99%
+  gym-d1-flat.encounter / charge : 100%
+  gym-d1-flat.encounter / corridor-hold : 100%
+  gym-d1-flat.encounter / tpa-order : 100%
+
+=== anomalies (see SimResults/anomalies.json for the seeds) ===
+  0 of 1200 battles flagged
+  TIMEOUT_UNRESOLVED            0
+  ABORTED_BY_REJECTED_COMMAND   0
+  DEFEAT_WITH_HIGH_REMAINING_HP 0
+  UNEXPECTED_SKILL_USAGE        0
+
+=== Strategy Persona Matrix ===
+  gym-d1-routes.encounter
+    Strategy            N    Win%   AvgRounds   AvgHP%   Timeout%   SkillActs(strategy/noise)
+    charge             200    100%        4.58    82.2%         0%            0/0
+    corridor-hold      200     99%       11.03    64.5%         0%            0/0
+    tpa-order          200     99%       10.99    64.6%         0%            0/0
+
+  gym-d1-flat.encounter
+    Strategy            N    Win%   AvgRounds   AvgHP%   Timeout%   SkillActs(strategy/noise)
+    charge             200    100%        4.50    83.6%         0%            0/0
+    corridor-hold      200    100%       11.45    65.2%         0%            0/0
+    tpa-order          200    100%       11.35    65.3%         0%            0/0
+
+=== Pairwise comparison (screening heuristic) ===
+  gym-d1-routes.encounter   charge (N=200) vs corridor-hold (N=200)
+    Win Rate        Pass         100% >= 99%
+    Avg Rounds      Pass         4.58 < 11.03
+    Remaining HP    Pass         82.2% >= 64.5%
+    DOMINANT_STRATEGY_HEURISTIC: TRUE
+
+  gym-d1-flat.encounter   charge (N=200) vs corridor-hold (N=200)
+    Win Rate        Pass         100% >= 100%
+    Avg Rounds      Pass         4.50 < 11.45
+    Remaining HP    Pass         83.6% >= 65.2%
+    DOMINANT_STRATEGY_HEURISTIC: TRUE
+

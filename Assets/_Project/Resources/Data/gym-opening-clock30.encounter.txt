@@ -1,0 +1,57 @@
+# GYM. gym-opening with ONE number changed: the clock, 20 -> 30 rounds.
+#
+# WHY IT EXISTS. Every defensive strategy on gym-opening loses while ending the
+# battle with roughly half the party's HP still on the bar:
+#
+#   corridor-hold  29% win   19.31 rounds   550 HP left (of 1150)
+#   shield-wall     6% win   20.42 rounds   463 HP left
+#   charge         56% win   10.68 rounds   142 HP left
+#
+# Units that end with 550 HP are not being killed. They are running out of
+# turns. So this file asks the one question that separates the two readings:
+# are the defensive lines LOSING FIGHTS, or losing races?
+#
+# If the win rates converge at 30 rounds, the 20-round clock was the whole
+# story and it over-corrected — it was added to stop scripted strategies
+# stalling forever against immobile turrets, and a clock punishes that symptom
+# by flattening every decision that costs tempo. If they do not converge, the
+# defensive lines really are worse and the clock was innocent.
+encounter id=gym-opening-clock30 name=OPENING-clock30
+objective type=rout turns=30
+
+map
+################
+#..............#
+#..............#
+#...........ff.#
+##.####..###..##
+#..............#
+#...o.####.o...#
+#.....####.....#
+#..ff......ff..#
+#..............#
+#..............#
+################
+endmap
+
+# --- 討鬼團 x4 -------------------------------------------------------------
+# Spawned side by side so the party starts with the SAME exposure it would have
+# had as one unit. Spreading them at spawn would pre-solve the first decision.
+spawn faction=player unit=genjin          x=6  y=10
+spawn faction=player unit=zhengshou_taunt x=7  y=10
+spawn faction=player unit=momotaro_push   x=8  y=10
+spawn faction=player unit=kagemaru        x=9  y=10
+
+# --- the anchors: they do not come to you ---------------------------------
+spawn faction=enemy unit=test_turret     x=8  y=2  ai=rusher
+
+# --- the divisibility breakers: 3 hits from Momotaro, 2 from Genjin -------
+spawn faction=enemy unit=kohaku_3hit     x=5  y=1  ai=rusher
+spawn faction=enemy unit=kohaku_3hit     x=10 y=1  ai=rusher
+
+# --- range 2, and they hunt the lowest HP: the reason taunt exists --------
+spawn faction=enemy unit=kohaku_bowfair  x=3  y=2  ai=hunter
+
+# --- flankers already south of the wall: you cannot form a queue ----------
+spawn faction=enemy unit=kohaku          x=2  y=8  ai=cautious
+spawn faction=enemy unit=kohaku          x=13 y=8  ai=cautious

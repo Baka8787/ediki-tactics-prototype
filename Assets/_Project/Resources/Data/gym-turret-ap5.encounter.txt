@@ -1,0 +1,69 @@
+# GYM — the B arm of the AP ECONOMY A/B. Its A arm is gym-turret.
+#
+# ⚠️ THIS FILE IS gym-turret WITH ONE TOKEN CHANGED: the player unit is
+# momotaro_ap5 instead of momotaro. Map, enemies, spawns, AI profiles and
+# objective are byte-identical. Read them together or not at all.
+# Plan: docs/05-development/prototype-loop.md, decision OD-33.
+#
+# THE QUESTION
+#   Both arms get the same 8 AP a turn (cap 10, carry-over — OD-21).
+#   Only the attack cost differs:
+#
+#     gym-turret      attackCost 4 -> 8 divides evenly -> 2 attacks, remainder 0
+#     gym-turret-ap5  attackCost 5 -> does not divide  -> 1 attack, remainder 3
+#
+#   So the question is NOT "is 5 AP better". It is:
+#     does a 3 AP remainder every turn become a DECISION, or does it always go
+#     to the same place?
+#
+#   The remainder's real competitor is NEXT turn's second attack: hold >= 2 AP
+#   and the cap of 10 buys a double attack; spend it on movement or Guard and it
+#   does not. The trade-off moves from inside the turn to across turns.
+#
+# WHY THIS MAP AND NOT ANOTHER. Every other selectable encounter is a rout
+# against enemies that close in unasked (OD-16), so movement is optional and a
+# 3 AP remainder has nowhere to go. The turret has MOVE 0: it never comes, so
+# "advance while still attacking" stays a live question every turn. That is the
+# only structure in the project where the remainder can be spent on something
+# that matters. Checked against all 14 selectable encounters before building
+# this one.
+#
+# PREDICTION, WRITTEN BEFORE ANY PLAY (falsifiable, do not edit afterwards)
+#   4 AP  default turn is two attacks and no movement; the choice is
+#         intra-turn (second attack vs move). The first turns should have NO
+#         decision at all — the two kohaku arrive on their own.
+#   5 AP  default turn is one attack plus a 3 AP remainder; the choice is
+#         inter-turn (move now vs bank for a double attack next turn).
+#   Guard should be priced differently in the two arms: at 4 AP it eats most of
+#   a second attack, at 5 AP it only costs the banked double.
+#
+#   FAILS IF the remainder always goes to the same place. That is a dominant
+#   action, not a decision — a valid result, but a negative one.
+#
+# ⚠️ EXPERIMENT FILE, NOT STAGE 01. stage01.encounter is untouched, and so is
+# gym-turret. attackCost 4 remains the baseline (OD-01); this file does not
+# propose changing it.
+#
+#   #  Blocking   .  Road(1)
+#   Coordinates are (x, y), y = 0 at the TOP.
+
+encounter id=gym-turret-ap5 name=TURRET-AP5
+objective type=rout
+
+map
+################
+#..............#
+#..............#
+#..............#
+#..............#
+#..............#
+#..............#
+#..............#
+################
+endmap
+
+spawn faction=player unit=momotaro_ap5 x=2 y=4
+
+spawn faction=enemy unit=kohaku      x=7  y=2 ai=rusher
+spawn faction=enemy unit=kohaku      x=7  y=6 ai=rusher
+spawn faction=enemy unit=test_turret x=12 y=4 ai=cautious
