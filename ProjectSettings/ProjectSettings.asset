@@ -13,7 +13,7 @@ PlayerSettings:
   useOnDemandResources: 0
   accelerometerFrequency: 60
   companyName: DefaultCompany
-  productName: "\u300A\u7A62\u571F\u7D00\u300BStage 01 Prototype"
+  productName: Ediki Tactics Prototype
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}
@@ -852,14 +852,14 @@ PlayerSettings:
   editorAssembliesCompatibilityLevel: 1
   m_RenderingPath: 1
   m_MobileRenderingPath: 1
-  metroPackageName: "\u300A\u7A62\u571F\u7D00\u300BStage 01 Prototype"
+  metroPackageName: Ediki Tactics Prototype
   metroPackageVersion: 
   metroCertificatePath: 
   metroCertificatePassword: 
   metroCertificateSubject: 
   metroCertificateIssuer: 
   metroCertificateNotAfter: 0000000000000000
-  metroApplicationDescription: "\u300A\u7A62\u571F\u7D00\u300BStage 01 Prototype"
+  metroApplicationDescription: Ediki Tactics Prototype
   wsaImages: {}
   metroTileShortName: 
   metroTileShowName: 0
@@ -933,7 +933,7 @@ PlayerSettings:
   cloudProjectId: 39f68f8b-d245-4fbe-a229-df7bfdbc2919
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: "\u300A\u7A62\u571F\u7D00\u300BStage 01 Prototype"
+  projectName: Ediki Tactics Prototype
   organizationId: gass22006
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0

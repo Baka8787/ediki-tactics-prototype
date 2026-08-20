@@ -1,4 +1,4 @@
-# 《穢土紀》Stage 01 Prototype — Documentation
+# Ediki-Tactics-Prototype — Documentation
 
 **目前狀態：可執行、可遊玩、可測量。**
 
