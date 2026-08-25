@@ -28,7 +28,6 @@ namespace Ediki.Unity
         // movement won every overlap and the single most decision-relevant cell
         // type on the board was invisible.
         private static readonly Color TintMyMove = new Color(0.25f, 0.65f, 1f);   // I can stand here
-        private static readonly Color TintMyReach = new Color(0.30f, 0.95f, 0.85f); // I can hit from here after moving
         private static readonly Color TintEnemyMove = new Color(0.85f, 0.55f, 0.15f); // they can walk here
         private static readonly Color TintDanger = new Color(1f, 0.25f, 0.2f);    // they can hit here
         private static readonly Color TintContested = new Color(0.85f, 0.25f, 0.85f); // BOTH — the real decision
@@ -39,8 +38,11 @@ namespace Ediki.Unity
 
         /// <summary>
         /// What the selected unit would be able to hit FROM THE CELL BEING POINTED
-        /// AT. Same cyan family as MyReach because it answers the same question —
-        /// it just answers it about one cell instead of all of them.
+        /// AT.
+        ///
+        /// The ONLY overlay on the board that means "I can attack here". There is
+        /// deliberately no always-on version of it: a standing cyan union sits
+        /// just outside the blue movement area and gets read as more movement.
         /// </summary>
         private static readonly Color TintPreviewReach = new Color(0.35f, 1f, 0.80f);
 
@@ -212,9 +214,6 @@ namespace Ediki.Unity
             /// <summary>Cells the selected unit can stand on this turn.</summary>
             public HashSet<Coord> MyMove;
 
-            /// <summary>Cells it could attack this turn, INCLUDING after moving.</summary>
-            public HashSet<Coord> MyReach;
-
             /// <summary>Cells the enemy side can walk to on a full bar.</summary>
             public HashSet<Coord> EnemyMove;
 
@@ -253,6 +252,17 @@ namespace Ediki.Unity
             /// </summary>
             public IReadOnlyList<Coord> Path;
 
+            /// <summary>
+            /// The cell <see cref="Path"/> sets off from, i.e. where the mover is
+            /// standing now.
+            ///
+            /// Carried separately rather than prepended to Path, because Path has
+            /// to stay byte-identical to the array MoveCommand receives. The line
+            /// still has to start under the unit's feet: a route that begins one
+            /// cell out reads as though the first step were free.
+            /// </summary>
+            public Coord? PathFrom;
+
             public Coord? Hovered;
         }
 
@@ -275,7 +285,6 @@ namespace Ediki.Unity
                     Color color = TerrainColor(_map.TerrainAt(c));
 
                     bool myMove = o.MyMove != null && o.MyMove.Contains(c);
-                    bool myReach = o.MyReach != null && o.MyReach.Contains(c);
                     bool theirMove = o.EnemyMove != null && o.EnemyMove.Contains(c);
                     bool theirThreat = o.EnemyThreat != null && o.EnemyThreat.Contains(c);
 
@@ -289,7 +298,6 @@ namespace Ediki.Unity
                     // the danger zone is not something you can miss by blinking.
                     if (theirMove && !theirThreat) color = Color.Lerp(color, TintEnemyMove, 0.30f);
                     if (theirThreat) color = Color.Lerp(color, TintDanger, Mathf.Lerp(0.18f, 0.58f, ambient));
-                    if (myReach && !myMove) color = Color.Lerp(color, TintMyReach, Mathf.Lerp(0.16f, 0.52f, ambient));
                     if (myMove) color = Color.Lerp(color, TintMyMove, 0.50f);
 
                     // Contested reaches TintContested outright at the top of the
@@ -323,7 +331,7 @@ namespace Ediki.Unity
                 }
             }
 
-            UpdatePath(o.Path);
+            UpdatePath(o.Path, o.PathFrom);
 
             for (int i = 0; i < state.Units.Count; i++)
             {
@@ -374,47 +382,88 @@ namespace Ediki.Unity
 
         // ------------------------------------------------------------ the route
         //
-        // Drawn as markers floating over the tiles, never by tinting them.
+        // Drawn as a ribbon laid over the tiles, never by tinting them.
         //
         // That is the whole reason a route is worth drawing: what you need to know
         // about a path is which THREATENED cells it crosses, and recolouring those
         // cells to say "route" would erase the one thing you are looking at.
 
+        /// <summary>How wide the ribbon is, in cells. Also how far each end overhangs.</summary>
+        private const float PathWidth = 0.16f;
+
         private Transform _pathRoot;
         private readonly List<Transform> _pathMarkers = new List<Transform>();
 
-        private void UpdatePath(IReadOnlyList<Coord> path)
+        /// <summary>
+        /// Draws the route as ONE CONTINUOUS RIBBON from under the unit's feet to
+        /// the destination, rather than a marker per cell.
+        ///
+        /// A dot per cell says "these cells". A line says "this way, in this
+        /// order, turning here" — and the order is the part that matters, because
+        /// two routes over the same cells can cross a different number of
+        /// threatened ones depending on where they turn.
+        ///
+        /// Movement is 4-directional, so every segment is axis-aligned and a
+        /// scaled box is all a segment needs. Each one overhangs its ends by half
+        /// the ribbon width, which is what fills the notch on the outside of a
+        /// corner where two perpendicular segments meet.
+        /// </summary>
+        private void UpdatePath(IReadOnlyList<Coord> path, Coord? from)
         {
-            int count = path == null ? 0 : path.Count;
-            while (_pathMarkers.Count < count) _pathMarkers.Add(CreatePathMarker());
+            int steps = path == null ? 0 : path.Count;
+
+            // A route needs somewhere to start. Without the origin there is no
+            // first segment, and the ribbon would begin a cell away from the unit.
+            int pieces = steps > 0 && from.HasValue ? steps + 1 : 0;
+
+            while (_pathMarkers.Count < pieces) _pathMarkers.Add(CreatePathPiece());
 
             for (int i = 0; i < _pathMarkers.Count; i++)
             {
-                Transform marker = _pathMarkers[i];
-                if (marker == null) continue;
+                Transform piece = _pathMarkers[i];
+                if (piece == null) continue;
 
-                if (i >= count) { marker.gameObject.SetActive(false); continue; }
+                if (i >= pieces) { piece.gameObject.SetActive(false); continue; }
+                piece.gameObject.SetActive(true);
 
-                Coord c = path[i];
-                bool last = i == count - 1;
-                marker.gameObject.SetActive(true);
+                // Last piece is the landing pad; the rest are segments i -> i+1.
+                if (i == pieces - 1)
+                {
+                    Coord end = path[steps - 1];
+                    piece.localPosition = new Vector3(end.X, HeightOver(end), -end.Y);
+                    piece.localScale = new Vector3(0.5f, 0.04f, 0.5f);
+                    Paint(piece.GetComponent<Renderer>(), PathEndColor);
+                    continue;
+                }
 
-                // Sits on the tile's own top face, so a marker on rough ground is
-                // not buried inside it and one over a chasm still reads as a step
-                // across rather than a step down.
-                float top = PrototypeVisuals.TileTopHeight(PrototypeVisuals.StyleOf(_map.TerrainAt(c)));
-                marker.localPosition = new Vector3(c.X, top + 0.06f, -c.Y);
+                Coord a = i == 0 ? from.Value : path[i - 1];
+                Coord b = path[i];
 
-                float size = last ? 0.56f : 0.26f;
-                marker.localScale = new Vector3(size, 0.04f, size);
-                Paint(marker.GetComponent<Renderer>(), last ? PathEndColor : PathStepColor);
+                // Sits on whichever of the two tiles is higher, so a segment
+                // running onto rough ground is not buried inside it.
+                float y = Mathf.Max(HeightOver(a), HeightOver(b));
+
+                piece.localPosition = new Vector3((a.X + b.X) * 0.5f, y, -(a.Y + b.Y) * 0.5f);
+
+                bool horizontal = a.Y == b.Y;
+                piece.localScale = horizontal
+                    ? new Vector3(1f + PathWidth, 0.04f, PathWidth)
+                    : new Vector3(PathWidth, 0.04f, 1f + PathWidth);
+
+                Paint(piece.GetComponent<Renderer>(), PathStepColor);
             }
         }
 
-        private Transform CreatePathMarker()
+        /// <summary>Just above a cell's own top face, so the ribbon hugs the ground it crosses.</summary>
+        private float HeightOver(Coord c)
+        {
+            return PrototypeVisuals.TileTopHeight(PrototypeVisuals.StyleOf(_map.TerrainAt(c))) + 0.06f;
+        }
+
+        private Transform CreatePathPiece()
         {
             GameObject go = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            go.name = "Path step";
+            go.name = "Path piece";
             go.transform.SetParent(_pathRoot, false);
             Object.Destroy(go.GetComponent<Collider>());
             return go.transform;

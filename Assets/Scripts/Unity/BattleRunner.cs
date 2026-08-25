@@ -89,7 +89,6 @@ namespace Ediki.Unity
         private readonly List<string> _log = new List<string>();
         private ReachabilityMap _reach;
         private HashSet<Coord> _reachableCells = new HashSet<Coord>();
-        private HashSet<Coord> _myReachCells = new HashSet<Coord>();
 
         // Cached once per frame. OnGUI runs several times per frame, and these
         // queries each run a flood fill per enemy — recomputing them per event
@@ -197,18 +196,29 @@ namespace Ediki.Unity
             // The route one click would walk. Shown whatever the range toggles say:
             // a route is not a range, and it is the direct consequence of where the
             // cursor is rather than an always-on layer.
-            if (_plannedPath.Count > 0) o.Path = _plannedPath;
+            if (_plannedPath.Count > 0 && selected != null)
+            {
+                o.Path = _plannedPath;
+                o.PathFrom = selected.Position;
+            }
 
             if (selected != null && selected.IsAlive && selected.Faction == Faction.Player && _showOwnRanges)
             {
                 o.MyMove = _reachableCells;
 
-                // The precise answer REPLACES the general one. With the cursor on a
-                // reachable cell the board is answering "what could I hit if I went
-                // there", and the union of everything reachable from anywhere is
-                // noise laid over the top of it.
-                if (_planActive) { if (_previewReach.Count > 0) o.PreviewReach = _previewReach; }
-                else o.MyReach = _myReachCells;
+                // Attack range appears ONLY for the cell under the cursor.
+                //
+                // There used to be an always-on cyan layer here as well: the union
+                // of everything this unit could hit from anywhere it could walk.
+                // It was a ring sitting immediately outside the blue movement area
+                // and it read as more movement range (專案負責人 2026-08-25) —
+                // which is the one confusion the board cannot afford, because
+                // "where can I stand" and "where can I hit" are the two halves of
+                // every decision in this game.
+                //
+                // One cell, one answer. Point at a cell, see what you would hit
+                // from it. Point at nothing, see no attack range at all.
+                if (_previewReach.Count > 0) o.PreviewReach = _previewReach;
             }
 
             UnitState focus = FocusedEnemy();
@@ -601,16 +611,29 @@ namespace Ediki.Unity
             UnitState actor = SelectedUnit();
             Coord cell = _hovered.Value;
 
-            if (_reach == null || !_reach.CanReach(cell) || cell == actor.Position) return;
-            if (_state.UnitAt(cell) != null) return;
+            if (_reach == null) return;
 
-            Coord[] path = _reach.PathTo(cell);
-            if (path == null || path.Length == 0) return;
+            // Pointing at your OWN cell is a legitimate question — "what can I hit
+            // from where I already am" — and it is the one the player asks before
+            // deciding whether to move at all. It is the same question every other
+            // cell answers, so it goes down the same path with an empty route and
+            // a cost of zero rather than being a hole in the rule.
+            bool standingStill = cell == actor.Position;
 
-            _plannedPath.AddRange(path);
+            if (!standingStill)
+            {
+                if (!_reach.CanReach(cell)) return;
+                if (_state.UnitAt(cell) != null) return;
+
+                Coord[] path = _reach.PathTo(cell);
+                if (path == null || path.Length == 0) return;
+
+                _plannedPath.AddRange(path);
+                _planSteps = path.Length;
+                _planApCost = _reach.CostTo(cell);
+            }
+
             _planActive = true;
-            _planSteps = path.Length;
-            _planApCost = _reach.CostTo(cell);
             _planApLeft = actor.Ap - _planApCost;
 
             // Claims a strike only when the unit could pay for one AND is still
@@ -970,7 +993,6 @@ namespace Ediki.Unity
         private void RecomputeOverlays()
         {
             _reachableCells.Clear();
-            _myReachCells.Clear();
             _reach = null;
 
             UnitState selected = _selectedUnitId >= 0 ? _state.FindUnit(_selectedUnitId) : null;
@@ -980,10 +1002,9 @@ namespace Ediki.Unity
                 for (int i = 0; i < _reach.ReachableCells.Count; i++)
                     _reachableCells.Add(_reach.ReachableCells[i]);
 
-                // What it could hit this turn, including after moving — the ring
-                // beyond the movement area. Uses the same query the danger zone
-                // uses for enemies, so both sides are measured the same way.
-                _myReachCells = BattleQueries.CurrentThreatRange(_state, selected);
+                // CurrentThreatRange used to be built here, for the always-on cyan
+                // union. It is gone with the layer it fed — and with it a flood
+                // fill per command, since that query floods the map itself.
             }
 
             // The faction-wide DangerZone / EnemyMoveZone unions used to be built
@@ -1078,7 +1099,10 @@ namespace Ediki.Unity
             sb.AppendLine("        yellow tint = guarding or taunting, pale blue tint = slowed.");
             sb.AppendLine();
             sb.AppendLine("CELLS   BLUE    you can stand here this turn");
-            sb.AppendLine("        CYAN    you can hit here this turn, after moving");
+            sb.AppendLine("        CYAN    what you could hit FROM THE CELL UNDER THE CURSOR.");
+            sb.AppendLine("                Only ever shown for one cell at a time — point at a cell");
+            sb.AppendLine("                to ask, point away to stop asking. Point at your own");
+            sb.AppendLine("                cell for what you can hit without moving at all.");
             sb.AppendLine("        RED     they can hit here");
             sb.AppendLine("        AMBER   they can walk here but not hit it (TAB twice to show)");
             sb.AppendLine("        MAGENTA both — you can stand here AND be hit for it.");
@@ -1214,7 +1238,7 @@ namespace Ediki.Unity
         {
             Debug.Log(ConsoleTag + "overlay  —  yours: " + (_showOwnRanges ? "ON" : "off")
                       + "   theirs: " + _enemyOverlay
-                      + "\n  BLUE you can stand here   CYAN you can hit here (after moving)"
+                      + "\n  BLUE you can stand here   CYAN what you'd hit from the hovered cell"
                       + "\n  RED they can hit here     AMBER they can walk here but not hit"
                       + "\n  MAGENTA both — you can stand here AND be hit for it"
                       + "\n  click an enemy to see THAT enemy's ranges. It keeps your selection.");
@@ -1268,7 +1292,9 @@ namespace Ediki.Unity
             GUILayout.Space(6);
 
             GUILayout.Label("<b>格子顏色</b>");
-            GUILayout.Label("  <b>藍</b> 你站得上去    <b>青</b> 你打得到（含先移動）");
+            GUILayout.Label("  <b>藍</b> 你站得上去（整片，不會閃）");
+            GUILayout.Label("  <b>青</b> <b>站到滑鼠那一格之後</b>打得到的範圍 —— 一次只顯示一格的答案。");
+            GUILayout.Label("     滑鼠移開就不顯示；停在自己身上 = 不移動的話打得到哪。");
             GUILayout.Label("  <b>紅</b> 他們打得到    <b>琥珀</b> 他們走得到但打不到");
             GUILayout.Label("  <b>洋紅</b> 兩者皆是 —— 這格就是每個決定真正在講的東西");
             GUILayout.Label("  <b>紫</b> 範圍技能會蓋到的格子（滑鼠停在技能按鈕上就會先畫出來）");
@@ -1608,11 +1634,13 @@ namespace Ediki.Unity
             if (string.IsNullOrEmpty(status) && _planActive && _planFor.HasValue)
             {
                 planLine = true;
-                status = "移動到 " + _planFor.Value + "　" + _planApCost + " AP・" + _planSteps + " 格"
-                       + "　→　剩 " + _planApLeft + " AP，"
-                       + (_planCanAttack
-                            ? "青色格是到那裡打得到的範圍"
-                            : "<b>不夠再攻擊一次</b>");
+
+                status = _planSteps == 0
+                    ? "<b>不移動</b>　剩 " + _planApLeft + " AP，"
+                        + (_planCanAttack ? "青色格是現在打得到的範圍" : "<b>不夠攻擊</b>")
+                    : "移動到 " + _planFor.Value + "　" + _planApCost + " AP・" + _planSteps + " 格"
+                        + "　→　剩 " + _planApLeft + " AP，"
+                        + (_planCanAttack ? "青色格是到那裡打得到的範圍" : "<b>不夠再攻擊一次</b>");
             }
 
             if (!string.IsNullOrEmpty(status))
