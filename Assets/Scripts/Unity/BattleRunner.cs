@@ -38,6 +38,18 @@ namespace Ediki.Unity
         private string _encounterName = PrototypeBootstrap.EncounterName;
 
         private int _selectedUnitId = -1;
+
+        /// <summary>
+        /// The enemy the player last clicked, or -1. Drives the enemy overlays and
+        /// the info panel.
+        ///
+        /// Deliberately NOT the same field as the selection (專案負責人 2026-08-24).
+        /// An enemy is never something you drive, so making a click on one "select"
+        /// it only ever cost you the unit you had in hand — and losing your own
+        /// move range every time you checked what a foe could reach turned a look
+        /// into a re-selection and a re-plan.
+        /// </summary>
+        private int _focusEnemyId = -1;
         private Coord? _hovered;
         private bool _enemyPhaseRunning;
 
@@ -78,8 +90,6 @@ namespace Ediki.Unity
         private ReachabilityMap _reach;
         private HashSet<Coord> _reachableCells = new HashSet<Coord>();
         private HashSet<Coord> _myReachCells = new HashSet<Coord>();
-        private HashSet<Coord> _dangerCells = new HashSet<Coord>();
-        private HashSet<Coord> _enemyMoveCells = new HashSet<Coord>();
 
         // Cached once per frame. OnGUI runs several times per frame, and these
         // queries each run a flood fill per enemy — recomputing them per event
@@ -121,6 +131,7 @@ namespace Ediki.Unity
             AppendLog(begin.Log);
 
             _selectedUnitId = -1;
+            _focusEnemyId = -1;
             RecomputeOverlays();
 
             _lastReportedTurn = -1;
@@ -135,8 +146,15 @@ namespace Ediki.Unity
             HandleHover();
             HandleKeys();
             HandleInspectClick();
+            RefreshHoveredAction();
+            RecomputeArea();
+            RefreshMovePlan();
 
-            if (!_enemyPhaseRunning && _state.Outcome == BattleOutcome.InProgress
+            // A unit that is mid-walk has already arrived as far as the rules are
+            // concerned. A second click during the animation would be a perfectly
+            // legal command issued against a board the player cannot see yet.
+            if (!_enemyPhaseRunning && !_view.IsAnimating
+                && _state.Outcome == BattleOutcome.InProgress
                 && _state.CurrentFaction == Faction.Player)
             {
                 HandleClick();
@@ -149,7 +167,7 @@ namespace Ediki.Unity
         /// <summary>
         /// Which cell sets to paint this frame.
         ///
-        /// Hovering an enemy narrows the enemy overlays to THAT enemy. The union
+        /// Clicking an enemy narrows the enemy overlays to THAT enemy. The union
         /// of six threat ranges covers most of the board and answers "is anywhere
         /// safe"; one enemy's range answers "what is this thing about to do to
         /// me", which is the question you have when you are looking at it.
@@ -160,35 +178,65 @@ namespace Ediki.Unity
 
             UnitState selected = _selectedUnitId >= 0 ? _state.FindUnit(_selectedUnitId) : null;
 
-            // Painted last and strongest by the view: while an action is aimed,
-            // "what can I hit with THIS" is the only question on screen.
-            if (_armedAction >= 0) o.ActionTargets = _targetCells;
+            UnitAction shown = ShownAction();
+            if (shown != null)
+            {
+                // Painted last and strongest by the view: while an action is aimed,
+                // "what can I hit with THIS" is the only question on screen.
+                //
+                // An area skill paints its footprint instead of a list of targets,
+                // because the footprint IS the target — and it paints it while the
+                // button is merely hovered, so the shape can be checked before any
+                // AP is committed to finding it out.
+                if (_armedAction >= 0 && (shown.Target == ActionTarget.Enemy || _areaCells.Count == 0))
+                    o.ActionTargets = _targetCells;
+
+                if (_areaCells.Count > 0) o.ActionArea = _areaCells;
+            }
+
+            // The route one click would walk. Shown whatever the range toggles say:
+            // a route is not a range, and it is the direct consequence of where the
+            // cursor is rather than an always-on layer.
+            if (_plannedPath.Count > 0) o.Path = _plannedPath;
 
             if (selected != null && selected.IsAlive && selected.Faction == Faction.Player && _showOwnRanges)
             {
                 o.MyMove = _reachableCells;
-                o.MyReach = _myReachCells;
+
+                // The precise answer REPLACES the general one. With the cursor on a
+                // reachable cell the board is answering "what could I hit if I went
+                // there", and the union of everything reachable from anywhere is
+                // noise laid over the top of it.
+                if (_planActive) { if (_previewReach.Count > 0) o.PreviewReach = _previewReach; }
+                else o.MyReach = _myReachCells;
             }
 
-            if (selected != null && selected.IsAlive && selected.Faction == Faction.Enemy
-                && _enemyOverlay != EnemyOverlay.Off)
+            UnitState focus = FocusedEnemy();
+            if (focus != null && _enemyOverlay != EnemyOverlay.Off)
             {
-                // The enemy has already ended its previous phase while the
-                // player is inspecting it. Show the selected enemy's next fresh
-                // activation, not the union for the entire faction.
-                o.EnemyThreat = BattleQueries.ThreatRange(_state, selected);
+                // What its NEXT activation can do, not what is left of this one.
+                // By the time you are looking at an enemy it has already spent its
+                // phase, and "where can it get to when its turn comes round" is the
+                // question you are actually asking.
+                o.EnemyThreat = BattleQueries.ThreatRange(_state, focus);
                 if (_enemyOverlay == EnemyOverlay.MoveAndThreat)
-                    o.EnemyMove = BattleQueries.MoveRange(_state, selected, fullBar: true);
+                    o.EnemyMove = BattleQueries.MoveRange(_state, focus, fullBar: true);
             }
 
             return o;
         }
 
-        private UnitState HoveredEnemy()
+        /// <summary>
+        /// The enemy the player last clicked, or null. Forgets one that has died,
+        /// so the board never paints the reach of something that is not there.
+        /// </summary>
+        private UnitState FocusedEnemy()
         {
-            if (!_hovered.HasValue) return null;
-            UnitState u = _state.UnitAt(_hovered.Value);
-            return u != null && u.Faction == Faction.Enemy ? u : null;
+            if (_focusEnemyId < 0) return null;
+
+            UnitState u = _state.FindUnit(_focusEnemyId);
+            if (u == null || !u.IsAlive) { _focusEnemyId = -1; return null; }
+            return u;
         }
 
         private void RefreshInspectedCell()
@@ -277,7 +325,8 @@ namespace Ediki.Unity
                 }
             }
 
-            if (_enemyPhaseRunning || _state.Outcome != BattleOutcome.InProgress) return;
+            if (_enemyPhaseRunning || _view.IsAnimating) return;
+            if (_state.Outcome != BattleOutcome.InProgress) return;
             if (_state.CurrentFaction != Faction.Player) return;
 
             // Every action now comes from the same list the action bar draws, so
@@ -418,6 +467,171 @@ namespace Ediki.Unity
             }
         }
 
+        // --------------------------------------------------------- area preview
+        //
+        // Which action's footprint the board is painting, and where it lands.
+        //
+        // Driven by the ARMED action if there is one and by the button under the
+        // mouse otherwise. The second half is what makes a self-targeted area
+        // skill legible at all: 引誘 fires the instant it is pressed, so there is
+        // no armed state to preview it in, and its radius was previously something
+        // you could only learn by reading the tooltip and counting cells.
+
+        /// <summary>Cells an area action would cover. Empty when there is nothing to preview.</summary>
+        private readonly HashSet<Coord> _areaCells = new HashSet<Coord>();
+
+        /// <summary>Index of the action bar button under the mouse, or -1.</summary>
+        private int _hoveredActionIndex = -1;
+
+        /// <summary>The action the board should be previewing: armed first, hovered second.</summary>
+        private UnitAction ShownAction()
+        {
+            UnitState actor = SelectedUnit();
+            if (actor == null) return null;
+
+            List<UnitAction> actions = ActionsFor(actor);
+            int index = _armedAction >= 0 ? _armedAction : _hoveredActionIndex;
+            return index >= 0 && index < actions.Count ? actions[index] : null;
+        }
+
+        /// <summary>
+        /// Hit-tests the action bar outside OnGUI.
+        ///
+        /// GUI.tooltip already knows which button is hovered, but only during a
+        /// repaint — and the board is painted from Update. Rather than smuggle the
+        /// value across, both the drawing and this test go through SlotRect, so
+        /// the previewed button is by construction the button under the mouse.
+        /// </summary>
+        private void RefreshHoveredAction()
+        {
+            _hoveredActionIndex = -1;
+
+            Mouse mouse = Mouse.current;
+            UnitState actor = SelectedUnit();
+            if (mouse == null || actor == null) return;
+            if (_state.CurrentFaction != Faction.Player || _enemyPhaseRunning) return;
+
+            Vector2 screen = mouse.position.ReadValue();
+            Vector2 gui = new Vector2(screen.x, Screen.height - screen.y);
+
+            List<UnitAction> actions = ActionsFor(actor);
+            Rect bar = ActionBarRect(actions.Count);
+            if (!bar.Contains(gui)) return;
+
+            for (int i = 0; i < actions.Count; i++)
+            {
+                if (!SlotRect(bar, i).Contains(gui)) continue;
+                _hoveredActionIndex = i;
+                return;
+            }
+        }
+
+        private void RecomputeArea()
+        {
+            _areaCells.Clear();
+
+            UnitState actor = SelectedUnit();
+            UnitAction action = ShownAction();
+            if (actor == null || action == null || action.AreaRadius <= 0) return;
+
+            Coord centre = actor.Position;
+
+            if (action.Target == ActionTarget.Enemy)
+            {
+                // An aimed area lands on what is being aimed AT, and only while
+                // that is a legal target — a footprint drawn around a cell the
+                // skill cannot be fired at is a promise the simulator will refuse.
+                if (!_hovered.HasValue || !_targetCells.Contains(_hovered.Value)) return;
+                centre = _hovered.Value;
+            }
+
+            _areaCells.UnionWith(BattleQueries.CellsInRange(_state.Map, centre, action.AreaRadius));
+        }
+
+        // ------------------------------------------------------------ move plan
+        //
+        // What one click would actually do: the route it walks, what it costs, and
+        // what the unit could hit once it got there.
+        //
+        // This is the question the board could not previously answer. A move in
+        // this game is chosen for the cell it lets you strike FROM — that is the
+        // whole content of 02-design/battle-experience.md's "威脅範圍是資源" — and
+        // until now the only way to find out was to spend the AP and look.
+        //
+        // Everything here is a read-only query (A7). The route handed to the view
+        // is the same Coord[] HandleClick hands to MoveCommand, so what is drawn
+        // and what walks cannot diverge.
+
+        private readonly List<Coord> _plannedPath = new List<Coord>();
+        private readonly HashSet<Coord> _previewReach = new HashSet<Coord>();
+
+        /// <summary>Cell the current plan is about. Caches the flood-fill lookup per hover.</summary>
+        private Coord? _planFor;
+
+        private bool _planActive;
+        private int _planApCost;
+        private int _planSteps;
+        private int _planApLeft;
+        private bool _planCanAttack;
+
+        /// <summary>Whether a plan makes sense at all right now. Cheap; runs every frame.</summary>
+        private bool CanPlan()
+        {
+            if (_armedAction >= 0 || _enemyPhaseRunning || _view.IsAnimating) return false;
+            if (_state.Outcome != BattleOutcome.InProgress) return false;
+            if (_state.CurrentFaction != Faction.Player) return false;
+
+            UnitState actor = SelectedUnit();
+            return actor != null && !actor.HasEndedTurn;
+        }
+
+        private void RefreshMovePlan()
+        {
+            // Cleared rather than cached while blocked, so the plan reappears by
+            // itself the frame after a walk finishes without waiting for the mouse
+            // to move off the cell and back.
+            if (!CanPlan()) { ClearMovePlan(); _planFor = null; return; }
+
+            if (_planFor.HasValue && _hovered.HasValue && _planFor.Value == _hovered.Value) return;
+
+            ClearMovePlan();
+            _planFor = _hovered;
+            if (!_hovered.HasValue) return;
+
+            UnitState actor = SelectedUnit();
+            Coord cell = _hovered.Value;
+
+            if (_reach == null || !_reach.CanReach(cell) || cell == actor.Position) return;
+            if (_state.UnitAt(cell) != null) return;
+
+            Coord[] path = _reach.PathTo(cell);
+            if (path == null || path.Length == 0) return;
+
+            _plannedPath.AddRange(path);
+            _planActive = true;
+            _planSteps = path.Length;
+            _planApCost = _reach.CostTo(cell);
+            _planApLeft = actor.Ap - _planApCost;
+
+            // Claims a strike only when the unit could pay for one AND is still
+            // allowed one this turn — the same two conditions CurrentThreatRange
+            // applies, so the preview cannot offer a shot the simulator refuses.
+            _planCanAttack = _planApLeft >= actor.Def.AttackApCost && _state.CanAttackAgain(actor);
+            if (_planCanAttack)
+                _previewReach.UnionWith(BattleQueries.CellsInRange(_state.Map, cell, actor.Def.AttackRange));
+        }
+
+        private void ClearMovePlan()
+        {
+            _plannedPath.Clear();
+            _previewReach.Clear();
+            _planActive = false;
+            _planCanAttack = false;
+            _planApCost = 0;
+            _planSteps = 0;
+            _planApLeft = 0;
+        }
+
         /// <summary>
         /// Right-click pins the info panel to any unit, friend or foe, without
         /// doing anything to it.
@@ -484,10 +698,30 @@ namespace Ediki.Unity
             if (occupant != null)
             {
                 CancelAction();
-                _selectedUnitId = occupant.Id;
-                RecomputeOverlays();
+
+                // One button, two gestures, now split apart.
+                //
+                // Your own unit: take control of it.
+                // An enemy: LOOK at it — its ranges and its numbers come up, no
+                // command is issued, and the unit you already had stays selected
+                // with its move range still on the board.
+                if (occupant.Faction == Faction.Player)
+                {
+                    _selectedUnitId = occupant.Id;
+                    _focusEnemyId = -1;
+                    RecomputeOverlays();
+                }
+                else
+                {
+                    _focusEnemyId = occupant.Id;
+                }
+
                 return;
             }
+
+            // Empty ground. Whether or not it becomes a move, it means the player
+            // has finished looking at that enemy.
+            _focusEnemyId = -1;
 
             if (selected != null && _reach != null && _reach.CanReach(cell))
             {
@@ -564,6 +798,12 @@ namespace Ediki.Unity
 
         private void Submit(ICommand command)
         {
+            // Kept because the animation needs the cell the mover set off from,
+            // and by the time Execute returns the only state that still knows it
+            // is this one. Execute never mutates what it is given (A2), so holding
+            // the reference costs nothing.
+            BattleState before = _state;
+
             ExecuteResult result = BattleSimulator.Execute(_state, command);
 
             if (!result.Ok)
@@ -585,9 +825,30 @@ namespace Ediki.Unity
             _actionMessage = null;
             _state = result.State;
             AppendLog(result.Log);
+            PlayMoveAnimation(before, command);
             RecomputeOverlays();
 
             if (_state.Outcome != BattleOutcome.InProgress) ReportOutcome();
+        }
+
+        /// <summary>
+        /// Replays a move that has ALREADY resolved, so the unit is seen to walk
+        /// the route the board drew instead of appearing at the far end of it.
+        ///
+        /// <paramref name="before"/> is the state from before the command, which
+        /// is the only place the starting cell still exists. Does nothing for any
+        /// other kind of command, so both callers can hand it everything they
+        /// execute without asking what it was.
+        /// </summary>
+        private void PlayMoveAnimation(BattleState before, ICommand command)
+        {
+            MoveCommand move = command as MoveCommand;
+            if (move == null || move.Path == null || move.Path.Length == 0) return;
+
+            UnitState mover = before.FindUnit(move.UnitId);
+            if (mover == null) return;
+
+            _view.PlayMove(move.UnitId, mover.Position, move.Path);
         }
 
         private void EndPlayerTurn()
@@ -631,6 +892,7 @@ namespace Ediki.Unity
                     ICommand cmd = _ai.DecideNext(_state, unit);
                     if (cmd == null) break;
 
+                    BattleState before = _state;
                     ExecuteResult r = BattleSimulator.Execute(_state, cmd);
                     if (!r.Ok)
                     {
@@ -640,10 +902,20 @@ namespace Ediki.Unity
 
                     _state = r.State;
                     AppendLog(r.Log);
+                    PlayMoveAnimation(before, cmd);
                     RecomputeOverlays();
 
                     bool waited = cmd is WaitCommand;
-                    if (!waited) yield return new WaitForSeconds(EnemyStepSeconds);
+
+                    // A walk paces itself, and how long it takes says something —
+                    // how far that thing just came. A flat beat on top of it would
+                    // add a pause after every enemy step for no information at all.
+                    if (_view.IsAnimating)
+                    {
+                        while (_view.IsAnimating) yield return null;
+                    }
+                    else if (!waited) yield return new WaitForSeconds(EnemyStepSeconds);
+
                     if (waited) break;
                 }
 
@@ -714,12 +986,19 @@ namespace Ediki.Unity
                 _myReachCells = BattleQueries.CurrentThreatRange(_state, selected);
             }
 
-            _dangerCells = BattleQueries.DangerZone(_state, Faction.Player);
-            _enemyMoveCells = _enemyOverlay == EnemyOverlay.MoveAndThreat
-                ? BattleQueries.EnemyMoveZone(_state, Faction.Player)
-                : new HashSet<Coord>();
+            // The faction-wide DangerZone / EnemyMoveZone unions used to be built
+            // here. Nothing read them: the board has painted ONE enemy's reach
+            // since the overlays were split, and BuildOverlays queries that enemy
+            // directly. They cost a full Dijkstra per enemy on every command — the
+            // enemy phase alone paid for it a dozen times a round — so they are
+            // gone rather than left computing an answer no one asked for.
 
             _inspectedCell = null;   // state changed: the cached hover readout is stale
+
+            // Same reason, and it matters more here: a route costed against the
+            // previous board can be a route through a cell somebody now stands in.
+            ClearMovePlan();
+            _planFor = null;
 
             // Enemies move and die, so a target set computed a command ago is not
             // one to aim with.
@@ -759,10 +1038,12 @@ namespace Ediki.Unity
             sb.AppendLine();
             sb.AppendLine("        >>> press ESC (or F1) at any time for the controls sheet on screen <<<");
             sb.AppendLine();
-            sb.AppendLine("MOUSE   left  your unit = select   a cell = move   an enemy = attack");
-            sb.AppendLine("        RIGHT any unit  = inspect it (stats, AP, skill costs). No action taken.");
-            sb.AppendLine("        right-click empty ground to unpin. Hovering an enemy narrows the");
-            sb.AppendLine("        red/amber overlay to just that one.");
+            sb.AppendLine("MOUSE   left  your unit = take control of it   a cell = move there");
+            sb.AppendLine("              an ENEMY = LOOK at it. Brings up that one enemy's move and");
+            sb.AppendLine("              threat ranges plus its numbers. It takes no action, and it");
+            sb.AppendLine("              does NOT drop the unit you already had. Attacking goes");
+            sb.AppendLine("              through the action bar: arm the button, then click the target.");
+            sb.AppendLine("        RIGHT any unit = pin the info panel to it. Empty ground unpins.");
             sb.AppendLine("        moving costs AP *and* MOVE. Both are per turn.");
             sb.AppendLine();
             sb.AppendLine("KEYS    ESC/F1 controls sheet      R    restart this map");
@@ -802,7 +1083,13 @@ namespace Ediki.Unity
             sb.AppendLine("        AMBER   they can walk here but not hit it (TAB twice to show)");
             sb.AppendLine("        MAGENTA both — you can stand here AND be hit for it.");
             sb.AppendLine("                This is the cell every decision is actually about.");
-            sb.AppendLine("        Hover an enemy to narrow the red/amber to just that one.");
+            sb.AppendLine("        VIOLET  what an area skill would cover. Hover its button to see it.");
+            sb.AppendLine("        Cells that BREATHE mean 'can be attacked'. Cells that sit still");
+            sb.AppendLine("        mean 'can be stood on'. One channel, one question each.");
+            sb.AppendLine("        RED and AMBER belong to ONE enemy — the one you clicked, marked");
+            sb.AppendLine("        with a circle on its nameplate. Click another to switch.");
+            sb.AppendLine("        Hover a BLUE cell to get the route there, its cost, and what you");
+            sb.AppendLine("        could hit from it. Clicking walks that exact route.");
             sb.AppendLine();
             sb.Append(RosterLegend());
             Debug.Log(sb.ToString());
@@ -930,7 +1217,7 @@ namespace Ediki.Unity
                       + "\n  BLUE you can stand here   CYAN you can hit here (after moving)"
                       + "\n  RED they can hit here     AMBER they can walk here but not hit"
                       + "\n  MAGENTA both — you can stand here AND be hit for it"
-                      + "\n  hover an enemy to see only THAT enemy's ranges.");
+                      + "\n  click an enemy to see THAT enemy's ranges. It keeps your selection.");
         }
 
         private void ReportOutcome()
@@ -959,8 +1246,11 @@ namespace Ediki.Unity
 
             GUILayout.Label("<b>滑鼠</b>");
             GUILayout.Label("  左鍵自己人 = 選取      左鍵空格 = 移動（同時扣 AP 與 MOVE）");
-            GUILayout.Label("  左鍵敵人   = 攻擊      <b>右鍵任何單位 = 查看資料（不會動手）</b>");
-            GUILayout.Label("  右鍵空地   = 取消查看  滑鼠停在敵人上 = 只顯示那一隻的範圍");
+            GUILayout.Label("  <b>左鍵敵人 = 看牠</b> —— 顯示牠的移動與攻擊範圍、還有牠的數據。");
+            GUILayout.Label("  <b>不會動手，也不會把你手上的單位換掉。</b>要攻擊請用下方行動列。");
+            GUILayout.Label("  右鍵任何單位 = 釘住資料面板  右鍵空地 = 取消釘住");
+            GUILayout.Label("  <b>滑鼠停在藍色格上</b> = 畫出走過去的<b>路線</b>與花費，並顯示<b>站到那一格之後</b>");
+            GUILayout.Label("  打得到的範圍。點下去就照那條路線走過去。");
             GUILayout.Space(6);
 
             GUILayout.Label("<b>行動</b>");
@@ -981,6 +1271,8 @@ namespace Ediki.Unity
             GUILayout.Label("  <b>藍</b> 你站得上去    <b>青</b> 你打得到（含先移動）");
             GUILayout.Label("  <b>紅</b> 他們打得到    <b>琥珀</b> 他們走得到但打不到");
             GUILayout.Label("  <b>洋紅</b> 兩者皆是 —— 這格就是每個決定真正在講的東西");
+            GUILayout.Label("  <b>紫</b> 範圍技能會蓋到的格子（滑鼠停在技能按鈕上就會先畫出來）");
+            GUILayout.Label("  <b>會慢慢呼吸的格子＝「打得到」，不會閃的＝「站得到」。</b>");
             GUILayout.Space(6);
 
             GUILayout.Label("<b>棋子</b>");
@@ -1004,6 +1296,13 @@ namespace Ediki.Unity
                 if (pinned != null && pinned.IsAlive) return pinned;
                 _pinnedInspectId = -1;
             }
+
+            // A clicked enemy outranks the selected unit, because clicking it WAS
+            // the request to read it. Your own unit's numbers are on the action bar
+            // the entire time anyway.
+            UnitState focus = FocusedEnemy();
+            if (focus != null) return focus;
+
             return _selectedUnitId >= 0 ? _state.FindUnit(_selectedUnitId) : null;
         }
 
@@ -1022,7 +1321,7 @@ namespace Ediki.Unity
             int moveLeft = Mathf.Max(0, u.Def.Move - u.MoveUsedThisTurn);
 
             const float w = 330f;
-            float h = mine ? 250f : 150f;
+            float h = mine ? 250f : 200f;
             float x = 12f;
             float y = Screen.height - h - 12f;
 
@@ -1049,9 +1348,28 @@ namespace Ediki.Unity
             }
             else
             {
-                GUILayout.Label("MOVE " + u.Def.Move + (u.Def.Move == 0 ? "  <b>（永遠不會移動）</b>" : "")
+                GUILayout.Label("移動 <b>" + u.Def.Move + "</b> 格／回合"
+                                + (u.Def.Move == 0 ? "  <b>（永遠不會移動）</b>" : "")
                                 + "     每回合可攻擊 "
                                 + (u.Def.AttackApCost <= 0 ? 0 : u.Def.ApRegen / u.Def.AttackApCost) + " 次");
+
+                // The number the red cells are MADE of, written out.
+                //
+                // The overlay can be counted, but "移動 4 ＋ 射程 2" is the thing a
+                // player carries to the next enemy without counting anything —
+                // which is the difference between reading the board and learning it.
+                GUILayout.Label("威脅距離 <b>" + (u.Def.Move + u.Def.AttackRange) + "</b> 格"
+                                + "（移動 " + u.Def.Move + " ＋ 射程 " + u.Def.AttackRange + "）"
+                                + (_enemyOverlay == EnemyOverlay.Off ? "　按 TAB 顯示" : "　＝閃爍的紅格"));
+
+                string flags = "";
+                if (u.IsGuarding) flags += "　格擋中";
+                if (_state.IsSlowed(u)) flags += "　減速中";
+                if (_state.IsTaunting(u)) flags += "　被引誘";
+                if (u.IsObjectiveTarget) flags += "　<b>«目標»</b>";
+
+                GUILayout.Label((u.IsActivated ? "<b>已啟動</b> —— 它會朝你來" : "尚未發現你 —— 還不會行動")
+                                + flags);
 
                 UnitState me = _selectedUnitId >= 0 ? _state.FindUnit(_selectedUnitId) : null;
                 if (me != null && me.IsAlive)
@@ -1139,7 +1457,10 @@ namespace Ediki.Unity
                 string tag = u.Faction == Faction.Player ? "P" + (++player) : "E" + (++enemy);
                 if (!u.IsAlive) continue;
 
-                Vector3 screen = cam.WorldToScreenPoint(BattleView.NameplateAnchor(u));
+                // The instance form, not the static one: a nameplate that stayed on
+                // the destination cell while its unit walked there would arrive
+                // before the unit did.
+                Vector3 screen = cam.WorldToScreenPoint(_view.NameplateAnchorOf(u));
                 if (screen.z <= 0f) continue;   // behind the camera
 
                 float x = screen.x;
@@ -1150,12 +1471,20 @@ namespace Ediki.Unity
 
                 Color previous = GUI.color;
 
-                GUI.color = new Color(0.06f, 0.06f, 0.08f, u.Id == _selectedUnitId ? 0.85f : 0.62f);
+                bool highlighted = u.Id == _selectedUnitId || u.Id == _focusEnemyId;
+                GUI.color = new Color(0.06f, 0.06f, 0.08f, highlighted ? 0.85f : 0.62f);
                 GUI.DrawTexture(plate, Texture2D.whiteTexture);
 
+                // Two different marks, because they mean two different things:
+                // ◀ is the unit you are holding, ◎ is the enemy the red cells
+                // currently belong to. Without the second one a threat overlay is a
+                // shape with no owner the moment you look away from the panel.
+                string mark = u.Id == _selectedUnitId ? "  ◀"
+                            : u.Id == _focusEnemyId ? "  ◎"
+                            : "";
+
                 GUI.color = PrototypeVisuals.BodyColor(u.Faction, u.IsObjectiveTarget || u.MustSurvive);
-                GUI.Label(new Rect(plate.x, plate.y, plate.width, 13f),
-                          tag + (u.Id == _selectedUnitId ? "  ◀" : ""), _plateTag);
+                GUI.Label(new Rect(plate.x, plate.y, plate.width, 13f), tag + mark, _plateTag);
 
                 GUI.color = new Color(0.92f, 0.92f, 0.94f, u.IsActivated || u.Faction == Faction.Player ? 1f : 0.6f);
                 GUI.Label(new Rect(plate.x, plate.y + 12f, plate.width, 13f), u.Def.DisplayName, _plateName);
@@ -1181,6 +1510,9 @@ namespace Ediki.Unity
         private static readonly Color ArmedTint = new Color(1f, 0.82f, 0.35f);
         private static readonly Color UnaffordableTint = new Color(0.55f, 0.55f, 0.58f);
 
+        /// <summary>The move-plan readout. Cyan, matching the cells it is describing.</summary>
+        private static readonly Color PlanTint = new Color(0.55f, 0.95f, 0.88f);
+
         /// <summary>Where the bar sits. A pure function of the screen and the action count.</summary>
         private Rect ActionBarRect(int actionCount)
         {
@@ -1189,6 +1521,18 @@ namespace Ediki.Unity
             return new Rect((Screen.width - width) * 0.5f,
                             Screen.height - height - BarBottomMargin,
                             width, height);
+        }
+
+        /// <summary>
+        /// Where button <paramref name="index"/> sits inside the bar.
+        ///
+        /// Shared by the drawing and by the hover test, so the button being
+        /// previewed is by construction the button under the mouse.
+        /// </summary>
+        private static Rect SlotRect(Rect bar, int index)
+        {
+            return new Rect(bar.x + BarPadding + index * (BarButtonWidth + BarPadding),
+                            bar.y + BarPadding, BarButtonWidth, BarButtonHeight);
         }
 
         /// <summary>
@@ -1255,10 +1599,28 @@ namespace Ediki.Unity
                     : "<b>確認施放</b>　—　點亮起區域確認，再按一次按鈕或按 Esc 取消";
             }
 
+            // Nothing armed and nothing refused: say what the cell under the cursor
+            // would cost, and whether there would be a swing left afterwards.
+            //
+            // The numbers, not just the colours. "剩 5 AP" is the difference between
+            // seeing that a cell is reachable and knowing what reaching it spends.
+            bool planLine = false;
+            if (string.IsNullOrEmpty(status) && _planActive && _planFor.HasValue)
+            {
+                planLine = true;
+                status = "移動到 " + _planFor.Value + "　" + _planApCost + " AP・" + _planSteps + " 格"
+                       + "　→　剩 " + _planApLeft + " AP，"
+                       + (_planCanAttack
+                            ? "青色格是到那裡打得到的範圍"
+                            : "<b>不夠再攻擊一次</b>");
+            }
+
             if (!string.IsNullOrEmpty(status))
             {
                 Color previous = GUI.color;
-                GUI.color = _armedAction >= 0 ? ArmedTint : new Color(1f, 0.62f, 0.55f);
+                GUI.color = _armedAction >= 0 ? ArmedTint
+                          : planLine ? PlanTint
+                          : new Color(1f, 0.62f, 0.55f);
                 GUI.Label(new Rect(bar.x - 100f, bar.y - 26f, bar.width + 200f, 20f), status, centred);
                 GUI.color = previous;
             }
@@ -1267,8 +1629,7 @@ namespace Ediki.Unity
             {
                 UnitAction action = actions[i];
 
-                Rect slot = new Rect(bar.x + BarPadding + i * (BarButtonWidth + BarPadding),
-                                     bar.y + BarPadding, BarButtonWidth, BarButtonHeight);
+                Rect slot = SlotRect(bar, i);
 
                 bool affordable = actor.Ap >= action.ApCost;
                 bool enabled = actorCanAct && affordable;
@@ -1409,7 +1770,7 @@ namespace Ediki.Unity
         {
             GUI.Box(new Rect(8, Screen.height - 129, 820, 121), GUIContent.none);
             GUILayout.BeginArea(new Rect(16, Screen.height - 123, 804, 109));
-            GUILayout.Label("click cell = move (costs AP <b>and</b> MOVE)  |  click enemy = attack (4 AP)");
+            GUILayout.Label("click cell = move (costs AP <b>and</b> MOVE)  |  click enemy = inspect it, no action");
             GUILayout.Label("actions are on the bar at the bottom — aimed skills: click the button, then the enemy");
             GUILayout.Label("space = end turn  |  TAB = their ranges (" + _enemyOverlay
                             + ")  |  Z = yours (" + (_showOwnRanges ? "ON" : "off") + ")  |  R = restart");

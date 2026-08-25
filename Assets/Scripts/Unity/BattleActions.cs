@@ -35,6 +35,16 @@ namespace Ediki.Unity
         /// <summary>Cells away the target may be. 0 for self-targeted actions.</summary>
         public int Range;
 
+        /// <summary>
+        /// How far the effect spreads from wherever it lands. 0 = it hits one cell.
+        ///
+        /// Read off UnitDef like everything else here, and used for one thing:
+        /// painting the footprint BEFORE the button is committed. An area skill
+        /// whose shape only becomes visible after it fires is a skill the player
+        /// has to learn by wasting it.
+        /// </summary>
+        public int AreaRadius;
+
         public ActionTarget Target;
         /// <summary>
         /// The key as a LABEL, not a KeyCode.
@@ -148,6 +158,7 @@ namespace Ediki.Unity
                     Label = "引誘",
                     Hint = "半徑 " + def.TauntRadius + " 內的敵人下一輪都會來打這個單位",
                     ApCost = def.TauntApCost,
+                    AreaRadius = def.TauntRadius,
                     Target = ActionTarget.Self,
                     ShortcutLabel = "T",
                     Build = (actor, target) => new TauntCommand(actor)
@@ -159,6 +170,7 @@ namespace Ediki.Unity
                     Label = "淨化",
                     Hint = "清除半徑 " + def.PurifyRadius + " 內的穢氣",
                     ApCost = def.PurifyApCost,
+                    AreaRadius = def.PurifyRadius,
                     Target = ActionTarget.SelfConfirm,
                     ShortcutLabel = "C",
                     Build = (actor, target) => new PurifyCommand(actor)

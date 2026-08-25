@@ -166,6 +166,22 @@ namespace Ediki.Core
             return result;
         }
 
+        /// <summary>
+        /// Passable cells within <paramref name="range"/> of a cell.
+        ///
+        /// The "what could I hit from THERE" question, asked about a cell nobody
+        /// is standing on yet. Public because the board previews a move before it
+        /// is made, and the presentation layer must not grow its own copy of the
+        /// range shape (R-THR-12 / A7) — a preview that disagrees with the attack
+        /// it is previewing is worse than showing nothing at all.
+        /// </summary>
+        public static HashSet<Coord> CellsInRange(BattleMap map, Coord center, int range)
+        {
+            HashSet<Coord> cells = new HashSet<Coord>();
+            CollectCellsInRange(map, center, range, cells);
+            return cells;
+        }
+
         private static void CollectCellsInRange(BattleMap map, Coord center, int range, HashSet<Coord> into)
         {
             for (int dy = -range; dy <= range; dy++)

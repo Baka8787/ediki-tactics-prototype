@@ -37,6 +37,55 @@ namespace Ediki.Unity
         /// <summary>A cell the aimed action can legally be fired at. Gold, like the bar's armed button.</summary>
         private static readonly Color TintActionTarget = new Color(1f, 0.82f, 0.35f);
 
+        /// <summary>
+        /// What the selected unit would be able to hit FROM THE CELL BEING POINTED
+        /// AT. Same cyan family as MyReach because it answers the same question —
+        /// it just answers it about one cell instead of all of them.
+        /// </summary>
+        private static readonly Color TintPreviewReach = new Color(0.35f, 1f, 0.80f);
+
+        /// <summary>
+        /// The footprint of an area skill. Violet: the only hue not already spoken
+        /// for, so an area can never be misread as movement, threat or a target.
+        /// </summary>
+        private static readonly Color TintActionArea = new Color(0.70f, 0.45f, 1f);
+
+        /// <summary>The route a click would walk, and the cell it ends on.</summary>
+        private static readonly Color PathStepColor = new Color(0.92f, 0.97f, 1f);
+        private static readonly Color PathEndColor = new Color(1f, 0.85f, 0.35f);
+
+        // ------------------------------------------------------------- breathing
+        //
+        // Every overlay that means "something can be ATTACKED here" pulses instead
+        // of repainting the tile (專案負責人 2026-08-24).
+        //
+        // The reason it is worth the frame cost: a flat recolour makes a threatened
+        // cell look like a different KIND of terrain, and the board already uses
+        // colour for terrain. A cell that breathes still reads as the ground it is,
+        // with a warning laid over it — and the two questions the board answers,
+        // "what is this cell" and "who can reach it", stop competing for one channel.
+        //
+        // Movement ranges deliberately do NOT pulse. Where you can stand is a fact
+        // about the board; where you can be hit is a warning, and only one of those
+        // should be moving.
+
+        /// <summary>One full breath, in seconds. Slow on purpose — this is a hint, not an alarm.</summary>
+        private const float PulseSeconds = 1.9f;
+
+        /// <summary>
+        /// 0 -> 1 -> 0, once per <see cref="PulseSeconds"/>.
+        ///
+        /// Unscaled time, so the board keeps breathing if a future pause ever sets
+        /// timeScale to 0. <paramref name="phase"/> shifts a set of cells out of
+        /// step with the rest, which is what keeps an armed skill distinguishable
+        /// from the ambient danger it is being aimed into.
+        /// </summary>
+        private static float Pulse(float phase)
+        {
+            float t = (Time.unscaledTime / PulseSeconds + phase) * Mathf.PI * 2f;
+            return 0.5f - 0.5f * Mathf.Cos(t);
+        }
+
         private static readonly Color GuardColor = new Color(0.95f, 0.85f, 0.3f);
         private static readonly Color TauntColor = new Color(1f, 0.75f, 0.1f);
         private static readonly Color SlowColor = new Color(0.45f, 0.75f, 0.95f);
@@ -97,6 +146,12 @@ namespace Ediki.Unity
             _healthBars.Clear();
             _unitParts.Clear();
 
+            // A walk that was still playing belonged to the old board. Its markers
+            // and its mover are about to be destroyed, so the clock has to stop
+            // with them or the next frame samples a path into a dead transform.
+            CancelMove();
+            _pathMarkers.Clear();
+
             _map = state.Map;
             _block = new MaterialPropertyBlock();
             _colorProperty = Shader.PropertyToID("_BaseColor");
@@ -139,6 +194,9 @@ namespace Ediki.Unity
                 }
             }
 
+            _pathRoot = new GameObject("Path").transform;
+            _pathRoot.SetParent(transform, false);
+
             _unitRoot = new GameObject("Units").transform;
             _unitRoot.SetParent(transform, false);
 
@@ -172,12 +230,42 @@ namespace Ediki.Unity
             /// </summary>
             public HashSet<Coord> ActionTargets;
 
+            /// <summary>
+            /// Everything an area skill would land on, or null. Painted whether the
+            /// skill is armed or merely hovered on the bar, because "what does this
+            /// button cover" is a question you ask before you commit to it.
+            /// </summary>
+            public HashSet<Coord> ActionArea;
+
+            /// <summary>
+            /// What the selected unit could attack if it walked to the cell under
+            /// the cursor, or null.
+            ///
+            /// This is the whole point of the hover: a move is chosen for where it
+            /// lets you shoot from, and until this existed the player had to walk
+            /// there to find out.
+            /// </summary>
+            public HashSet<Coord> PreviewReach;
+
+            /// <summary>
+            /// The route a click would take, origin excluded — exactly the Coord[]
+            /// that would be handed to MoveCommand, so what is drawn is what walks.
+            /// </summary>
+            public IReadOnlyList<Coord> Path;
+
             public Coord? Hovered;
         }
 
         public void Refresh(BattleState state, Overlays overlays)
         {
             Overlays o = overlays ?? new Overlays();
+
+            // Two breaths, half a cycle apart. Ambient danger uses the first;
+            // anything the player has personally armed or pointed at uses the
+            // second, so an aimed skill is never at its dimmest exactly when the
+            // threat under it is at its brightest.
+            float ambient = Pulse(0f);
+            float aimed = Pulse(0.5f);
 
             for (int y = 0; y < _map.Height; y++)
             {
@@ -194,21 +282,37 @@ namespace Ediki.Unity
                     // Weakest claim first, strongest last. The order encodes what
                     // matters: "they could walk here" is background information,
                     // "I can go here and be shot for it" is the decision.
+                    //
+                    // Everything about REACH breathes; everything about STANDING
+                    // stays put. The lerp bounds keep a threatened cell readable at
+                    // the bottom of the breath — it dims, it never disappears, so
+                    // the danger zone is not something you can miss by blinking.
                     if (theirMove && !theirThreat) color = Color.Lerp(color, TintEnemyMove, 0.30f);
-                    if (theirThreat) color = Color.Lerp(color, TintDanger, 0.45f);
-                    if (myReach && !myMove) color = Color.Lerp(color, TintMyReach, 0.45f);
+                    if (theirThreat) color = Color.Lerp(color, TintDanger, Mathf.Lerp(0.18f, 0.58f, ambient));
+                    if (myReach && !myMove) color = Color.Lerp(color, TintMyReach, Mathf.Lerp(0.16f, 0.52f, ambient));
                     if (myMove) color = Color.Lerp(color, TintMyMove, 0.50f);
 
-                    // Contested is set outright rather than blended. Blending blue
-                    // over red just makes a muddy purple that also happens to be
-                    // what a lightly-tinted cell looks like, and this cell type is
-                    // far too important to be told apart by shade.
-                    if (myMove && theirThreat) color = TintContested;
+                    // Contested reaches TintContested outright at the top of the
+                    // breath rather than sitting on a blend. Blending blue over red
+                    // just makes a muddy purple that also happens to be what a
+                    // lightly-tinted cell looks like, and this cell type is far too
+                    // important to be told apart by shade.
+                    if (myMove && theirThreat) color = Color.Lerp(color, TintContested, Mathf.Lerp(0.35f, 1f, ambient));
 
-                    // Set outright, above every other overlay, for the same reason
-                    // Contested is: a cell you are about to aim at is a decision,
-                    // not a shade of one.
-                    if (o.ActionTargets != null && o.ActionTargets.Contains(c)) color = TintActionTarget;
+                    // What I could hit from the cell under the cursor. Above the
+                    // ambient overlays because it is about the move being
+                    // considered right now, not the board in general.
+                    if (o.PreviewReach != null && o.PreviewReach.Contains(c))
+                        color = Color.Lerp(color, TintPreviewReach, Mathf.Lerp(0.22f, 0.70f, aimed));
+
+                    if (o.ActionArea != null && o.ActionArea.Contains(c))
+                        color = Color.Lerp(color, TintActionArea, Mathf.Lerp(0.25f, 0.68f, aimed));
+
+                    // Top of the stack, and it reaches full gold at the peak of the
+                    // breath: a cell you are about to fire into is a decision, not
+                    // a shade of one.
+                    if (o.ActionTargets != null && o.ActionTargets.Contains(c))
+                        color = Color.Lerp(color, TintActionTarget, Mathf.Lerp(0.45f, 1f, aimed));
 
                     if (o.Hovered.HasValue && o.Hovered.Value == c) color = Color.Lerp(color, TintHover, 0.55f);
 
@@ -218,6 +322,8 @@ namespace Ediki.Unity
                     r.SetPropertyBlock(_block);
                 }
             }
+
+            UpdatePath(o.Path);
 
             for (int i = 0; i < state.Units.Count; i++)
             {
@@ -245,7 +351,8 @@ namespace Ediki.Unity
                     continue;
                 }
 
-                view.localPosition = new Vector3(u.Position.X, UnitCentreY, -u.Position.Y);
+                Vector3 ground = GroundPositionOf(u);
+                view.localPosition = new Vector3(ground.x, UnitCentreY, ground.z);
 
                 Color color = ColorOf(u.Id);
 
@@ -263,6 +370,140 @@ namespace Ediki.Unity
                 if (!_unitParts.TryGetValue(u.Id, out parts)) continue;
                 for (int p = 0; p < parts.Length; p++) Paint(parts[p], color);
             }
+        }
+
+        // ------------------------------------------------------------ the route
+        //
+        // Drawn as markers floating over the tiles, never by tinting them.
+        //
+        // That is the whole reason a route is worth drawing: what you need to know
+        // about a path is which THREATENED cells it crosses, and recolouring those
+        // cells to say "route" would erase the one thing you are looking at.
+
+        private Transform _pathRoot;
+        private readonly List<Transform> _pathMarkers = new List<Transform>();
+
+        private void UpdatePath(IReadOnlyList<Coord> path)
+        {
+            int count = path == null ? 0 : path.Count;
+            while (_pathMarkers.Count < count) _pathMarkers.Add(CreatePathMarker());
+
+            for (int i = 0; i < _pathMarkers.Count; i++)
+            {
+                Transform marker = _pathMarkers[i];
+                if (marker == null) continue;
+
+                if (i >= count) { marker.gameObject.SetActive(false); continue; }
+
+                Coord c = path[i];
+                bool last = i == count - 1;
+                marker.gameObject.SetActive(true);
+
+                // Sits on the tile's own top face, so a marker on rough ground is
+                // not buried inside it and one over a chasm still reads as a step
+                // across rather than a step down.
+                float top = PrototypeVisuals.TileTopHeight(PrototypeVisuals.StyleOf(_map.TerrainAt(c)));
+                marker.localPosition = new Vector3(c.X, top + 0.06f, -c.Y);
+
+                float size = last ? 0.56f : 0.26f;
+                marker.localScale = new Vector3(size, 0.04f, size);
+                Paint(marker.GetComponent<Renderer>(), last ? PathEndColor : PathStepColor);
+            }
+        }
+
+        private Transform CreatePathMarker()
+        {
+            GameObject go = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            go.name = "Path step";
+            go.transform.SetParent(_pathRoot, false);
+            Object.Destroy(go.GetComponent<Collider>());
+            return go.transform;
+        }
+
+        // -------------------------------------------------------- walking there
+        //
+        // The rules resolve a move instantly: one Command, one new BattleState,
+        // the unit is simply at the far end (R-CMD-01). This plays that back.
+        //
+        // Presentation ONLY. The state has already changed before the first frame
+        // of the walk is drawn and nothing here can alter it (A7). What it buys is
+        // that the route the player was shown and the route the unit takes are
+        // visibly the same route — which is what makes the preview worth trusting.
+
+        private const float MoveSecondsPerCell = 0.11f;
+
+        private int _movingUnitId = -1;
+        private Vector3[] _movePoints;
+        private float _moveElapsed;
+        private float _moveDuration;
+
+        /// <summary>True while a unit is mid-walk. Input waits for it.</summary>
+        public bool IsAnimating => _movingUnitId >= 0;
+
+        /// <summary>
+        /// Walks <paramref name="unitId"/> from <paramref name="from"/> along
+        /// <paramref name="path"/>. Called AFTER the command has been executed,
+        /// with the cell the unit set off from.
+        /// </summary>
+        public void PlayMove(int unitId, Coord from, IReadOnlyList<Coord> path)
+        {
+            if (path == null || path.Count == 0) { CancelMove(); return; }
+
+            _movePoints = new Vector3[path.Count + 1];
+            _movePoints[0] = new Vector3(from.X, 0f, -from.Y);
+            for (int i = 0; i < path.Count; i++)
+                _movePoints[i + 1] = new Vector3(path[i].X, 0f, -path[i].Y);
+
+            _movingUnitId = unitId;
+            _moveElapsed = 0f;
+            _moveDuration = Mathf.Max(0.01f, path.Count * MoveSecondsPerCell);
+        }
+
+        private void CancelMove()
+        {
+            _movingUnitId = -1;
+            _movePoints = null;
+        }
+
+        private void Update()
+        {
+            if (_movingUnitId < 0) return;
+            _moveElapsed += Time.deltaTime;
+            if (_moveElapsed >= _moveDuration) CancelMove();
+        }
+
+        /// <summary>
+        /// Where this unit's feet are RIGHT NOW: its cell, or a point along the
+        /// walk it is in the middle of.
+        ///
+        /// Everything hung on a unit — body, health bar, nameplate — reads its
+        /// position through here, so no piece of it can arrive at the destination
+        /// ahead of the rest.
+        /// </summary>
+        private Vector3 GroundPositionOf(UnitState unit)
+        {
+            if (_movingUnitId == unit.Id && _movePoints != null && _movePoints.Length >= 2)
+            {
+                // Constant speed per CELL, not per path: a four-cell walk takes
+                // four times as long as a one-cell walk, which is what makes the
+                // animation read as distance instead of as a fixed flourish.
+                int legs = _movePoints.Length - 1;
+                float t = Mathf.Clamp01(_moveElapsed / _moveDuration) * legs;
+                int leg = Mathf.Min((int)t, legs - 1);
+                return Vector3.Lerp(_movePoints[leg], _movePoints[leg + 1], t - leg);
+            }
+
+            return new Vector3(unit.Position.X, 0f, -unit.Position.Y);
+        }
+
+        /// <summary>
+        /// <see cref="NameplateAnchor"/>, but following a unit that is mid-walk.
+        /// The static form stays for callers holding nothing but a UnitState.
+        /// </summary>
+        public Vector3 NameplateAnchorOf(UnitState unit)
+        {
+            Vector3 ground = GroundPositionOf(unit);
+            return new Vector3(ground.x, UnitCentreY + BodyHeight(unit) * 0.5f + 0.45f, ground.z);
         }
 
         /// <summary>Screen point to grid cell, via the y=0 plane. Null when off-map.</summary>
@@ -497,8 +738,9 @@ namespace Ediki.Unity
             bar.Trough.gameObject.SetActive(true);
             bar.Fill.gameObject.SetActive(true);
 
-            float x = u.Position.X;
-            float z = -u.Position.Y;
+            Vector3 ground = GroundPositionOf(u);
+            float x = ground.x;
+            float z = ground.z;
             float barY = BarYFor(u);
             bar.Trough.localPosition = new Vector3(x, barY, z);
 
